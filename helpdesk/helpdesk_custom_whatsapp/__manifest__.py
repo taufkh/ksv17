@@ -1,0 +1,27 @@
+{
+    "name": "Helpdesk Custom WhatsApp",
+    "version": "17.0.1.0.0",
+    "category": "After-Sales",
+    "summary": "WhatsApp notifications, queue, and logs for helpdesk tickets",
+    "author": "Custom",
+    "license": "LGPL-3",
+    "depends": [
+        "helpdesk_custom_escalation",
+        "helpdesk_custom_portal",
+        "helpdesk_custom_demo",
+        "mail",
+    ],
+    "data": [
+        "security/ir.model.access.csv",
+        "data/helpdesk_whatsapp_template_data.xml",
+        "data/ir_cron_data.xml",
+        "views/res_config_settings_views.xml",
+        "views/helpdesk_whatsapp_template_views.xml",
+        "views/helpdesk_whatsapp_message_views.xml",
+        "views/helpdesk_ticket_views.xml",
+    ],
+    "post_init_hook": "post_init_hook",
+    "installable": True,
+    "application": False,
+    "auto_install": False,
+}

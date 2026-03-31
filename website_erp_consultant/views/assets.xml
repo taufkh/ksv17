@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Assets are registered via __manifest__.py using the 'assets' key.
+        This file is kept for any ir.asset records that need positional
+        directives (prepend/after/before) relative to specific bundle files.
+
+        The primary_variables.scss MUST be prepended so Bootstrap sees our
+        variable overrides at compile time.
+    -->
+
+    <!-- Prepend primary variables so Bootstrap compiles with our overrides -->
+    <record id="asset_primary_variables" model="ir.asset">
+        <field name="name">ERP Consultant: Primary Variables</field>
+        <field name="bundle">web.assets_frontend</field>
+        <field name="path">website_erp_consultant/static/src/scss/primary_variables.scss</field>
+        <field name="directive">prepend</field>
+    </record>
+
+    <!-- Secondary variables — after Bootstrap but before our custom.scss -->
+    <record id="asset_secondary_variables" model="ir.asset">
+        <field name="name">ERP Consultant: Secondary Variables</field>
+        <field name="bundle">web.assets_frontend</field>
+        <field name="path">website_erp_consultant/static/src/scss/secondary_variables.scss</field>
+        <field name="directive">after</field>
+        <field name="target">website_erp_consultant/static/src/scss/primary_variables.scss</field>
+    </record>
+
+    <!-- Custom styles — loaded last -->
+    <record id="asset_custom_scss" model="ir.asset">
+        <field name="name">ERP Consultant: Custom Styles</field>
+        <field name="bundle">web.assets_frontend</field>
+        <field name="path">website_erp_consultant/static/src/scss/custom.scss</field>
+        <field name="directive">after</field>
+        <field name="target">website_erp_consultant/static/src/scss/secondary_variables.scss</field>
+    </record>
+
+</odoo>

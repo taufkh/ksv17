@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="helpdesk_ticket_team_form_view_inherit_claude" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.team.form.inherit.claude</field>
+        <field name="model">helpdesk.ticket.team</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.helpdesk_ticket_team_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Claude AI" name="claude_ai">
+                    <group string="Activation">
+                        <field name="ai_enabled" widget="boolean_toggle"/>
+                        <field name="ai_auto_reply"
+                               invisible="not ai_enabled"/>
+                        <field name="ai_auto_dev_note"
+                               invisible="not ai_enabled"/>
+                    </group>
+                    <group string="Project Context" invisible="not ai_enabled">
+                        <field name="ai_project_context"
+                               widget="text"
+                               placeholder="Describe the Odoo project: domain, key custom modules, tech stack, specific workflows..."/>
+                        <field name="ai_installed_modules"
+                               widget="text"
+                               placeholder="e.g. helpdesk_mgmt, helpdesk_mgmt_sla, helpdesk_type, stock, mrp, sale_management"/>
+                    </group>
+                    <div class="alert alert-info mt8" invisible="ai_enabled">
+                        <strong>Claude AI is disabled for this team.</strong>
+                        Enable it above, then set your project context so Claude
+                        can provide accurate, project-specific answers and
+                        development plans.
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

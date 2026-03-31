@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_helpdesk_ticket_search_escalation" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.search.escalation</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.helpdesk_ticket_view_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='high_priority']" position="after">
+                <filter
+                    string="Escalated"
+                    name="escalated"
+                    domain="[('escalated', '=', True)]"
+                />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_ticket_form_escalation" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.form.escalation</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.ticket_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button
+                    name="action_view_escalation_events"
+                    type="object"
+                    class="oe_stat_button"
+                    icon="fa-level-up"
+                >
+                    <field
+                        name="escalation_event_count"
+                        widget="statinfo"
+                        string="Escalations"
+                    />
+                </button>
+            </xpath>
+            <xpath expr="//page[@name='other_info']/group" position="inside">
+                <field name="escalated"/>
+                <field name="last_escalation_rule_id" readonly="1"/>
+                <field name="last_escalation_at" readonly="1"/>
+                <field name="next_escalation_rule_id" readonly="1"/>
+                <field name="next_escalation_at" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_ticket_tree_escalation" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.tree.escalation</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.ticket_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='stage_id']" position="before">
+                <field name="escalated" optional="show"/>
+                <field name="next_escalation_at" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

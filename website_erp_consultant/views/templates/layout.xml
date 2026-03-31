@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        Inject Google Fonts (Poppins + Nunito) into the website <head>.
+        We extend website.layout so they're available on every page.
+    -->
+    <template id="layout_fonts" inherit_id="website.layout"
+              name="ERP Consultant: Google Fonts">
+        <xpath expr="//head" position="inside">
+            <link rel="preconnect" href="https://fonts.googleapis.com"/>
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
+            <link
+                href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&amp;family=Poppins:wght@600;700;800&amp;display=swap"
+                rel="stylesheet"/>
+        </xpath>
+    </template>
+
+    <!--
+        Custom footer — overrides the default Odoo footer block.
+    -->
+    <template id="layout_footer" inherit_id="website.layout"
+              name="ERP Consultant: Custom Footer">
+        <xpath expr="//div[@id='footer']" position="replace">
+            <div id="footer" class="o_footer">
+                <footer>
+                    <div class="container py-5">
+                        <div class="row g-4">
+
+                            <!-- Brand column -->
+                            <div class="col-lg-4 col-md-6">
+                                <div class="footer-brand mb-3">
+                                    Your<span>ERP</span>
+                                </div>
+                                <p class="mb-3" style="font-size:0.9rem; color:#94a3b8; line-height:1.7;">
+                                    Trusted Odoo ERP consultants helping businesses
+                                    streamline their operations and grow with confidence.
+                                </p>
+                                <div class="footer-social">
+                                    <a href="#" aria-label="LinkedIn"><i class="fa fa-linkedin"/></a>
+                                    <a href="#" aria-label="Facebook"><i class="fa fa-facebook"/></a>
+                                    <a href="#" aria-label="Twitter"><i class="fa fa-twitter"/></a>
+                                    <a href="#" aria-label="WhatsApp"><i class="fa fa-whatsapp"/></a>
+                                </div>
+                            </div>
+
+                            <!-- Services column -->
+                            <div class="col-lg-2 col-md-6 col-sm-6">
+                                <h5>Services</h5>
+                                <ul>
+                                    <li><a href="/services#implementation">Implementation</a></li>
+                                    <li><a href="/services#customization">Customization</a></li>
+                                    <li><a href="/services#training">Training</a></li>
+                                    <li><a href="/services#support">Support</a></li>
+                                </ul>
+                            </div>
+
+                            <!-- Company column -->
+                            <div class="col-lg-2 col-md-6 col-sm-6">
+                                <h5>Company</h5>
+                                <ul>
+                                    <li><a href="/about">About Us</a></li>
+                                    <li><a href="/contact-us">Contact</a></li>
+                                </ul>
+                            </div>
+
+                            <!-- Contact column -->
+                            <div class="col-lg-4 col-md-6">
+                                <h5>Get In Touch</h5>
+                                <p style="font-size:0.9rem; color:#94a3b8; margin-bottom:1rem;">
+                                    Ready to transform your business with Odoo?
+                                    Let's talk.
+                                </p>
+                                <a href="/contact-us" class="btn btn-primary btn-sm px-4">
+                                    Free Consultation
+                                </a>
+                            </div>
+
+                        </div><!-- /row -->
+
+                        <!-- Footer bottom bar -->
+                        <div class="footer-divider d-flex flex-wrap justify-content-between align-items-center gap-2">
+                            <p class="mb-0" style="font-size:0.8125rem; color:#475569;">
+                                © <span t-out="datetime.date.today().year"/> YourERP. All rights reserved.
+                            </p>
+                            <p class="mb-0" style="font-size:0.8125rem; color:#475569;">
+                                Powered by
+                                <a href="https://www.odoo.com" target="_blank"
+                                   rel="noopener" style="color:#60a5fa;">Odoo</a>
+                            </p>
+                        </div>
+                    </div><!-- /container -->
+                </footer>
+            </div>
+        </xpath>
+    </template>
+
+</odoo>

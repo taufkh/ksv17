@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_helpdesk_escalation_rule_manager,helpdesk.escalation.rule.manager,model_helpdesk_escalation_rule,helpdesk_mgmt.group_helpdesk_manager,1,1,1,1
+access_helpdesk_escalation_event_user,helpdesk.escalation.event.user,model_helpdesk_escalation_event,helpdesk_mgmt.group_helpdesk_user,1,0,0,0
+access_helpdesk_escalation_event_manager,helpdesk.escalation.event.manager,model_helpdesk_escalation_event,helpdesk_mgmt.group_helpdesk_manager,1,0,0,0

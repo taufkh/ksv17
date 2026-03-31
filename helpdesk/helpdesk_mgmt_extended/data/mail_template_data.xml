@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- SLA Expiry Notification -->
+    <record id="email_template_sla_expiry" model="mail.template">
+        <field name="name">Helpdesk: SLA Expiry Warning</field>
+        <field name="model_id" ref="helpdesk_mgmt.model_helpdesk_ticket"/>
+        <field name="subject">⚠️ SLA about to expire: {{ object.number }} – {{ object.name }}</field>
+        <field name="body_html"><![CDATA[
+<p>Dear {{ object.user_id.name or 'Team' }},</p>
+<p>The SLA deadline for ticket <strong>{{ object.number }}</strong> – <em>{{ object.name }}</em>
+is approaching or has expired.</p>
+<p><strong>Deadline:</strong> {{ object.sla_deadline }}</p>
+<p>Please take action as soon as possible.</p>
+        ]]></field>
+        <field name="email_to">{{ object.user_id.email or '' }}</field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+    <!-- Inactivity Warning -->
+    <record id="email_template_inactivity_warning" model="mail.template">
+        <field name="name">Helpdesk: Inactivity Warning</field>
+        <field name="model_id" ref="helpdesk_mgmt.model_helpdesk_ticket"/>
+        <field name="subject">Your ticket {{ object.number }} is awaiting your response</field>
+        <field name="body_html"><![CDATA[
+<p>Dear {{ object.partner_name or 'Customer' }},</p>
+<p>We noticed that ticket <strong>{{ object.number }}</strong> – <em>{{ object.name }}</em>
+has been inactive for several days.</p>
+<p>If you still need assistance, please reply to this email or log in to the portal.</p>
+<p>If we do not hear back from you, the ticket may be closed automatically.</p>
+        ]]></field>
+        <field name="email_to">{{ object.partner_email or '' }}</field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+    <!-- Auto-Close Notification -->
+    <record id="email_template_inactivity_close" model="mail.template">
+        <field name="name">Helpdesk: Ticket Auto-Closed (Inactivity)</field>
+        <field name="model_id" ref="helpdesk_mgmt.model_helpdesk_ticket"/>
+        <field name="subject">Your ticket {{ object.number }} has been closed</field>
+        <field name="body_html"><![CDATA[
+<p>Dear {{ object.partner_name or 'Customer' }},</p>
+<p>Ticket <strong>{{ object.number }}</strong> – <em>{{ object.name }}</em>
+has been automatically closed due to inactivity.</p>
+<p>If you still need assistance, please open a new ticket and reference the original ticket number.</p>
+        ]]></field>
+        <field name="email_to">{{ object.partner_email or '' }}</field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+    <!-- Rating Request -->
+    <record id="email_template_rating_request" model="mail.template">
+        <field name="name">Helpdesk: Customer Satisfaction Rating</field>
+        <field name="model_id" ref="helpdesk_mgmt.model_helpdesk_ticket"/>
+        <field name="subject">How did we do? Rate your support experience for {{ object.number }}</field>
+        <field name="body_html"><![CDATA[
+<p>Dear {{ object.partner_name or 'Customer' }},</p>
+<p>Thank you for contacting our support team regarding ticket
+<strong>{{ object.number }}</strong> – <em>{{ object.name }}</em>.</p>
+<p>We would love to hear your feedback. Please rate your experience:</p>
+<a href="/rating/{{ object.rating_ids[:1].access_token if object.rating_ids else '' }}/1"
+   style="background:#21b799;color:white;padding:8px 16px;border-radius:4px;text-decoration:none;">
+   👍 Satisfied
+</a>
+&nbsp;
+<a href="/rating/{{ object.rating_ids[:1].access_token if object.rating_ids else '' }}/0"
+   style="background:#e74c3c;color:white;padding:8px 16px;border-radius:4px;text-decoration:none;">
+   👎 Not Satisfied
+</a>
+<p style="margin-top:16px">Thank you for helping us improve!</p>
+        ]]></field>
+        <field name="email_to">{{ object.partner_email or '' }}</field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+</odoo>

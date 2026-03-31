@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_document_page_form_release_note" model="ir.ui.view">
+        <field name="name">document.page.form.release.note</field>
+        <field name="model">document.page</field>
+        <field name="inherit_id" ref="helpdesk_custom_knowledge.view_document_page_form_helpdesk" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button
+                    name="action_open_release_notes"
+                    type="object"
+                    class="oe_stat_button"
+                    icon="fa-rocket"
+                    invisible="not release_note_ids"
+                >
+                    <field name="release_note_count" widget="statinfo" string="Release Notes" />
+                </button>
+            </xpath>
+            <xpath expr="//field[@name='helpdesk_ticket_ids']" position="after">
+                <field name="release_note_ids" widget="many2many_tags" options="{'no_create': True}" />
+            </xpath>
+        </field>
+    </record>
+</odoo>

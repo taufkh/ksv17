@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_document_page_search_helpdesk" model="ir.ui.view">
+        <field name="name">document.page.search.helpdesk</field>
+        <field name="model">document.page</field>
+        <field name="inherit_id" ref="document_page.view_wiki_filter" />
+        <field name="arch" type="xml">
+            <xpath expr="//search/field[@name='name'][last()]" position="after">
+                <field name="helpdesk_team_id" />
+                <field name="helpdesk_category_id" />
+                <field name="helpdesk_type_id" />
+                <field name="article_owner_id" />
+            </xpath>
+            <xpath expr="//search/group" position="before">
+                <filter string="Helpdesk Articles" name="helpdesk_articles" domain="[('is_helpdesk_article', '=', True)]" />
+                <filter string="Portal Ready" name="portal_ready" domain="[('article_status', '=', 'portal_ready')]" />
+                <filter string="Obsolete" name="obsolete" domain="[('article_status', '=', 'obsolete')]" />
+            </xpath>
+            <xpath expr="//search/group" position="inside">
+                <filter string="Article Status" name="group_article_status" context="{'group_by': 'article_status'}" />
+                <filter string="Helpdesk Team" name="group_helpdesk_team" context="{'group_by': 'helpdesk_team_id'}" />
+                <filter string="Ticket Category" name="group_helpdesk_category" context="{'group_by': 'helpdesk_category_id'}" />
+                <filter string="Ticket Type" name="group_helpdesk_type" context="{'group_by': 'helpdesk_type_id'}" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_document_page_tree_helpdesk" model="ir.ui.view">
+        <field name="name">document.page.tree.helpdesk</field>
+        <field name="model">document.page</field>
+        <field name="inherit_id" ref="document_page.view_wiki_tree" />
+        <field name="arch" type="xml">
+            <xpath expr="//tree/field[@name='parent_id']" position="after">
+                <field name="article_status" optional="show" />
+                <field name="helpdesk_team_id" optional="show" />
+                <field name="helpdesk_category_id" optional="show" />
+                <field name="helpdesk_type_id" optional="show" />
+                <field name="review_due_date" optional="show" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_document_page_form_helpdesk" model="ir.ui.view">
+        <field name="name">document.page.form.helpdesk</field>
+        <field name="model">document.page</field>
+        <field name="inherit_id" ref="document_page.view_wiki_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//form/sheet" position="before">
+                <header>
+                    <button
+                        name="action_mark_validated"
+                        type="object"
+                        string="Mark Validated"
+                        invisible="not is_helpdesk_article"
+                    />
+                    <button
+                        name="action_mark_internal"
+                        type="object"
+                        string="Set Internal"
+                        invisible="not is_helpdesk_article or article_status == 'internal'"
+                    />
+                    <button
+                        name="action_mark_portal_ready"
+                        type="object"
+                        string="Set Portal Ready"
+                        class="btn-primary"
+                        invisible="not is_helpdesk_article or article_status == 'portal_ready'"
+                    />
+                    <button
+                        name="action_mark_obsolete"
+                        type="object"
+                        string="Mark Obsolete"
+                        invisible="not is_helpdesk_article or article_status == 'obsolete'"
+                    />
+                    <field name="article_status" widget="statusbar" statusbar_visible="draft,internal,portal_ready,obsolete" invisible="not is_helpdesk_article" />
+                </header>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button
+                    name="action_open_related_tickets"
+                    type="object"
+                    class="oe_stat_button"
+                    icon="fa-life-ring"
+                    invisible="not is_helpdesk_article"
+                >
+                    <field name="helpdesk_ticket_count" widget="statinfo" string="Tickets" />
+                </button>
+            </xpath>
+            <xpath expr="//page[@name='info']/group/group[1]" position="inside">
+                <field name="is_helpdesk_article" />
+                <field name="helpdesk_primary_ticket_id" invisible="not is_helpdesk_article" />
+                <field name="helpdesk_team_id" readonly="1" invisible="not is_helpdesk_article" />
+                <field name="helpdesk_category_id" readonly="1" invisible="not is_helpdesk_article" />
+                <field name="helpdesk_type_id" readonly="1" invisible="not is_helpdesk_article" />
+            </xpath>
+            <xpath expr="//page[@name='info']/group/group[2]" position="inside">
+                <field name="article_owner_id" invisible="not is_helpdesk_article" />
+                <field name="resolution_pattern" invisible="not is_helpdesk_article" />
+                <field name="review_due_date" invisible="not is_helpdesk_article" />
+                <field name="validated_by_id" readonly="1" invisible="not is_helpdesk_article" />
+                <field name="validated_on" readonly="1" invisible="not is_helpdesk_article" />
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Helpdesk Links" invisible="not is_helpdesk_article">
+                    <field name="helpdesk_ticket_ids" widget="many2many_tags" options="{'no_create': True}" />
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_helpdesk_knowledge_articles" model="ir.actions.act_window">
+        <field name="name">Knowledge Articles</field>
+        <field name="res_model">document.page</field>
+        <field name="domain">[('type', '=', 'content'), ('is_helpdesk_article', '=', True)]</field>
+        <field name="context">{'default_type': 'content', 'search_default_helpdesk_articles': 1}</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="document_page.view_wiki_tree" />
+        <field name="search_view_id" ref="document_page.view_wiki_filter" />
+    </record>
+
+    <record id="action_helpdesk_knowledge_categories" model="ir.actions.act_window">
+        <field name="name">Knowledge Categories</field>
+        <field name="res_model">document.page</field>
+        <field name="domain">[('type', '=', 'category'), ('is_helpdesk_article', '=', True)]</field>
+        <field name="context">{'default_type': 'category', 'default_is_helpdesk_article': True}</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="document_page.view_category_tree" />
+        <field name="search_view_id" ref="document_page.view_document_category_filter" />
+    </record>
+
+    <menuitem
+        id="menu_helpdesk_knowledge_articles"
+        name="Knowledge Articles"
+        parent="helpdesk_mgmt.helpdesk_ticket_reporting_menu"
+        action="action_helpdesk_knowledge_articles"
+        sequence="40"
+        groups="helpdesk_mgmt.group_helpdesk_user"
+    />
+
+    <menuitem
+        id="menu_helpdesk_knowledge_categories"
+        name="Knowledge Categories"
+        parent="helpdesk_mgmt.helpdesk_ticket_config_main_menu"
+        action="action_helpdesk_knowledge_categories"
+        sequence="60"
+        groups="helpdesk_mgmt.group_helpdesk_manager"
+    />
+</odoo>

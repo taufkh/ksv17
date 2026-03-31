@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="page_about" name="About Page">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure">
+
+                <!-- ═══════════════════════════════════════
+                     PAGE HERO
+                ════════════════════════════════════════ -->
+                <section class="page-hero">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <span class="section-label">Who We Are</span>
+                                <h1>About Us</h1>
+                                <p class="lead">
+                                    A passionate team of Odoo specialists dedicated to helping
+                                    businesses unlock the full potential of their ERP system.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ═══════════════════════════════════════
+                     OUR STORY
+                ════════════════════════════════════════ -->
+                <section style="padding:5rem 0;">
+                    <div class="container">
+                        <div class="row align-items-center g-5">
+                            <div class="col-lg-6">
+                                <span class="section-label">Our Story</span>
+                                <h2 class="section-title">Built by Consultants,<br/>for Real Businesses</h2>
+                                <p style="color:#475569; line-height:1.8; margin-bottom:1rem;">
+                                    We started as a small team of ERP professionals who saw firsthand
+                                    how much time and money businesses wasted on poorly configured
+                                    systems. We believed there was a better way — a more human,
+                                    results-focused approach to ERP consulting.
+                                </p>
+                                <p style="color:#475569; line-height:1.8; margin-bottom:1rem;">
+                                    Today, we specialise exclusively in Odoo — the world's fastest-growing
+                                    open-source ERP platform. Our team brings deep technical knowledge
+                                    and real-world business experience to every engagement.
+                                </p>
+                                <p style="color:#475569; line-height:1.8; margin-bottom:0;">
+                                    Whether you're implementing Odoo for the first time or looking to
+                                    get more out of an existing system, we're here to make it work
+                                    for your business — not the other way around.
+                                </p>
+                            </div>
+
+                            <!-- Stats panel -->
+                            <div class="col-lg-6">
+                                <div class="row g-3">
+                                    <div class="col-6">
+                                        <div class="p-4 text-center rounded-3"
+                                             style="background:#eff6ff; border:1px solid #dbeafe;">
+                                            <div class="stat-block">
+                                                <div class="stat-number">50+</div>
+                                                <div class="stat-desc">Projects Completed</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="p-4 text-center rounded-3"
+                                             style="background:#f0fdf4; border:1px solid #bbf7d0;">
+                                            <div class="stat-block">
+                                                <div class="stat-number">40+</div>
+                                                <div class="stat-desc">Happy Clients</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="p-4 text-center rounded-3"
+                                             style="background:#fefce8; border:1px solid #fde68a;">
+                                            <div class="stat-block">
+                                                <div class="stat-number">5+</div>
+                                                <div class="stat-desc">Years in Odoo</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="p-4 text-center rounded-3"
+                                             style="background:#fdf4ff; border:1px solid #e9d5ff;">
+                                            <div class="stat-block">
+                                                <div class="stat-number">10+</div>
+                                                <div class="stat-desc">Industries Served</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ═══════════════════════════════════════
+                     OUR VALUES
+                ════════════════════════════════════════ -->
+                <section style="background:#f8fafc; padding:5rem 0;">
+                    <div class="container">
+
+                        <div class="text-center mb-5">
+                            <span class="section-label">What We Stand For</span>
+                            <h2 class="section-title">Our Values</h2>
+                            <p class="section-subtitle">
+                                Everything we do is guided by a simple set of principles.
+                            </p>
+                        </div>
+
+                        <div class="row g-4">
+                            <t t-foreach="values" t-as="val">
+                                <div class="col-sm-6 col-lg-3">
+                                    <div class="value-card">
+                                        <div class="value-icon">
+                                            <i t-att-class="'fa ' + val['icon']"/>
+                                        </div>
+                                        <h5 t-out="val['title']"/>
+                                        <p t-out="val['description']"/>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- ═══════════════════════════════════════
+                     CTA
+                ════════════════════════════════════════ -->
+                <section class="cta-section">
+                    <div class="container position-relative">
+                        <div class="row align-items-center g-4">
+                            <div class="col-lg-8">
+                                <h2>Let's build something great together.</h2>
+                                <p>
+                                    Reach out and let us know what you're working towards.
+                                    We'd love to be part of your journey.
+                                </p>
+                            </div>
+                            <div class="col-lg-4 text-lg-end">
+                                <a href="/contact-us" class="btn-cta-white">
+                                    Get in Touch
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </t>
+    </template>
+
+</odoo>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_helpdesk_ticket_form_custom_invoice" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.form.custom.invoice</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.ticket_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button
+                    name="action_open_create_invoice_wizard"
+                    type="object"
+                    string="Create Invoice"
+                    class="btn-primary"
+                    invisible="not team_id.allow_billing or uninvoiced_billable_hours &lt;= 0"
+                    groups="helpdesk_mgmt.group_helpdesk_manager"
+                />
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button
+                    name="action_view_invoices"
+                    type="object"
+                    class="oe_stat_button"
+                    icon="fa-file-text-o"
+                    groups="helpdesk_mgmt.group_helpdesk_manager"
+                >
+                    <field name="invoice_count" widget="statinfo" string="Invoices" />
+                </button>
+            </xpath>
+            <xpath expr="//page[@name='other_info']/group" position="inside">
+                <field name="invoice_status" readonly="1" />
+                <field name="billable_timesheet_hours" widget="float_time" readonly="1" />
+                <field name="uninvoiced_billable_hours" widget="float_time" readonly="1" />
+                <field name="invoiced_timesheet_hours" widget="float_time" readonly="1" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_ticket_form_timesheet_custom_invoice" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.form.timesheet.custom.invoice</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk_timesheet_time_type.timesheet_helpdesk_ticket_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='timesheets']//tree//field[@name='time_type_id']" position="after">
+                <field name="helpdesk_billable" optional="show" />
+                <field name="helpdesk_invoice_id" optional="show" readonly="1" />
+            </xpath>
+            <xpath expr="//page[@name='timesheets']//form//field[@name='unit_amount']" position="after">
+                <field name="time_type_id" />
+                <field name="helpdesk_billable" />
+                <field name="helpdesk_invoice_id" readonly="1" />
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_helpdesk_ticket_search_approval" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.search.approval</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.helpdesk_ticket_view_search" />
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='high_priority']" position="after">
+                <filter string="Approval Pending" name="approval_pending" domain="[('approval_state', '=', 'pending')]" />
+                <filter string="Approval Approved" name="approval_approved" domain="[('approval_state', '=', 'approved')]" />
+                <filter string="Approval Implemented" name="approval_implemented" domain="[('approval_state', '=', 'implemented')]" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_ticket_form_approval" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.form.approval</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.ticket_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button
+                    name="action_request_approval"
+                    type="object"
+                    string="Request Approval"
+                    groups="helpdesk_mgmt.group_helpdesk_user"
+                />
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button
+                    name="action_open_approvals"
+                    type="object"
+                    class="oe_stat_button"
+                    icon="fa-check-square-o"
+                    groups="helpdesk_mgmt.group_helpdesk_user"
+                >
+                    <field name="approval_count" widget="statinfo" string="Approvals" />
+                </button>
+            </xpath>
+            <xpath expr="//page[@name='other_info']/group" position="inside">
+                <field name="approval_state" readonly="1" />
+                <field name="open_approval_count" readonly="1" />
+            </xpath>
+        </field>
+    </record>
+</odoo>

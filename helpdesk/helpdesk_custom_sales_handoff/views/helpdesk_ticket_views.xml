@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_helpdesk_ticket_search_sales_handoff" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.search.sales.handoff</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.helpdesk_ticket_view_search" />
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='high_priority']" position="after">
+                <filter string="Sales Follow-up Requested" name="sales_handoff_requested" domain="[('sales_handoff_state', 'in', ['requested', 'in_review', 'approved'])]" />
+                <filter string="Sales Follow-up Converted" name="sales_handoff_converted" domain="[('sales_handoff_state', '=', 'converted')]" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_ticket_search_hide_crm" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.search.hide.crm</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk_mgmt_crm.helpdesk_ticket_view_search" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='lead_ids']" position="replace" />
+        </field>
+    </record>
+
+    <record id="view_helpdesk_ticket_form_hide_direct_crm" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.form.hide.direct.crm</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk_mgmt_crm.ticket_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//header/button[@icon='fa-arrow-right']" position="replace" />
+            <xpath expr="//div[@name='button_box']/button[@name='action_open_leads']" position="replace" />
+        </field>
+    </record>
+
+    <record id="view_helpdesk_ticket_form_sales_handoff" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.form.sales.handoff</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.ticket_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button
+                    name="action_request_sales_handoff"
+                    type="object"
+                    string="Request Sales Follow-up"
+                    groups="helpdesk_mgmt.group_helpdesk_user"
+                />
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button
+                    name="action_open_sales_handoffs"
+                    type="object"
+                    class="oe_stat_button"
+                    icon="fa-handshake-o"
+                    groups="helpdesk_mgmt.group_helpdesk_manager,sales_team.group_sale_salesman"
+                >
+                    <field name="sales_handoff_count" widget="statinfo" string="Sales Handoffs" />
+                </button>
+            </xpath>
+            <xpath expr="//page[@name='other_info']/group" position="inside">
+                <field name="sales_handoff_state" readonly="1" />
+            </xpath>
+        </field>
+    </record>
+</odoo>

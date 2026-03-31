@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_helpdesk_support_contract_search_renewal" model="ir.ui.view">
+        <field name="name">helpdesk.support.contract.search.renewal</field>
+        <field name="model">helpdesk.support.contract</field>
+        <field name="inherit_id" ref="helpdesk_custom_contract.view_helpdesk_support_contract_search" />
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='expiring']" position="after">
+                <filter string="Renewal Watch" name="renewal_watch" domain="[('renewal_open_watch_count', '&gt;', 0)]" />
+                <filter string="Low Hours Alert" name="renewal_low_hours" domain="[('low_hours_alert', '=', True)]" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_support_contract_tree_renewal" model="ir.ui.view">
+        <field name="name">helpdesk.support.contract.tree.renewal</field>
+        <field name="model">helpdesk.support.contract</field>
+        <field name="inherit_id" ref="helpdesk_custom_contract.view_helpdesk_support_contract_tree" />
+        <field name="arch" type="xml">
+            <xpath expr="//tree/field[@name='state']" position="after">
+                <field name="renewal_status" optional="show" />
+                <field name="renewal_open_watch_count" optional="show" />
+                <field name="low_hours_alert" optional="show" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_support_contract_form_renewal" model="ir.ui.view">
+        <field name="name">helpdesk.support.contract.form.renewal</field>
+        <field name="model">helpdesk.support.contract</field>
+        <field name="inherit_id" ref="helpdesk_custom_contract.view_helpdesk_support_contract_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_open_renewal_watchlist" type="object" class="oe_stat_button" icon="fa-refresh">
+                    <field name="renewal_watch_count" widget="statinfo" string="Renewals" />
+                </button>
+            </xpath>
+            <xpath expr="//sheet/notebook" position="before">
+                <group string="Renewal Monitor">
+                    <group>
+                        <field name="renewal_status" readonly="1" />
+                        <field name="renewal_open_watch_count" readonly="1" />
+                    </group>
+                    <group>
+                        <field name="expiry_alert" readonly="1" />
+                        <field name="low_hours_alert" readonly="1" />
+                    </group>
+                </group>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Renewal">
+                    <button name="action_create_renewal_watch" type="object" string="Create Renewal Watch" class="btn-primary" />
+                    <field name="renewal_watch_ids" readonly="1">
+                        <tree>
+                            <field name="name" />
+                            <field name="trigger_type" />
+                            <field name="risk_level" />
+                            <field name="days_to_expiry" />
+                            <field name="remaining_hours" />
+                            <field name="sales_user_id" />
+                            <field name="next_follow_up_date" />
+                            <field name="state" />
+                            <field name="handoff_id" />
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

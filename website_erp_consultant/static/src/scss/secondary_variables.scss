@@ -1,0 +1,22 @@
+// ============================================================
+//  SECONDARY VARIABLES — ERP Consultant Theme
+//  Odoo-specific component overrides. Loaded after Bootstrap.
+// ============================================================
+
+// ── Website header ──────────────────────────────────────────
+$o-header-text-color:           #1e293b;
+$o-header-background-color:     #ffffff;
+$o-header-border-color:         #e2e8f0;
+$o-header-navbar-font-size:     0.9375rem;
+
+// ── Website footer ──────────────────────────────────────────
+$o-footer-background-color:     #0f172a;
+$o-footer-color:                #94a3b8;
+
+// ── Color combinations (o_cc1 … o_cc5) ─────────────────────
+// Used by snippets to respond to the theme editor color sets
+$o-color-1: #ffffff;        // o_cc1 — white / clean
+$o-color-2: #f8fafc;        // o_cc2 — very light grey
+$o-color-3: #2563eb;        // o_cc3 — primary blue (accent sections)
+$o-color-4: #0f172a;        // o_cc4 — dark navy (dark sections)
+$o-color-5: #f1f5f9;        // o_cc5 — light slate (alternating sections)

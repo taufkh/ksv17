@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_helpdesk_public_portal_share_wizard_form" model="ir.ui.view">
+        <field name="name">helpdesk.public.portal.share.wizard.form</field>
+        <field name="model">helpdesk.public.portal.share.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Copy Public Portal Link" create="false" edit="false">
+                <group>
+                    <field name="ticket_id" readonly="1" />
+                    <field name="public_portal_url" widget="CopyClipboardChar" readonly="1" />
+                    <field name="recipient_emails" readonly="1" />
+                    <field name="recipient_phones" readonly="1" />
+                </group>
+                <group string="Message Preview">
+                    <field name="email_subject_preview" readonly="1" />
+                    <field name="email_body_preview" readonly="1" nolabel="1" />
+                    <field name="whatsapp_body_preview" readonly="1" nolabel="1" />
+                </group>
+                <footer>
+                    <button string="Close" class="btn-primary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

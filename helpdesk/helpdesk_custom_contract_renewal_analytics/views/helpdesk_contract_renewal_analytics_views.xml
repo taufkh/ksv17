@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_helpdesk_contract_renewal_analytics_dashboard_kanban" model="ir.ui.view">
+        <field name="name">helpdesk.contract.renewal.analytics.dashboard.kanban</field>
+        <field name="model">helpdesk.contract.renewal.analytics.dashboard</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_small_column">
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="oe_kanban_content">
+                                <div class="o_kanban_record_top">
+                                    <strong><field name="name" /></strong>
+                                    <div><field name="scope_type" /></div>
+                                </div>
+                                <div class="mt16">
+                                    <div>Active pipeline: <field name="active_pipeline_revenue" widget="monetary" options="{'currency_field': 'currency_id'}" /></div>
+                                    <div>Weighted pipeline: <field name="weighted_pipeline_revenue" widget="monetary" options="{'currency_field': 'currency_id'}" /></div>
+                                    <div>Revenue at risk: <field name="revenue_at_risk" widget="monetary" options="{'currency_field': 'currency_id'}" /></div>
+                                </div>
+                                <div class="mt16">
+                                    <div>Open: <field name="open_count" /> | Review: <field name="in_review_count" /> | Handoff: <field name="handoff_count" /></div>
+                                    <div>Critical: <field name="critical_count" /> | Overdue follow-up: <field name="overdue_follow_up_count" /></div>
+                                    <div>Expiring 7d: <field name="expiring_7d_count" /> | Won: <field name="won_count" /> | Lost: <field name="lost_count" /></div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_contract_renewal_analytics_dashboard_tree" model="ir.ui.view">
+        <field name="name">helpdesk.contract.renewal.analytics.dashboard.tree</field>
+        <field name="model">helpdesk.contract.renewal.analytics.dashboard</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" />
+                <field name="scope_type" />
+                <field name="open_count" />
+                <field name="in_review_count" />
+                <field name="handoff_count" />
+                <field name="critical_count" />
+                <field name="overdue_follow_up_count" />
+                <field name="active_pipeline_revenue" widget="monetary" options="{'currency_field': 'currency_id'}" />
+                <field name="weighted_pipeline_revenue" widget="monetary" options="{'currency_field': 'currency_id'}" />
+                <field name="revenue_at_risk" widget="monetary" options="{'currency_field': 'currency_id'}" />
+                <field name="won_revenue" widget="monetary" options="{'currency_field': 'currency_id'}" optional="show" />
+                <field name="lost_revenue" widget="monetary" options="{'currency_field': 'currency_id'}" optional="show" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_helpdesk_contract_renewal_overview" model="ir.actions.act_window">
+        <field name="name">Renewal Overview</field>
+        <field name="res_model">helpdesk.contract.renewal.analytics.dashboard</field>
+        <field name="view_mode">kanban,tree</field>
+    </record>
+
+    <record id="view_helpdesk_contract_renewal_analytics_report_search" model="ir.ui.view">
+        <field name="name">helpdesk.contract.renewal.analytics.report.search</field>
+        <field name="model">helpdesk.contract.renewal.analytics.report</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="partner_id" />
+                <field name="contract_id" />
+                <field name="sales_user_id" />
+                <filter string="Active Pipeline" name="active_pipeline" domain="[('state', 'in', ['open', 'in_review', 'handoff_sent'])]" />
+                <filter string="Follow-up Overdue" name="followup_overdue" domain="[('follow_up_overdue', '=', True)]" />
+                <filter string="Critical" name="critical" domain="[('risk_level', '=', 'critical')]" />
+                <filter string="At Risk Revenue" name="at_risk" domain="[('revenue_at_risk', '&gt;', 0)]" />
+                <group expand="0" string="Group By">
+                    <filter string="Customer" name="group_partner" context="{'group_by': 'partner_id'}" />
+                    <filter string="Team" name="group_team" context="{'group_by': 'team_id'}" />
+                    <filter string="Salesperson" name="group_sales" context="{'group_by': 'sales_user_id'}" />
+                    <filter string="State" name="group_state" context="{'group_by': 'state'}" />
+                    <filter string="Risk" name="group_risk" context="{'group_by': 'risk_level'}" />
+                    <filter string="Trigger" name="group_trigger" context="{'group_by': 'trigger_type'}" />
+                    <filter string="Probability Bucket" name="group_probability" context="{'group_by': 'probability_bucket'}" />
+                    <filter string="Expiry Bucket" name="group_expiry" context="{'group_by': 'expiry_bucket'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_contract_renewal_analytics_report_tree" model="ir.ui.view">
+        <field name="name">helpdesk.contract.renewal.analytics.report.tree</field>
+        <field name="model">helpdesk.contract.renewal.analytics.report</field>
+        <field name="arch" type="xml">
+            <tree decoration-danger="follow_up_overdue or risk_level == 'critical'" decoration-warning="risk_level in ('high', 'medium')">
+                <field name="follow_up_overdue" column_invisible="1" />
+                <field name="renewal_id" string="Renewal" />
+                <field name="partner_id" />
+                <field name="team_id" optional="show" />
+                <field name="sales_user_id" optional="show" />
+                <field name="state" />
+                <field name="risk_level" />
+                <field name="days_to_expiry" />
+                <field name="next_follow_up_date" />
+                <field name="follow_up_overdue_days" optional="show" />
+                <field name="expected_revenue" widget="monetary" options="{'currency_field': 'currency_id'}" />
+                <field name="weighted_revenue" widget="monetary" options="{'currency_field': 'currency_id'}" />
+                <field name="revenue_at_risk" widget="monetary" options="{'currency_field': 'currency_id'}" optional="show" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_contract_renewal_analytics_report_pivot" model="ir.ui.view">
+        <field name="name">helpdesk.contract.renewal.analytics.report.pivot</field>
+        <field name="model">helpdesk.contract.renewal.analytics.report</field>
+        <field name="arch" type="xml">
+            <pivot string="Renewal Analytics">
+                <field name="partner_id" type="row" />
+                <field name="risk_level" type="col" />
+                <field name="count_renewals" type="measure" string="Renewals" />
+                <field name="expected_revenue" type="measure" />
+                <field name="weighted_revenue" type="measure" />
+                <field name="revenue_at_risk" type="measure" />
+                <field name="won_revenue" type="measure" />
+                <field name="lost_revenue" type="measure" />
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_contract_renewal_analytics_report_graph" model="ir.ui.view">
+        <field name="name">helpdesk.contract.renewal.analytics.report.graph</field>
+        <field name="model">helpdesk.contract.renewal.analytics.report</field>
+        <field name="arch" type="xml">
+            <graph string="Renewal Analytics" type="bar">
+                <field name="risk_level" />
+                <field name="expected_revenue" type="measure" />
+                <field name="weighted_revenue" type="measure" />
+                <field name="revenue_at_risk" type="measure" />
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_helpdesk_contract_renewal_analytics" model="ir.actions.act_window">
+        <field name="name">Renewal Analytics</field>
+        <field name="res_model">helpdesk.contract.renewal.analytics.report</field>
+        <field name="view_mode">pivot,graph,tree</field>
+        <field name="search_view_id" ref="view_helpdesk_contract_renewal_analytics_report_search" />
+        <field name="context">{'search_default_active_pipeline': 1}</field>
+    </record>
+
+    <menuitem
+        id="menu_helpdesk_contract_renewal_overview"
+        name="Renewal Overview"
+        parent="helpdesk_mgmt.helpdesk_ticket_reporting_menu"
+        action="action_helpdesk_contract_renewal_overview"
+        sequence="44"
+        groups="helpdesk_mgmt.group_helpdesk_user,sales_team.group_sale_salesman"
+    />
+
+    <menuitem
+        id="menu_helpdesk_contract_renewal_analytics"
+        name="Renewal Analytics"
+        parent="helpdesk_mgmt.helpdesk_ticket_reporting_menu"
+        action="action_helpdesk_contract_renewal_analytics"
+        sequence="45"
+        groups="helpdesk_mgmt.group_helpdesk_user,sales_team.group_sale_salesman"
+    />
+</odoo>

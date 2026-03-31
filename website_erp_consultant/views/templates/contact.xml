@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="page_contact" name="Contact Page">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure">
+
+                <!-- ═══════════════════════════════════════
+                     PAGE HERO
+                ════════════════════════════════════════ -->
+                <section class="page-hero">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <span class="section-label">Talk to Us</span>
+                                <h1>Contact Us</h1>
+                                <p class="lead">
+                                    Have a question or ready to start your Odoo journey?
+                                    Fill in the form below and we'll get back to you within
+                                    one business day.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ═══════════════════════════════════════
+                     CONTACT CONTENT
+                ════════════════════════════════════════ -->
+                <section style="padding: 4rem 0 5rem;">
+                    <div class="container">
+                        <div class="row g-5">
+
+                            <!-- Left: contact info -->
+                            <div class="col-lg-4">
+                                <h3 style="font-size:1.25rem; font-weight:700; color:#0f172a;
+                                           margin-bottom:1.75rem;">
+                                    Get in Touch
+                                </h3>
+
+                                <div class="contact-info-item">
+                                    <div class="info-icon"><i class="fa fa-envelope-o"/></div>
+                                    <div>
+                                        <h6>Email</h6>
+                                        <p>hello@yourerpcompany.com</p>
+                                    </div>
+                                </div>
+
+                                <div class="contact-info-item">
+                                    <div class="info-icon"><i class="fa fa-phone"/></div>
+                                    <div>
+                                        <h6>Phone / WhatsApp</h6>
+                                        <p>+60 12 345 6789</p>
+                                    </div>
+                                </div>
+
+                                <div class="contact-info-item">
+                                    <div class="info-icon"><i class="fa fa-clock-o"/></div>
+                                    <div>
+                                        <h6>Office Hours</h6>
+                                        <p>Mon – Fri, 9:00 AM – 6:00 PM (MYT)</p>
+                                    </div>
+                                </div>
+
+                                <div class="contact-info-item">
+                                    <div class="info-icon"><i class="fa fa-map-marker"/></div>
+                                    <div>
+                                        <h6>Location</h6>
+                                        <p>Kuala Lumpur, Malaysia<br/>(Remote-first team)</p>
+                                    </div>
+                                </div>
+
+                                <!-- Response time note -->
+                                <div class="mt-4 p-3 rounded-3"
+                                     style="background:#eff6ff; border:1px solid #bfdbfe;">
+                                    <div class="d-flex gap-2 align-items-start">
+                                        <i class="fa fa-info-circle mt-1" style="color:#2563eb;"/>
+                                        <p style="font-size:0.875rem; color:#1e40af;
+                                                  margin-bottom:0; line-height:1.55;">
+                                            We typically respond within <strong>4 hours</strong>
+                                            during business hours. For urgent matters, reach us
+                                            via WhatsApp.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right: contact form -->
+                            <div class="col-lg-8">
+                                <div class="contact-form-card">
+
+                                    <!-- Success alert -->
+                                    <t t-if="success">
+                                        <div class="alert alert-success d-flex align-items-center
+                                                    gap-3 mb-4 rounded-3" role="alert">
+                                            <i class="fa fa-check-circle fa-lg"/>
+                                            <div>
+                                                <strong>Message sent!</strong> Thank you for getting in touch.
+                                                We'll get back to you within one business day.
+                                            </div>
+                                        </div>
+                                    </t>
+
+                                    <!-- Error alert -->
+                                    <t t-if="error">
+                                        <div class="alert alert-danger d-flex align-items-center
+                                                    gap-3 mb-4 rounded-3" role="alert">
+                                            <i class="fa fa-exclamation-circle fa-lg"/>
+                                            <div>
+                                                Please fill in your <strong>name</strong> and
+                                                <strong>email</strong> — they're required so we
+                                                can get back to you.
+                                            </div>
+                                        </div>
+                                    </t>
+
+                                    <form action="/contact-us/submit" method="post"
+                                          novalidate="novalidate">
+                                        <!-- CSRF token -->
+                                        <input type="hidden" name="csrf_token"
+                                               t-att-value="request.csrf_token()"/>
+
+                                        <div class="row g-3">
+
+                                            <!-- Name -->
+                                            <div class="col-md-6">
+                                                <label for="name" class="form-label">
+                                                    Full Name <span class="text-danger">*</span>
+                                                </label>
+                                                <input type="text" id="name" name="name"
+                                                       class="form-control" required="required"
+                                                       placeholder="e.g. Ahmad Taufik"/>
+                                            </div>
+
+                                            <!-- Email -->
+                                            <div class="col-md-6">
+                                                <label for="email" class="form-label">
+                                                    Email Address <span class="text-danger">*</span>
+                                                </label>
+                                                <input type="email" id="email" name="email"
+                                                       class="form-control" required="required"
+                                                       placeholder="you@company.com"/>
+                                            </div>
+
+                                            <!-- Phone -->
+                                            <div class="col-md-6">
+                                                <label for="phone" class="form-label">Phone / WhatsApp</label>
+                                                <input type="tel" id="phone" name="phone"
+                                                       class="form-control"
+                                                       placeholder="+60 12 345 6789"/>
+                                            </div>
+
+                                            <!-- Company -->
+                                            <div class="col-md-6">
+                                                <label for="company" class="form-label">Company Name</label>
+                                                <input type="text" id="company" name="company"
+                                                       class="form-control"
+                                                       placeholder="Your Company Sdn Bhd"/>
+                                            </div>
+
+                                            <!-- Service interest -->
+                                            <div class="col-12">
+                                                <label for="service" class="form-label">
+                                                    Service of Interest
+                                                </label>
+                                                <select id="service" name="service"
+                                                        class="form-select">
+                                                    <option value="general">— Select a service —</option>
+                                                    <option value="implementation">Odoo Implementation</option>
+                                                    <option value="customization">Odoo Customization</option>
+                                                    <option value="training">ERP Training</option>
+                                                    <option value="support">Support &amp; Maintenance</option>
+                                                    <option value="general">General Enquiry</option>
+                                                </select>
+                                            </div>
+
+                                            <!-- Message -->
+                                            <div class="col-12">
+                                                <label for="message" class="form-label">Message</label>
+                                                <textarea id="message" name="message" rows="5"
+                                                          class="form-control"
+                                                          placeholder="Tell us about your project, current challenges, or questions..."/>
+                                            </div>
+
+                                            <!-- Submit -->
+                                            <div class="col-12 pt-2">
+                                                <button type="submit"
+                                                        class="btn btn-primary btn-lg px-5">
+                                                    Send Message
+                                                    <i class="fa fa-paper-plane ms-2"/>
+                                                </button>
+                                            </div>
+
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+                        </div><!-- /row -->
+                    </div><!-- /container -->
+                </section>
+
+            </div>
+        </t>
+    </template>
+
+</odoo>

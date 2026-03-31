@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_helpdesk_ticket_search_problem" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.search.problem</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.helpdesk_ticket_view_search" />
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='high_priority']" position="after">
+                <filter string="Linked Problem" name="linked_problem" domain="[('problem_id', '!=', False)]" />
+                <filter string="Known Error" name="known_error" domain="[('problem_known_error', '=', True)]" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_ticket_form_problem" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.form.problem</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.ticket_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button
+                    name="action_create_problem"
+                    type="object"
+                    string="Create Problem"
+                    invisible="problem_id"
+                    groups="helpdesk_mgmt.group_helpdesk_user"
+                />
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button
+                    name="action_open_problem"
+                    type="object"
+                    class="oe_stat_button"
+                    icon="fa-bug"
+                    invisible="not problem_id"
+                    groups="helpdesk_mgmt.group_helpdesk_user"
+                >
+                    <span class="o_stat_text">Problem</span>
+                </button>
+            </xpath>
+            <xpath expr="//page[@name='other_info']/group" position="inside">
+                <field name="problem_id" />
+                <field name="problem_state" readonly="1" />
+                <field name="problem_known_error" readonly="1" />
+            </xpath>
+        </field>
+    </record>
+</odoo>

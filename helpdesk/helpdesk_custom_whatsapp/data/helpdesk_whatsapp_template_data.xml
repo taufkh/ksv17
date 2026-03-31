@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <record id="helpdesk_whatsapp_template_stage_customer" model="helpdesk.whatsapp.template">
+        <field name="name">Customer Stage Update</field>
+        <field name="sequence">10</field>
+        <field name="trigger">stage_update</field>
+        <field name="recipient_type">customer</field>
+        <field name="body_template">Update for ticket {ticket_number}: {ticket_name}. Current stage: {stage_name}. Team: {team_name}. SLA status: {sla_label}. Track progress here: {public_portal_url}</field>
+    </record>
+
+    <record id="helpdesk_whatsapp_template_closed_customer" model="helpdesk.whatsapp.template">
+        <field name="name">Customer Ticket Closed</field>
+        <field name="sequence">20</field>
+        <field name="trigger">ticket_closed</field>
+        <field name="recipient_type">customer</field>
+        <field name="body_template">Ticket {ticket_number} has been resolved and closed by {changed_by_name}. If you still need help, reopen or review the case here: {public_portal_url}</field>
+    </record>
+
+    <record id="helpdesk_whatsapp_template_escalation_assignee" model="helpdesk.whatsapp.template">
+        <field name="name">Internal Escalation Alert</field>
+        <field name="sequence">30</field>
+        <field name="trigger">escalation</field>
+        <field name="recipient_type">assignee</field>
+        <field name="body_template">Escalation alert for {ticket_number}: {ticket_name}. Rule: {rule_name}. Reason: {event_reason}. Customer: {partner_name}. Open the ticket in Odoo to take action.</field>
+    </record>
+</odoo>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_helpdesk_ticket_search_communication_log" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.search.communication.log</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.helpdesk_ticket_view_search" />
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='high_priority']" position="after">
+                <filter string="Has Communication Log" name="has_communication_log" domain="[('communication_log_ids', '!=', False)]" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_ticket_form_communication_log" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.form.communication.log</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.ticket_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button
+                    name="action_open_communication_logs"
+                    type="object"
+                    class="oe_stat_button"
+                    icon="fa-comments"
+                    groups="helpdesk_mgmt.group_helpdesk_user"
+                >
+                    <field name="communication_log_count" widget="statinfo" string="Comms" />
+                </button>
+            </xpath>
+            <xpath expr="//page[@name='other_info']/group" position="inside">
+                <field name="last_communication_at" readonly="1" />
+                <field name="last_communication_channel" readonly="1" />
+            </xpath>
+            <xpath expr="//page[@name='other_info']" position="after">
+                <page string="Communication Log">
+                    <field name="communication_log_ids" readonly="1">
+                        <tree>
+                            <field name="logged_at" />
+                            <field name="channel" />
+                            <field name="direction" />
+                            <field name="communication_type" />
+                            <field name="status" />
+                            <field name="subject" />
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

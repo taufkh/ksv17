@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_res_partner_filter_helpdesk_360" model="ir.ui.view">
+        <field name="name">res.partner.search.helpdesk.360</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter" />
+        <field name="arch" type="xml">
+            <xpath expr="//search/field[@name='name']" position="after">
+                <field name="email" />
+                <field name="phone" />
+                <field name="city" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_partner_tree_helpdesk_360" model="ir.ui.view">
+        <field name="name">res.partner.tree.helpdesk.360</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_tree" />
+        <field name="arch" type="xml">
+            <xpath expr="//tree/field[@name='display_name']" position="after">
+                <field name="helpdesk_360_health" decoration-danger="helpdesk_360_health == 'critical'" decoration-warning="helpdesk_360_health == 'attention'" decoration-success="helpdesk_360_health == 'stable'" />
+                <field name="helpdesk_360_open_ticket_count" />
+                <field name="helpdesk_360_overdue_ticket_count" />
+                <field name="helpdesk_360_active_contract_count" optional="show" />
+                <field name="helpdesk_360_pending_approval_count" optional="show" />
+                <field name="helpdesk_360_scheduled_dispatch_count" optional="show" />
+                <field name="helpdesk_360_invoice_count" optional="show" />
+                <field name="helpdesk_360_avg_rating" optional="show" />
+                <field name="helpdesk_360_last_ticket_update" optional="show" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_partner_form_helpdesk_360" model="ir.ui.view">
+        <field name="name">res.partner.form.helpdesk.360</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.view_partner_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_open_helpdesk_360_contracts" type="object" class="oe_stat_button" icon="fa-file-text-o" groups="helpdesk_mgmt.group_helpdesk_user">
+                    <field name="helpdesk_360_contract_count" widget="statinfo" string="Contracts" />
+                </button>
+                <button name="action_open_helpdesk_360_approvals" type="object" class="oe_stat_button" icon="fa-check-square-o" groups="helpdesk_mgmt.group_helpdesk_user">
+                    <field name="helpdesk_360_pending_approval_count" widget="statinfo" string="Approvals" />
+                </button>
+                <button name="action_open_helpdesk_360_dispatches" type="object" class="oe_stat_button" icon="fa-truck" groups="helpdesk_mgmt.group_helpdesk_user">
+                    <field name="helpdesk_360_dispatch_count" widget="statinfo" string="Dispatches" />
+                </button>
+                <button name="action_open_helpdesk_360_invoices" type="object" class="oe_stat_button" icon="fa-money" groups="helpdesk_mgmt.group_helpdesk_user">
+                    <field name="helpdesk_360_invoice_count" widget="statinfo" string="Invoices" />
+                </button>
+                <button name="action_open_helpdesk_360_sales_handoffs" type="object" class="oe_stat_button" icon="fa-briefcase" groups="helpdesk_mgmt.group_helpdesk_user">
+                    <field name="helpdesk_360_sales_handoff_count" widget="statinfo" string="Sales Handoffs" />
+                </button>
+                <button name="action_open_helpdesk_360_knowledge" type="object" class="oe_stat_button" icon="fa-book" groups="helpdesk_mgmt.group_helpdesk_user">
+                    <field name="helpdesk_360_knowledge_count" widget="statinfo" string="Knowledge" />
+                </button>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Customer Support Overview" groups="helpdesk_mgmt.group_helpdesk_user">
+                    <group string="Operational Overview">
+                        <group>
+                            <field name="helpdesk_360_health" readonly="1" />
+                            <field name="helpdesk_360_open_ticket_count" readonly="1" />
+                            <field name="helpdesk_360_closed_ticket_count" readonly="1" />
+                            <field name="helpdesk_360_overdue_ticket_count" readonly="1" />
+                            <field name="helpdesk_360_escalated_ticket_count" readonly="1" />
+                            <field name="helpdesk_360_unassigned_ticket_count" readonly="1" />
+                        </group>
+                        <group>
+                            <field name="helpdesk_360_active_contract_count" readonly="1" />
+                            <field name="helpdesk_360_pending_approval_count" readonly="1" />
+                            <field name="helpdesk_360_scheduled_dispatch_count" readonly="1" />
+                            <field name="helpdesk_360_sales_handoff_count" readonly="1" />
+                            <field name="helpdesk_360_last_ticket_update" readonly="1" />
+                            <field name="helpdesk_360_last_closed_ticket_date" readonly="1" />
+                        </group>
+                    </group>
+                    <group string="Coverage And Engagement">
+                        <group>
+                            <field name="helpdesk_360_contract_consumed_hours" readonly="1" />
+                            <field name="helpdesk_360_contract_remaining_hours" readonly="1" />
+                            <field name="helpdesk_360_uninvoiced_hours" readonly="1" />
+                            <field name="helpdesk_360_invoice_count" readonly="1" />
+                        </group>
+                        <group>
+                            <field name="helpdesk_360_avg_rating" readonly="1" />
+                            <field name="helpdesk_360_portal_view_total" readonly="1" />
+                            <field name="helpdesk_360_dispatch_count" readonly="1" />
+                            <field name="helpdesk_360_knowledge_count" readonly="1" />
+                        </group>
+                    </group>
+                </page>
+                <page string="Support Tickets" groups="helpdesk_mgmt.group_helpdesk_user">
+                    <button name="action_open_helpdesk_360_tickets" type="object" string="Open Full Ticket List" class="btn-secondary" />
+                    <field name="helpdesk_360_ticket_ids" readonly="1">
+                        <tree>
+                            <field name="number" />
+                            <field name="name" />
+                            <field name="team_id" />
+                            <field name="stage_id" />
+                            <field name="user_id" />
+                            <field name="priority" />
+                            <field name="sla_deadline" />
+                            <field name="escalated" />
+                        </tree>
+                    </field>
+                </page>
+                <page string="Contracts And Approvals" groups="helpdesk_mgmt.group_helpdesk_user">
+                    <group>
+                        <group string="Contracts">
+                            <field name="helpdesk_360_contract_ids" readonly="1">
+                                <tree>
+                                    <field name="name" />
+                                    <field name="contract_type" />
+                                    <field name="sla_tier" />
+                                    <field name="state" />
+                                    <field name="included_hours" />
+                                    <field name="remaining_hours" />
+                                </tree>
+                            </field>
+                        </group>
+                        <group string="Approvals">
+                            <field name="helpdesk_360_approval_ids" readonly="1">
+                                <tree>
+                                    <field name="name" />
+                                    <field name="ticket_id" />
+                                    <field name="approval_type" />
+                                    <field name="urgency" />
+                                    <field name="approver_id" />
+                                    <field name="state" />
+                                </tree>
+                            </field>
+                        </group>
+                    </group>
+                </page>
+                <page string="Dispatch And Commercial" groups="helpdesk_mgmt.group_helpdesk_user">
+                    <group>
+                        <group string="Dispatches">
+                            <field name="helpdesk_360_dispatch_ids" readonly="1">
+                                <tree>
+                                    <field name="name" />
+                                    <field name="ticket_id" />
+                                    <field name="engineer_id" />
+                                    <field name="dispatch_type" />
+                                    <field name="scheduled_start" />
+                                    <field name="state" />
+                                </tree>
+                            </field>
+                        </group>
+                        <group string="Sales Handoffs">
+                            <field name="helpdesk_360_sales_handoff_ids" readonly="1">
+                                <tree>
+                                    <field name="name" />
+                                    <field name="ticket_id" />
+                                    <field name="reason" />
+                                    <field name="sales_user_id" />
+                                    <field name="expected_revenue" />
+                                    <field name="state" />
+                                </tree>
+                            </field>
+                        </group>
+                    </group>
+                </page>
+                <page string="Invoices And Knowledge" groups="helpdesk_mgmt.group_helpdesk_user">
+                    <group>
+                        <group string="Invoices">
+                            <field name="helpdesk_360_invoice_ids" readonly="1">
+                                <tree>
+                                    <field name="name" />
+                                    <field name="invoice_date" />
+                                    <field name="amount_total" />
+                                    <field name="payment_state" />
+                                    <field name="state" />
+                                </tree>
+                            </field>
+                        </group>
+                        <group string="Knowledge">
+                            <field name="helpdesk_360_knowledge_ids" readonly="1">
+                                <tree>
+                                    <field name="name" />
+                                    <field name="article_status" />
+                                    <field name="resolution_pattern" />
+                                    <field name="article_owner_id" />
+                                    <field name="write_date" />
+                                </tree>
+                            </field>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_helpdesk_customer_360" model="ir.actions.act_window">
+        <field name="name">Customer Support Overview</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('is_company', '=', True)]</field>
+        <field name="context">{'default_is_company': True, 'search_default_customer': 1}</field>
+        <field name="search_view_id" ref="base.view_res_partner_filter" />
+    </record>
+
+    <menuitem
+        id="menu_helpdesk_customer_360"
+        name="Customer Support Overview"
+        parent="helpdesk_mgmt.helpdesk_ticket_reporting_menu"
+        action="action_helpdesk_customer_360"
+        sequence="45"
+        groups="helpdesk_mgmt.group_helpdesk_user"
+    />
+</odoo>

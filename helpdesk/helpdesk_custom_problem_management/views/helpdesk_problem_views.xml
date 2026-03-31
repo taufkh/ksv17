@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_helpdesk_problem_search" model="ir.ui.view">
+        <field name="name">helpdesk.problem.search</field>
+        <field name="model">helpdesk.problem</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="partner_id" />
+                <field name="team_id" />
+                <field name="problem_owner_id" />
+                <field name="support_asset_id" />
+                <filter string="Known Errors" name="known_errors" domain="[('known_error', '=', True)]" />
+                <filter string="Investigating" name="investigating" domain="[('state', '=', 'investigating')]" />
+                <filter string="Open Impact" name="open_impact" domain="[('open_ticket_count', '&gt;', 0)]" />
+                <filter string="Escalated" name="escalated" domain="[('escalated_ticket_count', '&gt;', 0)]" />
+                <group expand="0" string="Group By">
+                    <filter string="State" name="group_state" context="{'group_by': 'state'}" />
+                    <filter string="Severity" name="group_severity" context="{'group_by': 'severity'}" />
+                    <filter string="Team" name="group_team" context="{'group_by': 'team_id'}" />
+                    <filter string="Customer" name="group_customer" context="{'group_by': 'partner_id'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_problem_tree" model="ir.ui.view">
+        <field name="name">helpdesk.problem.tree</field>
+        <field name="model">helpdesk.problem</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" />
+                <field name="state" />
+                <field name="severity" />
+                <field name="known_error" />
+                <field name="partner_id" optional="show" />
+                <field name="team_id" optional="show" />
+                <field name="support_asset_id" optional="show" />
+                <field name="ticket_count" />
+                <field name="open_ticket_count" />
+                <field name="escalated_ticket_count" optional="show" />
+                <field name="problem_owner_id" optional="show" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_problem_form" model="ir.ui.view">
+        <field name="name">helpdesk.problem.form</field>
+        <field name="model">helpdesk.problem</field>
+        <field name="arch" type="xml">
+            <form string="Problem Record">
+                <header>
+                    <button name="action_start_investigation" type="object" string="Start Investigation" invisible="state not in ('draft')" groups="helpdesk_mgmt.group_helpdesk_user" />
+                    <button name="action_mark_known_error" type="object" string="Mark Known Error" class="btn-primary" invisible="state not in ('draft', 'investigating', 'monitoring')" groups="helpdesk_mgmt.group_helpdesk_user" />
+                    <button name="action_mark_monitoring" type="object" string="Set Monitoring" invisible="state not in ('known_error', 'investigating')" groups="helpdesk_mgmt.group_helpdesk_user" />
+                    <button name="action_mark_resolved" type="object" string="Resolve" class="btn-primary" invisible="state not in ('known_error', 'monitoring', 'investigating')" groups="helpdesk_mgmt.group_helpdesk_user" />
+                    <button name="action_close" type="object" string="Close" invisible="state not in ('resolved')" groups="helpdesk_mgmt.group_helpdesk_manager" />
+                    <field name="state" widget="statusbar" statusbar_visible="draft,investigating,known_error,monitoring,resolved,closed" />
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_tickets" type="object" class="oe_stat_button" icon="fa-life-ring">
+                            <field name="ticket_count" widget="statinfo" string="Tickets" />
+                        </button>
+                        <button name="action_open_knowledge_article" type="object" class="oe_stat_button" icon="fa-book" invisible="not knowledge_article_id">
+                            <span class="o_stat_text">Knowledge</span>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only" />
+                        <h1><field name="name" /></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="severity" />
+                            <field name="known_error" />
+                            <field name="detected_date" />
+                            <field name="next_review_date" />
+                        </group>
+                        <group>
+                            <field name="partner_id" />
+                            <field name="team_id" />
+                            <field name="support_asset_id" />
+                            <field name="problem_owner_id" />
+                        </group>
+                    </group>
+                    <group string="Impact">
+                        <group>
+                            <field name="ticket_count" readonly="1" />
+                            <field name="open_ticket_count" readonly="1" />
+                            <field name="overdue_ticket_count" readonly="1" />
+                        </group>
+                        <group>
+                            <field name="escalated_ticket_count" readonly="1" />
+                            <field name="last_ticket_update" readonly="1" />
+                            <field name="knowledge_article_id" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Impact Summary">
+                            <field name="impact_summary" placeholder="Business impact, affected branch/process, and operational risk..." />
+                        </page>
+                        <page string="Root Cause">
+                            <field name="root_cause_summary" placeholder="Confirmed or suspected root cause..." />
+                        </page>
+                        <page string="Workaround">
+                            <field name="workaround" widget="html" />
+                        </page>
+                        <page string="Permanent Fix">
+                            <field name="permanent_fix_plan" widget="html" />
+                        </page>
+                        <page string="Resolution">
+                            <field name="resolution_summary" widget="html" />
+                        </page>
+                        <page string="Tickets">
+                            <field name="ticket_ids" readonly="1">
+                                <tree>
+                                    <field name="number" />
+                                    <field name="name" />
+                                    <field name="stage_id" />
+                                    <field name="user_id" />
+                                    <field name="escalated" />
+                                    <field name="sla_deadline" />
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" />
+                    <field name="activity_ids" widget="mail_activity" />
+                    <field name="message_ids" widget="mail_thread" />
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_helpdesk_problem" model="ir.actions.act_window">
+        <field name="name">Problem Records</field>
+        <field name="res_model">helpdesk.problem</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_helpdesk_problem_search" />
+        <field name="context">{'search_default_open_impact': 1}</field>
+    </record>
+
+    <menuitem
+        id="menu_helpdesk_problem"
+        name="Problem Records"
+        parent="helpdesk_mgmt.helpdesk_ticket_reporting_menu"
+        action="action_helpdesk_problem"
+        sequence="46"
+        groups="helpdesk_mgmt.group_helpdesk_user"
+    />
+</odoo>

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        ERP Consultant: Custom Snippets
+        These appear in the website editor drag-and-drop sidebar.
+    -->
+
+    <!-- ════════════════════════════════════════════════════
+         SNIPPET: Services Grid (4-column card layout)
+    ════════════════════════════════════════════════════ -->
+    <template id="s_erp_services_grid" name="ERP Services Grid">
+        <section class="s_erp_services_grid o_cc o_cc1 py-5">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <span class="section-label">Our Services</span>
+                    <h2 class="section-title">What We Do</h2>
+                    <p class="section-subtitle">
+                        Comprehensive Odoo ERP services for your business.
+                    </p>
+                </div>
+                <div class="row g-4">
+                    <div class="col-md-6 col-lg-3">
+                        <div class="service-card">
+                            <div class="service-icon"><i class="fa fa-cogs"/></div>
+                            <h4>Implementation</h4>
+                            <p>End-to-end Odoo deployment tailored to your processes.</p>
+                            <a href="/services#implementation" class="service-link">
+                                Learn more <i class="fa fa-arrow-right"/>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="service-card">
+                            <div class="service-icon"><i class="fa fa-code"/></div>
+                            <h4>Customization</h4>
+                            <p>Custom modules and integrations built for your needs.</p>
+                            <a href="/services#customization" class="service-link">
+                                Learn more <i class="fa fa-arrow-right"/>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="service-card">
+                            <div class="service-icon"><i class="fa fa-graduation-cap"/></div>
+                            <h4>Training</h4>
+                            <p>Role-based training to get your team confident fast.</p>
+                            <a href="/services#training" class="service-link">
+                                Learn more <i class="fa fa-arrow-right"/>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="service-card">
+                            <div class="service-icon"><i class="fa fa-life-ring"/></div>
+                            <h4>Support</h4>
+                            <p>Responsive ongoing support and system maintenance.</p>
+                            <a href="/services#support" class="service-link">
+                                Learn more <i class="fa fa-arrow-right"/>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </template>
+
+    <!-- ════════════════════════════════════════════════════
+         SNIPPET: CTA Banner
+    ════════════════════════════════════════════════════ -->
+    <template id="s_erp_cta_banner" name="ERP CTA Banner">
+        <section class="s_erp_cta_banner cta-section">
+            <div class="container position-relative">
+                <div class="row align-items-center g-4">
+                    <div class="col-lg-8">
+                        <h2>Ready to get started with Odoo?</h2>
+                        <p>Talk to our consultants — free consultation, no commitment.</p>
+                    </div>
+                    <div class="col-lg-4 text-lg-end">
+                        <a href="/contact-us" class="btn-cta-white">Book a Free Call</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </template>
+
+    <!-- ════════════════════════════════════════════════════
+         SNIPPET: Stats Row
+    ════════════════════════════════════════════════════ -->
+    <template id="s_erp_stats_row" name="ERP Stats Row">
+        <section class="s_erp_stats_row o_cc o_cc5 py-5">
+            <div class="container">
+                <div class="row g-4 text-center">
+                    <div class="col-6 col-md-3">
+                        <div class="stat-block">
+                            <div class="stat-number">50+</div>
+                            <div class="stat-desc">Projects Completed</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="stat-block">
+                            <div class="stat-number">40+</div>
+                            <div class="stat-desc">Happy Clients</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="stat-block">
+                            <div class="stat-number">5+</div>
+                            <div class="stat-desc">Years Experience</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="stat-block">
+                            <div class="stat-number">10+</div>
+                            <div class="stat-desc">Industries Served</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </template>
+
+    <!-- ════════════════════════════════════════════════════
+         Register snippets in the website editor sidebar
+    ════════════════════════════════════════════════════ -->
+    <template id="snippets_erp" inherit_id="website.snippets"
+              name="ERP Consultant Snippets">
+        <xpath expr="//div[@id='snippet_structure']" position="before">
+            <div id="snippet_erp_consultant">
+                <div class="o_panel_header">ERP Consultant</div>
+                <div class="o_panel_body">
+                    <t t-snippet="website_erp_consultant.s_erp_services_grid"
+                       t-thumbnail="/website_erp_consultant/static/src/img/snippets/thumb_services_grid.svg"/>
+                    <t t-snippet="website_erp_consultant.s_erp_cta_banner"
+                       t-thumbnail="/website_erp_consultant/static/src/img/snippets/thumb_cta_banner.svg"/>
+                    <t t-snippet="website_erp_consultant.s_erp_stats_row"
+                       t-thumbnail="/website_erp_consultant/static/src/img/snippets/thumb_stats_row.svg"/>
+                </div>
+            </div>
+        </xpath>
+    </template>
+
+</odoo>

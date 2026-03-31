@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_helpdesk_ticket_search_dispatch" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.search.dispatch</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.helpdesk_ticket_view_search" />
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='high_priority']" position="after">
+                <filter string="Has Dispatch" name="has_dispatch" domain="[('dispatch_ids', '!=', False)]" />
+                <filter string="Dispatch Scheduled" name="dispatch_scheduled" domain="[('dispatch_ids.state', 'in', ['scheduled', 'en_route', 'on_site'])]" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_ticket_form_dispatch" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.form.dispatch</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.ticket_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button
+                    name="action_schedule_dispatch"
+                    type="object"
+                    string="Schedule Dispatch"
+                    groups="helpdesk_mgmt.group_helpdesk_user"
+                />
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button
+                    name="action_open_dispatches"
+                    type="object"
+                    class="oe_stat_button"
+                    icon="fa-truck"
+                    groups="helpdesk_mgmt.group_helpdesk_user"
+                >
+                    <field name="dispatch_count" widget="statinfo" string="Dispatches" />
+                </button>
+            </xpath>
+            <xpath expr="//page[@name='other_info']/group" position="inside">
+                <field name="next_dispatch_start" readonly="1" />
+                <field name="latest_dispatch_state" readonly="1" />
+            </xpath>
+            <xpath expr="//page[@name='other_info']" position="after">
+                <page string="Dispatches">
+                    <field name="dispatch_ids" readonly="1">
+                        <tree>
+                            <field name="name" />
+                            <field name="dispatch_type" />
+                            <field name="engineer_id" />
+                            <field name="scheduled_start" />
+                            <field name="planned_hours" />
+                            <field name="resolution_status" />
+                            <field name="state" />
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

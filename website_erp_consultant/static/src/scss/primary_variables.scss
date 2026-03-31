@@ -1,0 +1,87 @@
+// ============================================================
+//  PRIMARY VARIABLES — ERP Consultant Theme
+//  Loaded BEFORE Bootstrap so these override its defaults.
+// ============================================================
+
+// ── Brand palette ───────────────────────────────────────────
+$primary:   #2563eb;   // Soft blue — trust & professionalism
+$secondary: #0d9488;   // Teal accent — fresh, friendly
+$success:   #16a34a;
+$danger:    #dc2626;
+$warning:   #d97706;
+$info:      #0ea5e9;
+$light:     #f8fafc;
+$dark:      #1e293b;
+
+// ── Typography ──────────────────────────────────────────────
+// Fonts loaded via Google Fonts link in layout.xml
+$font-family-base:     'Nunito', 'Helvetica Neue', sans-serif;
+$font-size-base:       1rem;         // 16px
+$line-height-base:     1.7;
+$font-weight-base:     400;
+$font-weight-semibold: 600;
+$font-weight-bold:     700;
+
+// Headings use Poppins (also loaded via Google Fonts)
+$headings-font-family: 'Poppins', 'Helvetica Neue', sans-serif;
+$headings-font-weight: 700;
+$headings-line-height: 1.25;
+$headings-color:       #1e293b;
+
+$h1-font-size: 2.75rem;
+$h2-font-size: 2.125rem;
+$h3-font-size: 1.5rem;
+$h4-font-size: 1.25rem;
+$h5-font-size: 1.1rem;
+$h6-font-size: 1rem;
+
+// ── Spacing & borders ───────────────────────────────────────
+$border-radius:     0.5rem;
+$border-radius-lg:  0.75rem;
+$border-radius-xl:  1rem;
+$border-color:      #e2e8f0;
+
+// ── Shadows ─────────────────────────────────────────────────
+$box-shadow:        0 2px 12px rgba(37, 99, 235, 0.08);
+$box-shadow-lg:     0 8px 32px rgba(37, 99, 235, 0.12);
+
+// ── Navbar ──────────────────────────────────────────────────
+$o-navbar-height:   68px;
+
+// ── Links ───────────────────────────────────────────────────
+$link-color:            $primary;
+$link-hover-color:      darken($primary, 10%);
+$link-decoration:       none;
+$link-hover-decoration: underline;
+
+// ── Buttons ─────────────────────────────────────────────────
+$btn-border-radius:     0.5rem;
+$btn-border-radius-lg:  0.625rem;
+$btn-padding-y:         0.625rem;
+$btn-padding-x:         1.5rem;
+$btn-padding-y-lg:      0.875rem;
+$btn-padding-x-lg:      2rem;
+$btn-font-weight:       $font-weight-semibold;
+$btn-font-size:         0.9375rem;
+
+// ── Form controls ───────────────────────────────────────────
+$input-border-radius:   $border-radius;
+$input-border-color:    #cbd5e1;
+$input-focus-border-color: $primary;
+$input-focus-box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.15);
+$input-padding-y:       0.625rem;
+$input-padding-x:       0.875rem;
+
+// ── Cards ───────────────────────────────────────────────────
+$card-border-radius:    $border-radius-lg;
+$card-border-color:     transparent;
+$card-cap-bg:           transparent;
+
+// ── Grid ────────────────────────────────────────────────────
+$container-max-widths: (
+  sm: 540px,
+  md: 720px,
+  lg: 960px,
+  xl: 1200px,
+  xxl: 1400px
+);

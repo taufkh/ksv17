@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="res_config_settings_view_form_helpdesk_custom_whatsapp" model="ir.ui.view">
+        <field name="name">res.config.settings.form.helpdesk.custom.whatsapp</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.res_config_settings_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//setting[@id='show_categories_form']" position="after">
+                <block title="WhatsApp Notifications">
+                    <setting
+                        id="helpdesk_custom_whatsapp_enabled"
+                        string="Enable WhatsApp Queue"
+                        help="Queue WhatsApp alerts from stage changes, escalations, and ticket closure."
+                    >
+                        <field name="helpdesk_whatsapp_enabled" />
+                    </setting>
+                    <setting
+                        id="helpdesk_custom_whatsapp_sandbox"
+                        string="Sandbox Mode"
+                        help="Mark messages as sent without calling the provider API. Keep this on in development."
+                    >
+                        <field name="helpdesk_whatsapp_sandbox_mode" />
+                    </setting>
+                    <setting
+                        id="helpdesk_custom_whatsapp_credentials"
+                        string="Provider Credentials"
+                        help="Meta Cloud WhatsApp credentials used when sandbox mode is disabled."
+                    >
+                        <div class="content-group">
+                            <field name="helpdesk_whatsapp_api_url" />
+                            <field name="helpdesk_whatsapp_phone_number_id" />
+                            <field
+                                name="helpdesk_whatsapp_access_token"
+                                password="True"
+                            />
+                            <field name="helpdesk_whatsapp_default_country_code" />
+                        </div>
+                    </setting>
+                    <setting
+                        id="helpdesk_custom_whatsapp_retry"
+                        string="Retry Policy"
+                        help="Define retry behavior for failed sends."
+                    >
+                        <div class="content-group">
+                            <field name="helpdesk_whatsapp_max_attempts" />
+                            <field name="helpdesk_whatsapp_retry_interval_minutes" />
+                        </div>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>

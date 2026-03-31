@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_helpdesk_ticket_approval_search" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.approval.search</field>
+        <field name="model">helpdesk.ticket.approval</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="ticket_id" />
+                <field name="partner_id" />
+                <field name="approver_id" />
+                <filter string="Requested" name="requested" domain="[('state', '=', 'requested')]" />
+                <filter string="In Review" name="in_review" domain="[('state', '=', 'in_review')]" />
+                <filter string="Approved" name="approved" domain="[('state', '=', 'approved')]" />
+                <filter string="Implemented" name="implemented" domain="[('state', '=', 'implemented')]" />
+                <filter string="Rejected" name="rejected" domain="[('state', '=', 'rejected')]" />
+                <group expand="0" string="Group By">
+                    <filter string="State" name="group_state" context="{'group_by': 'state'}" />
+                    <filter string="Type" name="group_type" context="{'group_by': 'approval_type'}" />
+                    <filter string="Urgency" name="group_urgency" context="{'group_by': 'urgency'}" />
+                    <filter string="Team" name="group_team" context="{'group_by': 'helpdesk_team_id'}" />
+                    <filter string="Approver" name="group_approver" context="{'group_by': 'approver_id'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_ticket_approval_tree" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.approval.tree</field>
+        <field name="model">helpdesk.ticket.approval</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" />
+                <field name="ticket_id" />
+                <field name="approval_type" />
+                <field name="urgency" />
+                <field name="approver_id" />
+                <field name="requested_amount" optional="show" />
+                <field name="required_by_date" optional="show" />
+                <field name="state" />
+                <field name="request_date" optional="show" />
+                <field name="decision_date" optional="show" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_ticket_approval_form" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.approval.form</field>
+        <field name="model">helpdesk.ticket.approval</field>
+        <field name="arch" type="xml">
+            <form string="Approval Request">
+                <header>
+                    <button
+                        name="action_submit"
+                        type="object"
+                        string="Submit"
+                        class="btn-primary"
+                        invisible="state not in ('draft', 'cancelled')"
+                        groups="helpdesk_mgmt.group_helpdesk_user"
+                    />
+                    <button
+                        name="action_mark_in_review"
+                        type="object"
+                        string="Start Review"
+                        invisible="state not in ('requested', 'approved')"
+                        groups="helpdesk_mgmt.group_helpdesk_manager"
+                    />
+                    <button
+                        name="action_approve"
+                        type="object"
+                        string="Approve"
+                        class="btn-primary"
+                        invisible="state not in ('requested', 'in_review')"
+                        groups="helpdesk_mgmt.group_helpdesk_manager"
+                    />
+                    <button
+                        name="action_reject"
+                        type="object"
+                        string="Reject"
+                        invisible="state not in ('requested', 'in_review', 'approved')"
+                        groups="helpdesk_mgmt.group_helpdesk_manager"
+                    />
+                    <button
+                        name="action_mark_implemented"
+                        type="object"
+                        string="Mark Implemented"
+                        class="btn-primary"
+                        invisible="state != 'approved'"
+                        groups="helpdesk_mgmt.group_helpdesk_user"
+                    />
+                    <button
+                        name="action_cancel"
+                        type="object"
+                        string="Cancel"
+                        invisible="state not in ('draft', 'requested', 'in_review')"
+                        groups="helpdesk_mgmt.group_helpdesk_user"
+                    />
+                    <field name="state" widget="statusbar" statusbar_visible="draft,requested,in_review,approved,implemented,rejected,cancelled" />
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_ticket" type="object" class="oe_stat_button" icon="fa-life-ring">
+                            <span class="o_stat_text">Open Ticket</span>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only" />
+                        <h1><field name="name" /></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="ticket_id" />
+                            <field name="partner_id" readonly="1" />
+                            <field name="helpdesk_team_id" readonly="1" />
+                            <field name="ticket_user_id" readonly="1" />
+                            <field name="requester_id" readonly="1" />
+                            <field name="approver_id" />
+                        </group>
+                        <group>
+                            <field name="approval_type" />
+                            <field name="urgency" />
+                            <field name="requested_amount" />
+                            <field name="required_by_date" />
+                            <field name="request_date" readonly="1" />
+                            <field name="decision_by_id" readonly="1" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Request Details">
+                            <group>
+                                <field name="justification" widget="html" />
+                                <field name="customer_impact" widget="html" />
+                            </group>
+                        </page>
+                        <page string="Decision">
+                            <group>
+                                <field name="review_date" readonly="1" />
+                                <field name="decision_date" readonly="1" />
+                                <field name="implemented_date" readonly="1" />
+                                <field name="implemented_by_id" readonly="1" />
+                                <field name="decision_note" placeholder="Decision details, condition, or implementation note..." />
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" />
+                    <field name="activity_ids" widget="mail_activity" />
+                    <field name="message_ids" widget="mail_thread" />
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_ticket_approval_pivot" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.approval.pivot</field>
+        <field name="model">helpdesk.ticket.approval</field>
+        <field name="arch" type="xml">
+            <pivot string="Approval Analysis">
+                <field name="approval_type" type="row" />
+                <field name="state" type="col" />
+                <field name="id" type="measure" string="Requests" />
+                <field name="requested_amount" type="measure" />
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_ticket_approval_graph" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.approval.graph</field>
+        <field name="model">helpdesk.ticket.approval</field>
+        <field name="arch" type="xml">
+            <graph string="Approval Trends" type="bar">
+                <field name="approval_type" />
+                <field name="state" />
+                <field name="id" type="measure" string="Requests" />
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_helpdesk_ticket_approval" model="ir.actions.act_window">
+        <field name="name">Approval Requests</field>
+        <field name="res_model">helpdesk.ticket.approval</field>
+        <field name="view_mode">tree,form,pivot,graph</field>
+        <field name="search_view_id" ref="view_helpdesk_ticket_approval_search" />
+        <field name="context">{'search_default_requested': 1}</field>
+    </record>
+
+    <menuitem
+        id="menu_helpdesk_ticket_approval"
+        name="Approval Requests"
+        parent="helpdesk_mgmt.helpdesk_ticket_reporting_menu"
+        action="action_helpdesk_ticket_approval"
+        sequence="35"
+        groups="helpdesk_mgmt.group_helpdesk_user"
+    />
+</odoo>
+

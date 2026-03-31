@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_partner_form_helpdesk_360_contract_renewal" model="ir.ui.view">
+        <field name="name">res.partner.form.helpdesk.360.contract.renewal</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="helpdesk_custom_customer_360.view_partner_form_helpdesk_360" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_open_helpdesk_360_renewals" type="object" class="oe_stat_button" icon="fa-refresh" groups="helpdesk_mgmt.group_helpdesk_user">
+                    <field name="helpdesk_360_renewal_watch_count" widget="statinfo" string="Renewals" />
+                </button>
+            </xpath>
+            <xpath expr="//field[@name='helpdesk_360_last_ticket_update']" position="after">
+                <field name="helpdesk_360_contract_risk_count" readonly="1" />
+            </xpath>
+            <xpath expr="//field[@name='helpdesk_360_invoice_count']" position="after">
+                <field name="helpdesk_360_renewal_watch_count" readonly="1" />
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Renewals" groups="helpdesk_mgmt.group_helpdesk_user">
+                    <button name="action_open_helpdesk_360_renewals" type="object" string="Open Renewal Watchlist" class="btn-secondary" />
+                    <field name="helpdesk_360_renewal_ids" readonly="1">
+                        <tree>
+                            <field name="name" />
+                            <field name="contract_id" />
+                            <field name="trigger_type" />
+                            <field name="risk_level" />
+                            <field name="next_follow_up_date" />
+                            <field name="sales_user_id" />
+                            <field name="state" />
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

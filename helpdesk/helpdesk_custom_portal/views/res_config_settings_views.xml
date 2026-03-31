@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="res_config_settings_view_form_helpdesk_custom_portal" model="ir.ui.view">
+        <field name="name">res.config.settings.form.helpdesk.custom.portal</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.res_config_settings_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//setting[@id='show_categories_form']" position="after">
+                <block title="Public Tracking Portal">
+                    <setting
+                        string="Public Tracking Links"
+                        id="helpdesk_custom_portal_tracking"
+                        help="Allow customers to open ticket status pages directly with a secure tokenized link."
+                    >
+                        <field name="helpdesk_public_tracking_enabled" />
+                    </setting>
+                    <setting
+                        string="Link Validity"
+                        id="helpdesk_custom_portal_validity"
+                        help="Define how long a public link stays valid after generation or refresh."
+                    >
+                        <field
+                            name="helpdesk_public_token_validity_days"
+                            invisible="not helpdesk_public_tracking_enabled"
+                        />
+                    </setting>
+                    <setting
+                        string="Attachment Policy"
+                        id="helpdesk_custom_portal_attachment_policy"
+                        help="Restrict the file types and maximum upload size for public ticket replies."
+                    >
+                        <div class="content-group">
+                            <field
+                                name="helpdesk_public_allowed_extensions"
+                                invisible="not helpdesk_public_tracking_enabled"
+                            />
+                            <field
+                                name="helpdesk_public_max_attachment_mb"
+                                invisible="not helpdesk_public_tracking_enabled"
+                            />
+                        </div>
+                    </setting>
+                    <setting
+                        string="Digest Retry Controls"
+                        id="helpdesk_custom_portal_digest_retry"
+                        help="Define retry interval and maximum retry attempts for failed portal digest emails."
+                    >
+                        <div class="content-group">
+                            <field
+                                name="helpdesk_public_digest_retry_minutes"
+                                invisible="not helpdesk_public_tracking_enabled"
+                            />
+                            <field
+                                name="helpdesk_public_digest_max_failures"
+                                invisible="not helpdesk_public_tracking_enabled"
+                            />
+                        </div>
+                    </setting>
+                    <setting
+                        string="Escalation Cooldown"
+                        id="helpdesk_custom_portal_escalation_cooldown"
+                        help="Minimum waiting time between consecutive escalation requests from the same public ticket link."
+                    >
+                        <field
+                            name="helpdesk_public_escalation_cooldown_minutes"
+                            invisible="not helpdesk_public_tracking_enabled"
+                        />
+                    </setting>
+                    <setting
+                        string="CSAT Recovery Rules"
+                        id="helpdesk_custom_portal_csat_recovery_rules"
+                        help="Configure low-CSAT recovery and customer follow-up reminder automation."
+                    >
+                        <div class="content-group">
+                            <field
+                                name="helpdesk_public_csat_low_score_threshold"
+                                invisible="not helpdesk_public_tracking_enabled"
+                            />
+                            <field
+                                name="helpdesk_public_csat_recovery_due_hours"
+                                invisible="not helpdesk_public_tracking_enabled"
+                            />
+                            <field
+                                name="helpdesk_public_customer_followup_reminder_hours"
+                                invisible="not helpdesk_public_tracking_enabled"
+                            />
+                        </div>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>

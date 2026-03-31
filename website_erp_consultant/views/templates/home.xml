@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="page_home" name="Home Page">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure">
+
+                <!-- ═══════════════════════════════════════════
+                     HERO SECTION
+                ════════════════════════════════════════════ -->
+                <section class="s_erp_hero">
+                    <div class="container position-relative">
+                        <div class="row align-items-center g-5">
+
+                            <!-- Left: copy -->
+                            <div class="col-lg-6">
+                                <div class="hero-badge">
+                                    Odoo 17 Certified Consultants
+                                </div>
+                                <h1>
+                                    Smarter ERP,<br/>
+                                    <span>Faster Growth</span>
+                                </h1>
+                                <p class="hero-lead">
+                                    We implement, customise, and support Odoo ERP so your
+                                    business runs more efficiently — without the complexity.
+                                    From SMEs to mid-market, we've got you covered.
+                                </p>
+                                <div class="hero-actions">
+                                    <a href="/contact-us" class="btn btn-primary btn-lg">
+                                        Get a Free Consultation
+                                        <i class="fa fa-arrow-right ms-2"/>
+                                    </a>
+                                    <a href="/services" class="btn btn-secondary btn-lg">
+                                        Our Services
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- Right: stat cards -->
+                            <div class="col-lg-6">
+                                <div class="row g-3">
+                                    <div class="col-6">
+                                        <div class="hero-stat-card">
+                                            <div class="stat-icon"
+                                                 style="background: rgba(37,99,235,0.1);">
+                                                <i class="fa fa-check-circle text-primary"/>
+                                            </div>
+                                            <div>
+                                                <div class="stat-value">50+</div>
+                                                <div class="stat-label">Projects Delivered</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="hero-stat-card">
+                                            <div class="stat-icon"
+                                                 style="background: rgba(13,148,136,0.1);">
+                                                <i class="fa fa-users" style="color:#0d9488;"/>
+                                            </div>
+                                            <div>
+                                                <div class="stat-value">40+</div>
+                                                <div class="stat-label">Happy Clients</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="hero-stat-card">
+                                            <div class="stat-icon"
+                                                 style="background: rgba(16,163,74,0.1);">
+                                                <i class="fa fa-star" style="color:#16a34a;"/>
+                                            </div>
+                                            <div>
+                                                <div class="stat-value">5★</div>
+                                                <div class="stat-label">Client Rating</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="hero-stat-card">
+                                            <div class="stat-icon"
+                                                 style="background: rgba(217,119,6,0.1);">
+                                                <i class="fa fa-clock-o" style="color:#d97706;"/>
+                                            </div>
+                                            <div>
+                                                <div class="stat-value">5+</div>
+                                                <div class="stat-label">Years Experience</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div><!-- /row -->
+                    </div><!-- /container -->
+                </section>
+
+                <!-- ═══════════════════════════════════════════
+                     SERVICES OVERVIEW
+                ════════════════════════════════════════════ -->
+                <section class="py-6" style="padding-top:5rem; padding-bottom:5rem;">
+                    <div class="container">
+
+                        <div class="text-center mb-5">
+                            <span class="section-label">What We Do</span>
+                            <h2 class="section-title">End-to-End Odoo Services</h2>
+                            <p class="section-subtitle">
+                                From first implementation to long-term support —
+                                we're your dedicated Odoo partner at every stage.
+                            </p>
+                        </div>
+
+                        <div class="row g-4">
+                            <t t-foreach="services" t-as="svc">
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="service-card">
+                                        <div class="service-icon">
+                                            <i t-att-class="'fa ' + svc['icon']"/>
+                                        </div>
+                                        <h4 t-out="svc['title']"/>
+                                        <p t-out="svc['description']"/>
+                                        <a t-att-href="svc['url']" class="service-link">
+                                            Learn more <i class="fa fa-arrow-right"/>
+                                        </a>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- ═══════════════════════════════════════════
+                     WHY CHOOSE US
+                ════════════════════════════════════════════ -->
+                <section style="background:#f8fafc; padding:5rem 0;">
+                    <div class="container">
+                        <div class="row align-items-center g-5">
+
+                            <!-- Left: heading -->
+                            <div class="col-lg-5">
+                                <span class="section-label">Why Us</span>
+                                <h2 class="section-title mb-3">
+                                    A Partner, Not Just a Vendor
+                                </h2>
+                                <p style="color:#64748b; font-size:1.0rem; line-height:1.75;">
+                                    We don't just configure software — we invest in understanding
+                                    your business, align Odoo to your workflows, and stay with you
+                                    long after go-live to ensure you get real value.
+                                </p>
+                                <a href="/about" class="btn btn-outline-secondary mt-3">
+                                    Meet the Team <i class="fa fa-arrow-right ms-2"/>
+                                </a>
+                            </div>
+
+                            <!-- Right: feature list -->
+                            <div class="col-lg-7">
+                                <div class="why-us-item">
+                                    <div class="why-icon"><i class="fa fa-search"/></div>
+                                    <div>
+                                        <h5>Deep Business Discovery</h5>
+                                        <p>We start every project by mapping your processes — so the ERP fits you, not the other way around.</p>
+                                    </div>
+                                </div>
+                                <div class="why-us-item">
+                                    <div class="why-icon"><i class="fa fa-puzzle-piece"/></div>
+                                    <div>
+                                        <h5>Certified Odoo Expertise</h5>
+                                        <p>Our consultants are certified and hands-on with Odoo 17, bringing best-practice knowledge to every project.</p>
+                                    </div>
+                                </div>
+                                <div class="why-us-item">
+                                    <div class="why-icon"><i class="fa fa-clock-o"/></div>
+                                    <div>
+                                        <h5>On-Time, On-Budget Delivery</h5>
+                                        <p>We use a structured methodology to keep projects on track — clear timelines, no surprise costs.</p>
+                                    </div>
+                                </div>
+                                <div class="why-us-item">
+                                    <div class="why-icon"><i class="fa fa-headphones"/></div>
+                                    <div>
+                                        <h5>Responsive After-Sales Support</h5>
+                                        <p>Need help post go-live? Our support team responds fast with SLA-backed response times.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ═══════════════════════════════════════════
+                     OUR PROCESS
+                ════════════════════════════════════════════ -->
+                <section style="padding:5rem 0;">
+                    <div class="container">
+
+                        <div class="text-center mb-5">
+                            <span class="section-label">How We Work</span>
+                            <h2 class="section-title">Our Proven Process</h2>
+                            <p class="section-subtitle">
+                                A clear, structured approach that keeps every project
+                                on time and on budget.
+                            </p>
+                        </div>
+
+                        <div class="row process-steps-row g-3">
+                            <div class="col-6 col-md-3">
+                                <div class="process-step">
+                                    <div class="step-number">1</div>
+                                    <h5>Discovery</h5>
+                                    <p>We understand your business, goals, and current pain points.</p>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="process-step">
+                                    <div class="step-number">2</div>
+                                    <h5>Design</h5>
+                                    <p>We map your processes to Odoo and design the solution blueprint.</p>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="process-step">
+                                    <div class="step-number">3</div>
+                                    <h5>Build &amp; Test</h5>
+                                    <p>Configuration, customisation, data migration, and UAT.</p>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="process-step">
+                                    <div class="step-number">4</div>
+                                    <h5>Go-Live &amp; Support</h5>
+                                    <p>Smooth launch with hypercare, then ongoing support as needed.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- ═══════════════════════════════════════════
+                     CTA BANNER
+                ════════════════════════════════════════════ -->
+                <section class="cta-section">
+                    <div class="container position-relative">
+                        <div class="row align-items-center g-4">
+                            <div class="col-lg-8">
+                                <h2>Ready to transform your business with Odoo?</h2>
+                                <p>
+                                    Talk to one of our consultants — free of charge, no commitment.
+                                    We'll help you figure out exactly what you need.
+                                </p>
+                            </div>
+                            <div class="col-lg-4 text-lg-end">
+                                <div class="d-flex flex-wrap gap-3 justify-content-lg-end">
+                                    <a href="/contact-us" class="btn-cta-white">
+                                        Book a Free Call
+                                    </a>
+                                    <a href="/services" class="btn-cta-outline">
+                                        View Services
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div><!-- /wrap -->
+        </t>
+    </template>
+
+</odoo>

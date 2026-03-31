@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ── Form view: AI tab + smart buttons ───────────────────────────────── -->
+    <record id="helpdesk_ticket_form_view_inherit_claude" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.form.inherit.claude</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.helpdesk_ticket_view_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Smart buttons -->
+            <xpath expr="//div[hasclass('oe_button_box')]" position="inside">
+                <button type="object"
+                        name="action_view_ai_log"
+                        class="oe_stat_button"
+                        icon="fa-magic"
+                        invisible="ai_log_count == 0">
+                    <field name="ai_log_count" widget="statinfo" string="AI Analyses"/>
+                </button>
+            </xpath>
+
+            <!-- AI status badge next to ticket number -->
+            <xpath expr="//field[@name='number']" position="after">
+                <field name="ai_status" widget="badge"
+                       decoration-info="ai_status == 'pending'"
+                       decoration-warning="ai_status in ('processing', 'manual')"
+                       decoration-success="ai_status in ('answered', 'dev_plan')"
+                       decoration-danger="ai_status == 'failed'"
+                       invisible="not ai_status"/>
+            </xpath>
+
+            <!-- Analyse button in header -->
+            <xpath expr="//header" position="inside">
+                <button name="action_analyze_with_claude"
+                        string="🤖 Analyse with Claude"
+                        type="object"
+                        class="btn-secondary"
+                        invisible="not team_id or ai_status == 'processing'"
+                        groups="helpdesk_mgmt.group_helpdesk_user"/>
+                <button name="action_reset_ai_pending"
+                        string="Re-analyse"
+                        type="object"
+                        class="btn-secondary"
+                        invisible="ai_status not in ('answered', 'dev_plan', 'failed', 'manual')"
+                        groups="helpdesk_mgmt.group_helpdesk_manager"/>
+            </xpath>
+
+            <!-- AI tab inside the notebook -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Claude AI" name="claude_ai"
+                      invisible="not ai_status">
+                    <!-- Classification summary -->
+                    <group string="Analysis" col="4">
+                        <field name="ai_classification" readonly="1"/>
+                        <field name="ai_confidence" widget="percentage" readonly="1"
+                               invisible="not ai_confidence"/>
+                        <field name="ai_estimated_hours" readonly="1"
+                               invisible="not ai_estimated_hours"/>
+                        <field name="ai_affected_modules" readonly="1"
+                               invisible="not ai_affected_modules"/>
+                        <field name="ai_analyzed_date" readonly="1"
+                               invisible="not ai_analyzed_date"/>
+                        <field name="ai_summary" readonly="1"
+                               invisible="not ai_summary" colspan="4"/>
+                    </group>
+
+                    <!-- Customer response -->
+                    <group string="Customer Response (Configuration Query)"
+                           invisible="ai_classification != 'configuration'">
+                        <div class="alert alert-success mb0" invisible="not team_id.ai_auto_reply">
+                            ✅ This response was automatically posted to the customer chatter.
+                        </div>
+                        <div class="alert alert-warning mb0" invisible="team_id.ai_auto_reply">
+                            ⚠️ Auto-reply is disabled. Click "Post Response" to send this to the customer.
+                        </div>
+                        <button name="action_analyze_with_claude"
+                                string="Post Response to Customer"
+                                type="object"
+                                class="btn-primary mt8"
+                                invisible="not ai_response"/>
+                        <field name="ai_response" nolabel="1" readonly="1"
+                               invisible="not ai_response"/>
+                    </group>
+
+                    <!-- Development plan -->
+                    <group string="Development Plan"
+                           invisible="ai_classification not in ('bug', 'feature')">
+                        <div class="alert alert-info mb0">
+                            📋 Claude generated this development plan for your developer.
+                            It is also posted as an internal note in the chatter.
+                        </div>
+                        <field name="ai_dev_plan" nolabel="1" readonly="1"
+                               invisible="not ai_dev_plan"/>
+                    </group>
+
+                    <!-- No result yet -->
+                    <div class="alert alert-secondary"
+                         invisible="ai_status != 'pending'">
+                        ⏳ Ticket is queued for Claude AI analysis (runs every 5 minutes).
+                        Click <strong>"🤖 Analyse with Claude"</strong> for immediate analysis.
+                    </div>
+                    <div class="alert alert-danger"
+                         invisible="ai_status != 'failed'">
+                        ❌ AI analysis failed. Check the AI log for details or click
+                        <strong>"Re-analyse"</strong> to retry.
+                    </div>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+
+    <!-- ── List view: add AI status column ─────────────────────────────────── -->
+    <record id="helpdesk_ticket_list_view_inherit_claude" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.list.inherit.claude</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.helpdesk_ticket_view_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='stage_id']" position="after">
+                <field name="ai_status" optional="show" widget="badge"
+                       decoration-info="ai_status == 'pending'"
+                       decoration-warning="ai_status in ('processing', 'manual')"
+                       decoration-success="ai_status in ('answered', 'dev_plan')"
+                       decoration-danger="ai_status == 'failed'"/>
+                <field name="ai_classification" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- ── Search view: AI filters ─────────────────────────────────────────── -->
+    <record id="helpdesk_ticket_search_view_inherit_claude" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.search.inherit.claude</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.helpdesk_ticket_view_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search/filter[last()]" position="after">
+                <separator/>
+                <filter string="Pending AI" name="ai_pending"
+                        domain="[('ai_status','=','pending')]"/>
+                <filter string="AI Answered" name="ai_answered"
+                        domain="[('ai_status','=','answered')]"/>
+                <filter string="Dev Plan Ready" name="ai_dev_plan"
+                        domain="[('ai_status','=','dev_plan')]"/>
+                <filter string="AI Failed" name="ai_failed"
+                        domain="[('ai_status','=','failed')]"/>
+                <separator/>
+                <filter string="Bug Reports" name="ai_bug"
+                        domain="[('ai_classification','=','bug')]"/>
+                <filter string="Feature Requests" name="ai_feature"
+                        domain="[('ai_classification','=','feature')]"/>
+                <filter string="Config Queries" name="ai_config"
+                        domain="[('ai_classification','=','configuration')]"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

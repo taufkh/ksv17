@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_helpdesk_ticket_search_release_note" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.search.release.note</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.helpdesk_ticket_view_search" />
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='high_priority']" position="after">
+                <filter string="Has Release Note" name="has_release_note" domain="[('release_note_ids', '!=', False)]" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_ticket_form_release_note" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.form.release.note</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.ticket_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button
+                    name="action_open_release_notes"
+                    type="object"
+                    class="oe_stat_button"
+                    icon="fa-rocket"
+                    invisible="not release_note_ids"
+                    groups="helpdesk_mgmt.group_helpdesk_user"
+                >
+                    <field name="release_note_count" widget="statinfo" string="Release Notes" />
+                </button>
+            </xpath>
+            <xpath expr="//page[@name='other_info']/group" position="inside">
+                <field name="release_note_ids" widget="many2many_tags" options="{'no_create': True}" />
+            </xpath>
+        </field>
+    </record>
+</odoo>

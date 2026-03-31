@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_helpdesk_customer_success_playbook_search" model="ir.ui.view">
+        <field name="name">helpdesk.customer.success.playbook.search</field>
+        <field name="model">helpdesk.customer.success.playbook</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="partner_id" />
+                <filter string="Active" name="active" domain="[('state', 'in', ['active', 'monitoring'])]" />
+                <filter string="Due Now" name="due_now" domain="[('next_action_date', '&lt;=', context_today())]" />
+                <filter string="At Risk" name="at_risk" domain="[('health_state', '=', 'at_risk')]" />
+                <group expand="0" string="Group By">
+                    <filter string="Customer" name="group_partner" context="{'group_by': 'partner_id'}" />
+                    <filter string="Owner" name="group_owner" context="{'group_by': 'owner_id'}" />
+                    <filter string="Type" name="group_type" context="{'group_by': 'playbook_type'}" />
+                    <filter string="State" name="group_state" context="{'group_by': 'state'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_customer_success_playbook_tree" model="ir.ui.view">
+        <field name="name">helpdesk.customer.success.playbook.tree</field>
+        <field name="model">helpdesk.customer.success.playbook</field>
+        <field name="arch" type="xml">
+            <tree decoration-danger="health_state == 'at_risk'" decoration-warning="health_state == 'watch'">
+                <field name="name" />
+                <field name="partner_id" />
+                <field name="playbook_type" />
+                <field name="owner_id" />
+                <field name="next_action_date" />
+                <field name="health_state" />
+                <field name="state" />
+                <field name="action_count" optional="show" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_customer_success_playbook_form" model="ir.ui.view">
+        <field name="name">helpdesk.customer.success.playbook.form</field>
+        <field name="model">helpdesk.customer.success.playbook</field>
+        <field name="arch" type="xml">
+            <form string="Customer Success Playbook">
+                <header>
+                    <button name="action_activate" type="object" string="Activate" class="btn-primary" invisible="state not in ('draft', 'cancelled')" />
+                    <button name="action_mark_monitoring" type="object" string="Mark Monitoring" invisible="state not in ('active', 'done')" />
+                    <button name="action_mark_done" type="object" string="Mark Done" invisible="state not in ('active', 'monitoring')" />
+                    <button name="action_cancel" type="object" string="Cancel" invisible="state in ('done', 'cancelled')" />
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,monitoring,done,cancelled" />
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" />
+                            <field name="partner_id" />
+                            <field name="contract_id" />
+                            <field name="renewal_id" />
+                        </group>
+                        <group>
+                            <field name="owner_id" />
+                            <field name="playbook_type" />
+                            <field name="cadence" />
+                            <field name="health_state" />
+                            <field name="next_action_date" />
+                            <field name="last_action_date" readonly="1" />
+                            <field name="last_activity_scheduled_date" readonly="1" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Goals">
+                            <field name="success_goal" />
+                            <field name="risk_note" />
+                        </page>
+                        <page string="Action Plan">
+                            <field name="action_plan" widget="html" nolabel="1" />
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter />
+            </form>
+        </field>
+    </record>
+
+    <record id="action_helpdesk_customer_success_playbook" model="ir.actions.act_window">
+        <field name="name">Customer Success Playbooks</field>
+        <field name="res_model">helpdesk.customer.success.playbook</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_helpdesk_customer_success_playbook_search" />
+    </record>
+
+    <menuitem
+        id="menu_helpdesk_customer_success_playbook"
+        name="Customer Success Playbooks"
+        parent="helpdesk_mgmt.helpdesk_ticket_reporting_menu"
+        action="action_helpdesk_customer_success_playbook"
+        sequence="61"
+        groups="helpdesk_mgmt.group_helpdesk_user"
+    />
+</odoo>

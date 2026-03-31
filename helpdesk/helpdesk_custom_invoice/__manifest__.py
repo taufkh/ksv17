@@ -1,0 +1,28 @@
+{
+    "name": "Helpdesk Custom Invoice",
+    "version": "17.0.1.0.0",
+    "category": "After-Sales",
+    "summary": "Invoice billable helpdesk timesheets from tickets",
+    "author": "Custom",
+    "license": "LGPL-3",
+    "depends": [
+        "helpdesk_mgmt_sale",
+        "helpdesk_mgmt_timesheet",
+        "helpdesk_timesheet_time_type",
+        "account",
+        "product",
+        "helpdesk_custom_demo",
+    ],
+    "data": [
+        "security/ir.model.access.csv",
+        "views/project_time_type_views.xml",
+        "views/helpdesk_ticket_team_views.xml",
+        "views/helpdesk_ticket_views.xml",
+        "views/account_move_views.xml",
+        "wizards/helpdesk_ticket_create_invoice_views.xml",
+    ],
+    "post_init_hook": "post_init_hook",
+    "installable": True,
+    "application": False,
+    "auto_install": False,
+}

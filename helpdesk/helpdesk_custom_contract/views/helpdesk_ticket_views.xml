@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_helpdesk_ticket_search_contract" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.search.contract</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.helpdesk_ticket_view_search" />
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='high_priority']" position="after">
+                <filter string="Covered" name="contract_covered" domain="[('contract_coverage_status', '=', 'covered')]" />
+                <filter string="Low Balance" name="contract_warning" domain="[('contract_coverage_status', '=', 'warning')]" />
+                <filter string="Out of Contract" name="contract_uncovered" domain="[('contract_coverage_status', 'in', ['uncovered', 'expired', 'suspended', 'overrun'])]" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_ticket_form_contract" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.form.contract</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.ticket_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button
+                    name="action_reassign_support_contract"
+                    type="object"
+                    string="Refresh Contract"
+                    groups="helpdesk_mgmt.group_helpdesk_user"
+                />
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button
+                    name="action_open_support_contract"
+                    type="object"
+                    class="oe_stat_button"
+                    icon="fa-file-text-o"
+                    invisible="not support_contract_id"
+                    groups="helpdesk_mgmt.group_helpdesk_user"
+                >
+                    <span class="o_stat_text">Support Contract</span>
+                </button>
+            </xpath>
+            <xpath expr="//page[@name='other_info']/group" position="inside">
+                <field name="support_contract_id" />
+                <field name="support_contract_state" readonly="1" />
+                <field name="support_contract_sla_tier" readonly="1" />
+                <field name="contract_coverage_status" readonly="1" />
+                <field name="contract_remaining_hours" readonly="1" />
+            </xpath>
+        </field>
+    </record>
+</odoo>

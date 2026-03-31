@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_helpdesk_renewal_target_search" model="ir.ui.view">
+        <field name="name">helpdesk.renewal.target.search</field>
+        <field name="model">helpdesk.renewal.target</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="month_start" />
+                <filter string="Overall" name="scope_overall" domain="[('scope_type', '=', 'overall')]" />
+                <filter string="Team" name="scope_team" domain="[('scope_type', '=', 'team')]" />
+                <filter string="Salesperson" name="scope_sales" domain="[('scope_type', '=', 'sales_user')]" />
+                <group expand="0" string="Group By">
+                    <filter string="Month" name="group_month" context="{'group_by': 'month_start'}" />
+                    <filter string="Scope" name="group_scope" context="{'group_by': 'scope_type'}" />
+                    <filter string="Team" name="group_team" context="{'group_by': 'team_id'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_renewal_target_tree" model="ir.ui.view">
+        <field name="name">helpdesk.renewal.target.tree</field>
+        <field name="model">helpdesk.renewal.target</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" />
+                <field name="month_start" />
+                <field name="scope_type" />
+                <field name="team_id" optional="show" />
+                <field name="sales_user_id" optional="show" />
+                <field name="target_amount" />
+                <field name="budget_amount" optional="show" />
+                <field name="company_id" optional="show" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_renewal_target_form" model="ir.ui.view">
+        <field name="name">helpdesk.renewal.target.form</field>
+        <field name="model">helpdesk.renewal.target</field>
+        <field name="arch" type="xml">
+            <form string="Renewal Target">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" />
+                            <field name="month_start" />
+                            <field name="scope_type" />
+                            <field name="company_id" />
+                        </group>
+                        <group>
+                            <field name="team_id" invisible="scope_type != 'team'" />
+                            <field name="sales_user_id" invisible="scope_type != 'sales_user'" />
+                            <field name="target_amount" />
+                            <field name="budget_amount" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Notes">
+                            <field name="notes" widget="html" nolabel="1" />
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter />
+            </form>
+        </field>
+    </record>
+
+    <record id="action_helpdesk_renewal_target" model="ir.actions.act_window">
+        <field name="name">Renewal Targets</field>
+        <field name="res_model">helpdesk.renewal.target</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_helpdesk_renewal_target_search" />
+    </record>
+
+    <menuitem
+        id="menu_helpdesk_renewal_target"
+        name="Renewal Targets"
+        parent="helpdesk_mgmt.helpdesk_ticket_config_main_menu"
+        action="action_helpdesk_renewal_target"
+        sequence="80"
+        groups="helpdesk_mgmt.group_helpdesk_manager"
+    />
+</odoo>
