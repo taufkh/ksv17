@@ -1,6 +1,6 @@
 # Helpdesk Customization Recap
 
-Last updated: 2026-03-31  
+Last updated: 2026-04-01  
 Target database: `ksv17-dev`
 
 ## 1. Scope Summary
@@ -10,6 +10,7 @@ The Helpdesk implementation in this repository has been expanded from the OCA `h
 Delivered scope covers:
 
 - baseline Helpdesk setup and demo dataset
+- centralized feature management and modular config gating
 - ticket calendar visibility
 - escalation engine
 - KPI and operational reporting
@@ -69,6 +70,7 @@ Baseline demo data was also added so that the end-to-end feature set can be revi
 
 | Module | Primary Purpose | Main UI Exposure | Main Model(s) |
 | --- | --- | --- | --- |
+| `helpdesk_feature_hub` | Centralized feature registry and global modular config for custom Helpdesk features | `Settings > Helpdesk` | `helpdesk.feature.config`, `res.config.settings` |
 | `helpdesk_custom_demo` | Demo dataset and showcase records | Existing Helpdesk menus populated with sample data | `helpdesk.ticket` and related base models |
 | `helpdesk_custom_calendar` | Calendar overview of tickets and SLA windows | `Helpdesk > Calendar`, calendar switcher on ticket actions | `helpdesk.ticket` |
 | `helpdesk_custom_escalation` | SLA and rule-based escalation engine | `Helpdesk > Configuration > Escalation Rules`, ticket smart button | `helpdesk.escalation.rule`, escalation event model, `helpdesk.ticket` |
@@ -99,6 +101,36 @@ Baseline demo data was also added so that the end-to-end feature set can be revi
 | `helpdesk_custom_service_review_distribution` | Scheduled distribution of service review packs by email | `Helpdesk > Reporting > Service Review Distribution` | `helpdesk.service.review.distribution`, `helpdesk.service.review.pack` |
 
 ## 4. Detailed Module Notes
+
+### 4.0 `helpdesk_feature_hub`
+
+Feature purpose:
+
+- centralizes feature-flag style configuration across custom Helpdesk addons
+
+Key functions:
+
+- registers canonical feature keys for custom Helpdesk domains
+- exposes global toggles in `Settings > Helpdesk`
+- provides helper methods to check whether a feature is enabled globally or for a team when applicable
+- standardizes runtime gating for cron jobs, controllers, object actions, reporting menus, and printable report entry points
+
+Menu and UI relation:
+
+- `Settings > Helpdesk`
+- feature blocks for foundation, channels, service delivery, commercial automation, analytics, and executive features
+
+Main model relation:
+
+- `helpdesk.feature.config`
+- `res.config.settings`
+- `ir.config_parameter`
+
+Cross-module relation:
+
+- acts as the control plane for the custom Helpdesk addon stack
+- does not replace addon installation
+- disables behavior safely through config without uninstalling dependent modules
 
 ### 4.1 `helpdesk_custom_demo`
 

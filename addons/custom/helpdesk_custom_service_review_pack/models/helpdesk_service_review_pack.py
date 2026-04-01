@@ -84,8 +84,24 @@ class HelpdeskServiceReviewPack(models.Model):
         for pack in self:
             pack.company_id = pack.partner_id.company_id or self.env.company
 
+    @api.model
+    def _ensure_service_review_pack_enabled(self):
+        self.env["helpdesk.feature.config"].ensure_enabled(
+            "helpdesk.review.pack",
+            message=_("Service review packs are disabled in Helpdesk feature settings."),
+        )
+        return True
+
+    @api.model
+    def action_open_service_review_pack_menu(self):
+        self._ensure_service_review_pack_enabled()
+        return self.env["ir.actions.actions"]._for_xml_id(
+            "helpdesk_custom_service_review_pack.action_helpdesk_service_review_pack"
+        )
+
     @api.model_create_multi
     def create(self, vals_list):
+        self._ensure_service_review_pack_enabled()
         for vals in vals_list:
             partner = self.env["res.partner"].browse(vals.get("partner_id"))
             if partner and partner.commercial_partner_id:
@@ -255,12 +271,14 @@ class HelpdeskServiceReviewPack(models.Model):
         return snapshot
 
     def action_generate_snapshot(self):
+        self._ensure_service_review_pack_enabled()
         for pack in self:
             pack.write(pack._prepare_snapshot_vals())
         return True
 
     def action_print_pack(self):
         self.ensure_one()
+        self._ensure_service_review_pack_enabled()
         return self.env.ref(
             "helpdesk_custom_service_review_pack.action_report_helpdesk_service_review_pack"
         ).report_action(self)

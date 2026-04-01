@@ -29,6 +29,13 @@ class ResPartner(models.Model):
 
     def _compute_helpdesk_renewal_analytics_360(self):
         for partner in self:
+            if not self.env["helpdesk.feature.config"].is_enabled(
+                "helpdesk.renewal.analytics"
+            ):
+                partner.helpdesk_360_renewal_overdue_followup_count = 0
+                partner.helpdesk_360_renewal_weighted_revenue = 0.0
+                partner.helpdesk_360_renewal_risk_segment = False
+                continue
             renewals = partner.helpdesk_360_renewal_ids
             active = renewals.filtered(lambda renewal: renewal.state in {"open", "in_review", "handoff_sent"})
             overdue = active.filtered("follow_up_overdue")

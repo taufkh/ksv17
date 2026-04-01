@@ -21,12 +21,20 @@ class HelpdeskTicketKpiCustomer(models.Model):
     breach_rate = fields.Float(string="Breach Rate", readonly=True)
     last_ticket_date = fields.Datetime(string="Last Ticket", readonly=True)
 
+    def _ensure_kpi_feature_enabled(self):
+        self.env["helpdesk.feature.config"].ensure_enabled(
+            "helpdesk.analytics.kpi",
+            message=_("Helpdesk KPI reporting is disabled in Helpdesk feature settings."),
+        )
+        return True
+
     def _domain(self):
         self.ensure_one()
         return [("commercial_partner_id", "=", self.partner_id.id)]
 
     def action_view_tickets(self):
         self.ensure_one()
+        self._ensure_kpi_feature_enabled()
         action = self.env.ref("helpdesk_mgmt.helpdesk_ticket_action").read()[0]
         action["domain"] = self._domain()
         action["name"] = _("%s Tickets") % self.partner_id.name
@@ -34,6 +42,7 @@ class HelpdeskTicketKpiCustomer(models.Model):
 
     def action_view_analysis(self):
         self.ensure_one()
+        self._ensure_kpi_feature_enabled()
         action = self.env.ref("helpdesk_custom_kpi.action_helpdesk_ticket_kpi_analysis")
         result = action.read()[0]
         result["domain"] = self._domain()

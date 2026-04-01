@@ -493,11 +493,46 @@
         <field name="context">{'search_default_group_month': 1}</field>
     </record>
 
+    <record id="action_helpdesk_ticket_kpi_dashboard_menu" model="ir.actions.server">
+        <field name="name">KPI Overview Menu</field>
+        <field name="model_id" ref="model_helpdesk_ticket_kpi_dashboard" />
+        <field name="state">code</field>
+        <field name="code">action = env["helpdesk.ticket.kpi.dashboard"].action_open_kpi_dashboard_menu()</field>
+    </record>
+
+    <record id="action_helpdesk_ticket_kpi_analysis_menu" model="ir.actions.server">
+        <field name="name">KPI Analysis Menu</field>
+        <field name="model_id" ref="model_helpdesk_ticket_kpi_dashboard" />
+        <field name="state">code</field>
+        <field name="code">action = env["helpdesk.ticket.kpi.dashboard"].action_open_kpi_analysis_menu()</field>
+    </record>
+
+    <record id="action_helpdesk_ticket_kpi_agent_menu" model="ir.actions.server">
+        <field name="name">Agent Performance Menu</field>
+        <field name="model_id" ref="model_helpdesk_ticket_kpi_dashboard" />
+        <field name="state">code</field>
+        <field name="code">action = env["helpdesk.ticket.kpi.dashboard"].action_open_kpi_agent_menu()</field>
+    </record>
+
+    <record id="action_helpdesk_ticket_kpi_customer_menu" model="ir.actions.server">
+        <field name="name">Customer Insights Menu</field>
+        <field name="model_id" ref="model_helpdesk_ticket_kpi_dashboard" />
+        <field name="state">code</field>
+        <field name="code">action = env["helpdesk.ticket.kpi.dashboard"].action_open_kpi_customer_menu()</field>
+    </record>
+
+    <record id="action_helpdesk_ticket_kpi_trend_menu" model="ir.actions.server">
+        <field name="name">Trend Monitor Menu</field>
+        <field name="model_id" ref="model_helpdesk_ticket_kpi_dashboard" />
+        <field name="state">code</field>
+        <field name="code">action = env["helpdesk.ticket.kpi.dashboard"].action_open_kpi_trend_menu()</field>
+    </record>
+
     <menuitem
         id="menu_helpdesk_ticket_kpi_report"
         name="KPI Overview"
         parent="helpdesk_mgmt.helpdesk_ticket_reporting_menu"
-        action="action_helpdesk_ticket_kpi_dashboard"
+        action="action_helpdesk_ticket_kpi_dashboard_menu"
         sequence="20"
         groups="helpdesk_mgmt.group_helpdesk_manager"
     />
@@ -506,7 +541,7 @@
         id="menu_helpdesk_ticket_kpi_analysis"
         name="KPI Analysis"
         parent="helpdesk_mgmt.helpdesk_ticket_reporting_menu"
-        action="action_helpdesk_ticket_kpi_analysis"
+        action="action_helpdesk_ticket_kpi_analysis_menu"
         sequence="25"
         groups="helpdesk_mgmt.group_helpdesk_manager"
     />
@@ -515,7 +550,7 @@
         id="menu_helpdesk_ticket_kpi_agent"
         name="Agent Performance"
         parent="helpdesk_mgmt.helpdesk_ticket_reporting_menu"
-        action="action_helpdesk_ticket_kpi_agent"
+        action="action_helpdesk_ticket_kpi_agent_menu"
         sequence="30"
         groups="helpdesk_mgmt.group_helpdesk_manager"
     />
@@ -524,7 +559,7 @@
         id="menu_helpdesk_ticket_kpi_customer"
         name="Customer Insights"
         parent="helpdesk_mgmt.helpdesk_ticket_reporting_menu"
-        action="action_helpdesk_ticket_kpi_customer"
+        action="action_helpdesk_ticket_kpi_customer_menu"
         sequence="35"
         groups="helpdesk_mgmt.group_helpdesk_manager"
     />
@@ -533,7 +568,7 @@
         id="menu_helpdesk_ticket_kpi_trend"
         name="Trend Monitor"
         parent="helpdesk_mgmt.helpdesk_ticket_reporting_menu"
-        action="action_helpdesk_ticket_kpi_trend"
+        action="action_helpdesk_ticket_kpi_trend_menu"
         sequence="40"
         groups="helpdesk_mgmt.group_helpdesk_manager"
     />

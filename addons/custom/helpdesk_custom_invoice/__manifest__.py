@@ -6,6 +6,7 @@
     "author": "Custom",
     "license": "LGPL-3",
     "depends": [
+        "helpdesk_feature_hub",
         "helpdesk_mgmt_sale",
         "helpdesk_mgmt_timesheet",
         "helpdesk_timesheet_time_type",

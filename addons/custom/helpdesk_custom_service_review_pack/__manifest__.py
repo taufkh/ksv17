@@ -5,6 +5,7 @@
     "author": "OpenAI",
     "license": "LGPL-3",
     "depends": [
+        "helpdesk_feature_hub",
         "helpdesk_custom_customer_360",
         "helpdesk_custom_customer_communication_log",
         "helpdesk_custom_contract_renewal_analytics",

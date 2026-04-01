@@ -1,4 +1,4 @@
-from odoo import fields, models, tools
+from odoo import _, api, fields, models, tools
 
 
 class HelpdeskContractRenewalAnalyticsDashboard(models.Model):
@@ -38,6 +38,28 @@ class HelpdeskContractRenewalAnalyticsDashboard(models.Model):
     lost_revenue = fields.Monetary(currency_field="currency_id", readonly=True)
     avg_probability = fields.Float(readonly=True)
     max_overdue_days = fields.Integer(readonly=True)
+
+    @api.model
+    def _ensure_renewal_analytics_enabled(self):
+        self.env["helpdesk.feature.config"].ensure_enabled(
+            "helpdesk.renewal.analytics",
+            message=_("Renewal analytics is disabled in Helpdesk feature settings."),
+        )
+        return True
+
+    @api.model
+    def action_open_renewal_overview_menu(self):
+        self._ensure_renewal_analytics_enabled()
+        return self.env["ir.actions.actions"]._for_xml_id(
+            "helpdesk_custom_contract_renewal_analytics.action_helpdesk_contract_renewal_overview"
+        )
+
+    @api.model
+    def action_open_renewal_analytics_menu(self):
+        self._ensure_renewal_analytics_enabled()
+        return self.env["ir.actions.actions"]._for_xml_id(
+            "helpdesk_custom_contract_renewal_analytics.action_helpdesk_contract_renewal_analytics"
+        )
 
     def init(self):
         tools.drop_view_if_exists(self.env.cr, self._table)

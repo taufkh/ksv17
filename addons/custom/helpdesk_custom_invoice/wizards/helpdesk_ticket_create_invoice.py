@@ -26,6 +26,7 @@ class HelpdeskTicketCreateInvoiceWizard(models.TransientModel):
         defaults = super().default_get(fields_list)
         ticket = self.env["helpdesk.ticket"].browse(defaults.get("ticket_id"))
         if ticket:
+            ticket._ensure_billing_feature_enabled()
             defaults.setdefault(
                 "partner_id",
                 (ticket._get_default_invoice_partner() or self.env["res.partner"]).id,
@@ -42,6 +43,7 @@ class HelpdeskTicketCreateInvoiceWizard(models.TransientModel):
 
     def action_create_invoice(self):
         self.ensure_one()
+        self.ticket_id._ensure_billing_feature_enabled()
         lines = self.ticket_id._get_billable_timesheets(uninvoiced_only=True)
         if not lines:
             raise UserError(_("There are no uninvoiced billable timesheets on this ticket."))

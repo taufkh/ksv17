@@ -144,11 +144,25 @@
         <field name="context">{'search_default_active_pipeline': 1}</field>
     </record>
 
+    <record id="action_helpdesk_contract_renewal_overview_menu" model="ir.actions.server">
+        <field name="name">Renewal Overview Menu</field>
+        <field name="model_id" ref="model_helpdesk_contract_renewal_analytics_dashboard" />
+        <field name="state">code</field>
+        <field name="code">action = env["helpdesk.contract.renewal.analytics.dashboard"].action_open_renewal_overview_menu()</field>
+    </record>
+
+    <record id="action_helpdesk_contract_renewal_analytics_menu" model="ir.actions.server">
+        <field name="name">Renewal Analytics Menu</field>
+        <field name="model_id" ref="model_helpdesk_contract_renewal_analytics_dashboard" />
+        <field name="state">code</field>
+        <field name="code">action = env["helpdesk.contract.renewal.analytics.dashboard"].action_open_renewal_analytics_menu()</field>
+    </record>
+
     <menuitem
         id="menu_helpdesk_contract_renewal_overview"
         name="Renewal Overview"
         parent="helpdesk_mgmt.helpdesk_ticket_reporting_menu"
-        action="action_helpdesk_contract_renewal_overview"
+        action="action_helpdesk_contract_renewal_overview_menu"
         sequence="44"
         groups="helpdesk_mgmt.group_helpdesk_user,sales_team.group_sale_salesman"
     />
@@ -157,7 +171,7 @@
         id="menu_helpdesk_contract_renewal_analytics"
         name="Renewal Analytics"
         parent="helpdesk_mgmt.helpdesk_ticket_reporting_menu"
-        action="action_helpdesk_contract_renewal_analytics"
+        action="action_helpdesk_contract_renewal_analytics_menu"
         sequence="45"
         groups="helpdesk_mgmt.group_helpdesk_user,sales_team.group_sale_salesman"
     />

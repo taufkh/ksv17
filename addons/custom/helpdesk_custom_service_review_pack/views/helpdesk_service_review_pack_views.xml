@@ -135,11 +135,18 @@
         <field name="search_view_id" ref="view_helpdesk_service_review_pack_search" />
     </record>
 
+    <record id="action_helpdesk_service_review_pack_menu" model="ir.actions.server">
+        <field name="name">Service Review Packs Menu</field>
+        <field name="model_id" ref="model_helpdesk_service_review_pack" />
+        <field name="state">code</field>
+        <field name="code">action = env["helpdesk.service.review.pack"].action_open_service_review_pack_menu()</field>
+    </record>
+
     <menuitem
         id="menu_helpdesk_service_review_pack"
         name="Service Review Packs"
         parent="helpdesk_mgmt.helpdesk_ticket_reporting_menu"
-        action="action_helpdesk_service_review_pack"
+        action="action_helpdesk_service_review_pack_menu"
         sequence="60"
         groups="helpdesk_mgmt.group_helpdesk_user"
     />

@@ -18,6 +18,10 @@ class HelpdeskCustomApiController(http.Controller):
         return request.env["ir.config_parameter"].sudo()
 
     def _is_enabled(self):
+        if not request.env["helpdesk.feature.config"].sudo().is_enabled(
+            "helpdesk.integration.api"
+        ):
+            return False
         value = self._params().get_param("helpdesk_custom_api.enabled", default="True")
         return str(value).lower() not in {"0", "false", "no"}
 

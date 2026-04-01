@@ -4,14 +4,14 @@
         <field name="name">Service Review Pack</field>
         <field name="model">helpdesk.service.review.pack</field>
         <field name="report_type">qweb-pdf</field>
-        <field name="report_name">helpdesk_custom_service_review_pack.report_helpdesk_service_review_pack_document</field>
-        <field name="report_file">helpdesk_custom_service_review_pack.report_helpdesk_service_review_pack_document</field>
+        <field name="report_name">helpdesk_custom_service_review_pack.srp_report</field>
+        <field name="report_file">helpdesk_custom_service_review_pack.srp_report</field>
         <field name="print_report_name">'Service Review - %s' % (object.partner_id.display_name)</field>
         <field name="binding_model_id" ref="model_helpdesk_service_review_pack" />
         <field name="binding_type">report</field>
     </record>
 
-    <template id="report_helpdesk_service_review_pack_document">
+    <template id="srp_report">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
                 <t t-call="web.external_layout">

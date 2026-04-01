@@ -23,7 +23,14 @@ class HelpdeskCustomPortal(CustomerPortalHelpdesk):
         ("high", "High"),
     ]
 
+    def _is_portal_feature_enabled(self):
+        return request.env["helpdesk.feature.config"].sudo().is_enabled(
+            "helpdesk.channel.portal"
+        )
+
     def _get_ticket_from_public_token(self, token):
+        if not self._is_portal_feature_enabled():
+            return request.env["helpdesk.ticket"]
         return request.env["helpdesk.ticket"].sudo()._get_ticket_by_public_portal_token(
             token
         )
@@ -205,6 +212,8 @@ class HelpdeskCustomPortal(CustomerPortalHelpdesk):
         ["/helpdesk/track/<string:token>"], type="http", auth="public", website=True
     )
     def public_ticket_page(self, token, **kwargs):
+        if not self._is_portal_feature_enabled():
+            return request.not_found()
         ticket = self._get_ticket_from_public_token(token)
         if not ticket:
             return request.not_found()
@@ -221,6 +230,8 @@ class HelpdeskCustomPortal(CustomerPortalHelpdesk):
         csrf=True,
     )
     def public_ticket_reply(self, token, message=None, **kwargs):
+        if not self._is_portal_feature_enabled():
+            return request.not_found()
         ticket = self._get_ticket_from_public_token(token)
         if not ticket:
             return request.not_found()
@@ -375,6 +386,8 @@ class HelpdeskCustomPortal(CustomerPortalHelpdesk):
         csrf=True,
     )
     def public_ticket_close(self, token, stage_id=None, confirm_resolved=None, **kwargs):
+        if not self._is_portal_feature_enabled():
+            return request.not_found()
         ticket = self._get_ticket_from_public_token(token)
         if not ticket:
             return request.not_found()
@@ -426,6 +439,8 @@ class HelpdeskCustomPortal(CustomerPortalHelpdesk):
         confirm_reopen=None,
         **kwargs,
     ):
+        if not self._is_portal_feature_enabled():
+            return request.not_found()
         ticket = self._get_ticket_from_public_token(token)
         if not ticket:
             return request.not_found()
@@ -500,6 +515,8 @@ class HelpdeskCustomPortal(CustomerPortalHelpdesk):
         confirm_escalation=None,
         **kwargs,
     ):
+        if not self._is_portal_feature_enabled():
+            return request.not_found()
         ticket = self._get_ticket_from_public_token(token)
         if not ticket:
             return request.not_found()
@@ -634,6 +651,8 @@ class HelpdeskCustomPortal(CustomerPortalHelpdesk):
         remove_collaborator_id=None,
         **kwargs,
     ):
+        if not self._is_portal_feature_enabled():
+            return request.not_found()
         ticket = self._get_ticket_from_public_token(token)
         if not ticket:
             return request.not_found()
@@ -741,6 +760,8 @@ class HelpdeskCustomPortal(CustomerPortalHelpdesk):
         csrf=True,
     )
     def public_ticket_rating(self, token, rate=None, feedback=None, low_score_reason=None, **kwargs):
+        if not self._is_portal_feature_enabled():
+            return request.not_found()
         ticket = self._get_ticket_from_public_token(token)
         if not ticket:
             return request.not_found()
@@ -805,6 +826,8 @@ class HelpdeskCustomPortal(CustomerPortalHelpdesk):
         csrf=True,
     )
     def public_ticket_feedback(self, token, feedback=None, **kwargs):
+        if not self._is_portal_feature_enabled():
+            return request.not_found()
         ticket = self._get_ticket_from_public_token(token)
         if not ticket:
             return request.not_found()

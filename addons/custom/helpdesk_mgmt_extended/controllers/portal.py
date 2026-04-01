@@ -14,8 +14,15 @@ class HelpdeskTicketControllerExtended(HelpdeskTicketController):
       • helpdesk_ticket_partner_response — customer reply endpoint
     """
 
+    def _is_extended_feature_enabled(self):
+        return request.env["helpdesk.feature.config"].sudo().is_enabled(
+            "helpdesk.core.extended"
+        )
+
     def _get_teams(self):
         """Override to filter teams by the portal restriction partner list."""
+        if not self._is_extended_feature_enabled():
+            return super()._get_teams()
         teams = super()._get_teams()
         partner = request.env.user.partner_id
         if teams and partner:
@@ -27,6 +34,8 @@ class HelpdeskTicketControllerExtended(HelpdeskTicketController):
     @http.route("/new/ticket", type="http", auth="user", website=True)
     def create_new_ticket(self, **kw):
         """Override to add ticket types and category portal restriction."""
+        if not self._is_extended_feature_enabled():
+            return super().create_new_ticket(**kw)
         company = request.env.company
         partner = request.env.user.partner_id
 
@@ -65,6 +74,8 @@ class HelpdeskTicketControllerExtended(HelpdeskTicketController):
     def _prepare_submit_ticket_vals(self, **kw):
         """Override to capture the type_id field from the form."""
         vals = super()._prepare_submit_ticket_vals(**kw)
+        if not self._is_extended_feature_enabled():
+            return vals
         if kw.get("type_id"):
             vals["type_id"] = int(kw.get("type_id"))
         return vals
@@ -81,6 +92,8 @@ class HelpdeskTicketControllerExtended(HelpdeskTicketController):
     )
     def customer_reply(self, ticket_id, message=None, **kwargs):
         """Allow the customer to reply to a ticket from the portal."""
+        if not self._is_extended_feature_enabled():
+            return request.not_found()
         ticket = request.env["helpdesk.ticket"].sudo().browse(ticket_id)
         if not ticket.exists():
             return request.not_found()

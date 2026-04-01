@@ -99,11 +99,18 @@
         <field name="context">{'search_default_response_due': 1}</field>
     </record>
 
+    <record id="action_helpdesk_communication_analytics_report_menu" model="ir.actions.server">
+        <field name="name">Communication Analytics Menu</field>
+        <field name="model_id" ref="model_helpdesk_communication_analytics_report" />
+        <field name="state">code</field>
+        <field name="code">action = env["helpdesk.communication.analytics.report"].action_open_communication_analytics_menu()</field>
+    </record>
+
     <menuitem
         id="menu_helpdesk_communication_analytics_report"
         name="Communication Analytics"
         parent="helpdesk_mgmt.helpdesk_ticket_reporting_menu"
-        action="action_helpdesk_communication_analytics_report"
+        action="action_helpdesk_communication_analytics_report_menu"
         sequence="48"
         groups="helpdesk_mgmt.group_helpdesk_user"
     />

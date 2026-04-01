@@ -1,4 +1,4 @@
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 
 
 class HelpdeskDispatchEvidence(models.Model):
@@ -59,3 +59,11 @@ class HelpdeskDispatchEvidence(models.Model):
         photo_types = {"arrival_photo", "site_access", "work_in_progress", "completion_photo", "customer_signoff"}
         for evidence in self:
             evidence.is_photo = evidence.evidence_type in photo_types
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        self.env["helpdesk.feature.config"].ensure_enabled(
+            "helpdesk.ops.dispatch_execution",
+            message=_("Dispatch execution is disabled in Helpdesk feature settings."),
+        )
+        return super().create(vals_list)

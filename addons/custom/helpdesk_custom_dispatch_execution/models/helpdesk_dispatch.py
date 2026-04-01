@@ -5,6 +5,12 @@ from odoo.exceptions import ValidationError
 class HelpdeskDispatch(models.Model):
     _inherit = "helpdesk.dispatch"
 
+    @api.model
+    def _is_execution_feature_enabled(self):
+        return self.env["helpdesk.feature.config"].is_enabled(
+            "helpdesk.ops.dispatch_execution"
+        )
+
     evidence_ids = fields.One2many(
         "helpdesk.dispatch.evidence",
         "dispatch_id",
@@ -195,6 +201,8 @@ class HelpdeskDispatch(models.Model):
             dispatch._validate_completion_requirements()
 
     def action_mark_en_route(self):
+        if not self._is_execution_feature_enabled():
+            return super().action_mark_en_route()
         target = self.filtered(lambda rec: rec.state in {"draft", "scheduled"})
         target._validate_pre_departure_requirements()
         for dispatch in target:
@@ -203,6 +211,8 @@ class HelpdeskDispatch(models.Model):
         return super().action_mark_en_route()
 
     def action_check_in(self):
+        if not self._is_execution_feature_enabled():
+            return super().action_check_in()
         target = self.filtered(lambda rec: rec.state in {"draft", "scheduled", "en_route"})
         result = super().action_check_in()
         for dispatch in target:
@@ -216,6 +226,10 @@ class HelpdeskDispatch(models.Model):
         return result
 
     def action_leave_site(self):
+        self.env["helpdesk.feature.config"].ensure_enabled(
+            "helpdesk.ops.dispatch_execution",
+            message=_("Dispatch execution is disabled in Helpdesk feature settings."),
+        )
         for dispatch in self.filtered(lambda rec: rec.state == "on_site"):
             values = {"departure_at": dispatch.departure_at or fields.Datetime.now()}
             dispatch.write(values)
@@ -224,6 +238,10 @@ class HelpdeskDispatch(models.Model):
         return True
 
     def action_mark_signoff_received(self):
+        self.env["helpdesk.feature.config"].ensure_enabled(
+            "helpdesk.ops.dispatch_execution",
+            message=_("Dispatch execution is disabled in Helpdesk feature settings."),
+        )
         for dispatch in self:
             dispatch.write(
                 {
@@ -238,6 +256,10 @@ class HelpdeskDispatch(models.Model):
         return True
 
     def action_mark_signoff_declined(self):
+        self.env["helpdesk.feature.config"].ensure_enabled(
+            "helpdesk.ops.dispatch_execution",
+            message=_("Dispatch execution is disabled in Helpdesk feature settings."),
+        )
         for dispatch in self:
             dispatch.write(
                 {
@@ -252,6 +274,8 @@ class HelpdeskDispatch(models.Model):
         return True
 
     def action_complete(self):
+        if not self._is_execution_feature_enabled():
+            return super().action_complete()
         target = self.filtered(lambda rec: rec.state in {"scheduled", "en_route", "on_site"})
         target._validate_completion_requirements()
         for dispatch in target:
@@ -265,6 +289,8 @@ class HelpdeskDispatch(models.Model):
         return super().action_complete()
 
     def action_mark_no_access(self):
+        if not self._is_execution_feature_enabled():
+            return super().action_mark_no_access()
         target = self.filtered(lambda rec: rec.state in {"scheduled", "en_route", "on_site"})
         for dispatch in target:
             if dispatch.pre_departure_completion < 100:
@@ -279,6 +305,10 @@ class HelpdeskDispatch(models.Model):
 
     def action_open_evidence(self):
         self.ensure_one()
+        self.env["helpdesk.feature.config"].ensure_enabled(
+            "helpdesk.ops.dispatch_execution",
+            message=_("Dispatch execution is disabled in Helpdesk feature settings."),
+        )
         action = self.env["ir.actions.actions"]._for_xml_id(
             "helpdesk_custom_dispatch_execution.action_helpdesk_dispatch_evidence"
         )

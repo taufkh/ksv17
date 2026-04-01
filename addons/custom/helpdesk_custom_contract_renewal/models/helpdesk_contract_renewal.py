@@ -245,6 +245,8 @@ class HelpdeskContractRenewal(models.Model):
 
     @api.model
     def cron_sync_contract_renewals(self):
+        if not self.env["helpdesk.feature.config"].is_enabled("helpdesk.renewal.watch"):
+            return True
         contract_model = self.env["helpdesk.support.contract"].sudo()
         renewal_model = self.sudo()
         contracts = contract_model.search([("state", "in", ["active", "expiring"])])

@@ -1,8 +1,17 @@
 from odoo import _, api, fields, models
+from odoo.exceptions import UserError
 
 
 class HelpdeskTicket(models.Model):
     _inherit = "helpdesk.ticket"
+
+    def _ensure_dispatch_feature_enabled(self):
+        self.ensure_one()
+        self.env["helpdesk.feature.config"].ensure_enabled(
+            "helpdesk.ops.dispatch",
+            message=_("Helpdesk dispatch is disabled in Helpdesk feature settings."),
+        )
+        return True
 
     dispatch_ids = fields.One2many(
         "helpdesk.dispatch",
@@ -63,6 +72,7 @@ class HelpdeskTicket(models.Model):
 
     def action_schedule_dispatch(self):
         self.ensure_one()
+        self._ensure_dispatch_feature_enabled()
         action = self.env["ir.actions.actions"]._for_xml_id(
             "helpdesk_custom_dispatch.action_helpdesk_dispatch"
         )
@@ -86,6 +96,8 @@ class HelpdeskTicket(models.Model):
 
     def action_open_dispatches(self):
         self.ensure_one()
+        if not self.env["helpdesk.feature.config"].is_enabled("helpdesk.ops.dispatch"):
+            raise UserError(_("Helpdesk dispatch is disabled in Helpdesk feature settings."))
         action = self.env["ir.actions.actions"]._for_xml_id(
             "helpdesk_custom_dispatch.action_helpdesk_dispatch"
         )

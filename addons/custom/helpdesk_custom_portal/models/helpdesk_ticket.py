@@ -357,6 +357,8 @@ class HelpdeskTicket(models.Model):
 
     @api.model
     def _is_public_portal_enabled(self):
+        if not self.env["helpdesk.feature.config"].is_enabled("helpdesk.channel.portal"):
+            return False
         value = (
             self.env["ir.config_parameter"]
             .sudo()
@@ -1291,6 +1293,8 @@ class HelpdeskTicket(models.Model):
 
     @api.model
     def _cron_send_public_portal_digests(self, limit=200):
+        if not self._is_public_portal_enabled():
+            return 0
         now = fields.Datetime.now()
         tickets = self.search(
             [
@@ -1351,6 +1355,8 @@ class HelpdeskTicket(models.Model):
 
     @api.model
     def _cron_retry_failed_public_portal_digests(self, limit=100):
+        if not self._is_public_portal_enabled():
+            return 0
         now = fields.Datetime.now()
         max_failures = self._get_public_portal_digest_max_failures()
         tickets = self.search(
@@ -1376,6 +1382,8 @@ class HelpdeskTicket(models.Model):
 
     @api.model
     def _cron_schedule_public_portal_customer_followups(self, limit=200):
+        if not self._is_public_portal_enabled():
+            return 0
         now = fields.Datetime.now()
         tickets = self.search(
             [

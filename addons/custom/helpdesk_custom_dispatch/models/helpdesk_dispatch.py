@@ -140,6 +140,14 @@ class HelpdeskDispatch(models.Model):
         for dispatch in self:
             dispatch.calendar_color = color_map.get(dispatch.state, 0)
 
+    @api.model
+    def _ensure_dispatch_feature_enabled(self):
+        self.env["helpdesk.feature.config"].ensure_enabled(
+            "helpdesk.ops.dispatch",
+            message=_("Helpdesk dispatch is disabled in Helpdesk feature settings."),
+        )
+        return True
+
     @api.onchange("ticket_id")
     def _onchange_ticket_id(self):
         for dispatch in self:
@@ -188,6 +196,7 @@ class HelpdeskDispatch(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
+        self._ensure_dispatch_feature_enabled()
         for vals in vals_list:
             if not vals.get("name") or vals.get("name") == "New Dispatch":
                 ticket = self.env["helpdesk.ticket"].browse(vals.get("ticket_id"))
@@ -200,6 +209,7 @@ class HelpdeskDispatch(models.Model):
         return super().create(vals_list)
 
     def action_schedule(self):
+        self._ensure_dispatch_feature_enabled()
         for dispatch in self.filtered(lambda rec: rec.state in {"draft", "cancelled"}):
             dispatch.write({"state": "scheduled"})
             dispatch._schedule_engineer_activity()
@@ -208,6 +218,7 @@ class HelpdeskDispatch(models.Model):
         return True
 
     def action_mark_en_route(self):
+        self._ensure_dispatch_feature_enabled()
         for dispatch in self.filtered(lambda rec: rec.state in {"scheduled", "draft"}):
             values = {"state": "en_route"}
             if not dispatch.actual_start:
@@ -218,6 +229,7 @@ class HelpdeskDispatch(models.Model):
         return True
 
     def action_check_in(self):
+        self._ensure_dispatch_feature_enabled()
         for dispatch in self.filtered(lambda rec: rec.state in {"scheduled", "en_route", "draft"}):
             values = {"state": "on_site"}
             if not dispatch.actual_start:
@@ -228,6 +240,7 @@ class HelpdeskDispatch(models.Model):
         return True
 
     def action_complete(self):
+        self._ensure_dispatch_feature_enabled()
         for dispatch in self.filtered(lambda rec: rec.state in {"scheduled", "en_route", "on_site"}):
             values = {
                 "state": "completed",
@@ -250,6 +263,7 @@ class HelpdeskDispatch(models.Model):
         return True
 
     def action_mark_no_access(self):
+        self._ensure_dispatch_feature_enabled()
         for dispatch in self.filtered(lambda rec: rec.state in {"scheduled", "en_route", "on_site"}):
             values = {
                 "state": "no_access",
@@ -266,6 +280,7 @@ class HelpdeskDispatch(models.Model):
         return True
 
     def action_cancel(self):
+        self._ensure_dispatch_feature_enabled()
         for dispatch in self.filtered(lambda rec: rec.state in {"draft", "scheduled", "en_route", "on_site"}):
             dispatch.write({"state": "cancelled"})
             dispatch._close_pending_activities()
@@ -274,6 +289,7 @@ class HelpdeskDispatch(models.Model):
         return True
 
     def action_reset_draft(self):
+        self._ensure_dispatch_feature_enabled()
         for dispatch in self:
             dispatch.write({"state": "draft"})
             dispatch.message_post(body=_("Dispatch reset to draft."))

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="res_config_settings_view_form_helpdesk_feature_hub" model="ir.ui.view">
+        <field name="name">res.config.settings.form.helpdesk.feature.hub</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.res_config_settings_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//setting[@id='show_categories_form']" position="after">
+                <block title="Feature Management">
+                    <setting
+                        id="helpdesk_feature_core_extended"
+                        string="Helpdesk Extended Foundation"
+                        help="Master gate for the custom helpdesk foundation layer used by portal extensions, SLA cron, and team automation."
+                    >
+                        <field name="helpdesk_feature_core_extended_enabled" />
+                    </setting>
+                    <setting
+                        id="helpdesk_feature_escalation"
+                        string="Escalation Engine"
+                        help="Global runtime gate for helpdesk escalation rules and cron processing."
+                    >
+                        <field name="helpdesk_feature_escalation_enabled" />
+                    </setting>
+                </block>
+                <block title="Channels and Integrations">
+                    <setting
+                        id="helpdesk_feature_portal"
+                        string="Public Tracking Portal"
+                        help="Master gate for public ticket tracking routes and portal digest automation."
+                    >
+                        <field name="helpdesk_feature_portal_enabled" />
+                    </setting>
+                    <setting
+                        id="helpdesk_feature_whatsapp"
+                        string="WhatsApp Notifications"
+                        help="Master gate for WhatsApp queue processing."
+                    >
+                        <field name="helpdesk_feature_whatsapp_enabled" />
+                    </setting>
+                    <setting
+                        id="helpdesk_feature_api"
+                        string="Helpdesk API"
+                        help="Master gate for external API routes."
+                    >
+                        <field name="helpdesk_feature_api_enabled" />
+                    </setting>
+                    <setting
+                        id="helpdesk_feature_claude_ai"
+                        string="Claude AI"
+                        help="Master gate for AI analysis queueing and cron processing."
+                    >
+                        <field name="helpdesk_feature_claude_ai_enabled" />
+                    </setting>
+                </block>
+                <block title="Service Delivery">
+                    <setting
+                        id="helpdesk_feature_invoice"
+                        string="Billing and Invoicing"
+                        help="Reserved centralized gate for invoice generation from tickets."
+                    >
+                        <field name="helpdesk_feature_invoice_enabled" />
+                    </setting>
+                    <setting
+                        id="helpdesk_feature_dispatch"
+                        string="Dispatch Workflow"
+                        help="Reserved centralized gate for onsite dispatch workflow."
+                    >
+                        <field name="helpdesk_feature_dispatch_enabled" />
+                    </setting>
+                    <setting
+                        id="helpdesk_feature_dispatch_execution"
+                        string="Dispatch Execution"
+                        help="Reserved centralized gate for technician execution and evidence capture."
+                    >
+                        <field name="helpdesk_feature_dispatch_execution_enabled" />
+                    </setting>
+                    <setting
+                        id="helpdesk_feature_field_service_report"
+                        string="Field Service Report"
+                        help="Reserved centralized gate for field service report generation."
+                    >
+                        <field name="helpdesk_feature_field_service_report_enabled" />
+                    </setting>
+                </block>
+                <block title="Commercial and Automation">
+                    <setting
+                        id="helpdesk_feature_contract_renewal"
+                        string="Contract Renewal Watch"
+                        help="Master gate for automatic renewal watch generation."
+                    >
+                        <field name="helpdesk_feature_contract_renewal_enabled" />
+                    </setting>
+                    <setting
+                        id="helpdesk_feature_customer_success_playbook"
+                        string="Customer Success Playbooks"
+                        help="Master gate for scheduled customer success follow-up activity generation."
+                    >
+                        <field name="helpdesk_feature_customer_success_playbook_enabled" />
+                    </setting>
+                    <setting
+                        id="helpdesk_feature_service_review_distribution"
+                        string="Service Review Distribution"
+                        help="Master gate for scheduled service review delivery."
+                    >
+                        <field name="helpdesk_feature_service_review_distribution_enabled" />
+                    </setting>
+                </block>
+                <block title="Analytics and Executive">
+                    <setting
+                        id="helpdesk_feature_kpi"
+                        string="KPI Reporting"
+                        help="Master gate for KPI overview, analysis, agent performance, customer insight, and trend reporting."
+                    >
+                        <field name="helpdesk_feature_kpi_enabled" />
+                    </setting>
+                    <setting
+                        id="helpdesk_feature_communication_analytics"
+                        string="Communication Analytics"
+                        help="Master gate for communication responsiveness and channel analytics reporting."
+                    >
+                        <field name="helpdesk_feature_communication_analytics_enabled" />
+                    </setting>
+                    <setting
+                        id="helpdesk_feature_customer_360"
+                        string="Customer Support Overview"
+                        help="Master gate for the customer 360 overview screens, metrics, and reporting entry points."
+                    >
+                        <field name="helpdesk_feature_customer_360_enabled" />
+                    </setting>
+                    <setting
+                        id="helpdesk_feature_renewal_analytics"
+                        string="Renewal Analytics"
+                        help="Master gate for renewal overview and pipeline analytics reporting."
+                    >
+                        <field name="helpdesk_feature_renewal_analytics_enabled" />
+                    </setting>
+                    <setting
+                        id="helpdesk_feature_renewal_forecast"
+                        string="Renewal Forecast"
+                        help="Master gate for renewal target-versus-forecast dashboards."
+                    >
+                        <field name="helpdesk_feature_renewal_forecast_enabled" />
+                    </setting>
+                    <setting
+                        id="helpdesk_feature_service_review_pack"
+                        string="Service Review Pack"
+                        help="Master gate for executive service review pack records and PDF export."
+                    >
+                        <field name="helpdesk_feature_service_review_pack_enabled" />
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>

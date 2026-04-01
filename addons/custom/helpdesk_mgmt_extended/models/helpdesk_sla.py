@@ -104,6 +104,8 @@ class HelpdeskSla(models.Model):
     @api.model
     def _cron_check_sla(self):
         """Called by the scheduled action to flag expired SLA tickets."""
+        if not self.env["helpdesk.feature.config"].is_enabled("helpdesk.core.extended"):
+            return
         open_tickets = self.env["helpdesk.ticket"].search(
             [("closed", "=", False)]
         )

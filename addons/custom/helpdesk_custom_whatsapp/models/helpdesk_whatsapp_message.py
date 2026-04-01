@@ -111,6 +111,8 @@ class HelpdeskWhatsappMessage(models.Model):
 
     @api.model
     def _is_enabled(self):
+        if not self.env["helpdesk.feature.config"].is_enabled("helpdesk.channel.whatsapp"):
+            return False
         value = (
             self.env["ir.config_parameter"]
             .sudo()
@@ -352,6 +354,8 @@ class HelpdeskWhatsappMessage(models.Model):
 
     @api.model
     def _cron_process_queue(self, limit=100):
+        if not self._is_enabled():
+            return
         messages = self.search(
             [
                 ("state", "=", "queued"),

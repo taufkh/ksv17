@@ -107,6 +107,8 @@ class HelpdeskTicketTeam(models.Model):
     def close_team_inactive_tickets(self):
         """Close or warn about tickets that have been inactive."""
         self.ensure_one()
+        if not self.env["helpdesk.feature.config"].is_enabled("helpdesk.core.extended"):
+            return
         if not self.close_inactive_tickets:
             return
         now = fields.Datetime.now()

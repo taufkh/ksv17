@@ -4,6 +4,40 @@ from odoo import _, api, fields, models
 class ResPartner(models.Model):
     _inherit = "res.partner"
 
+    def _is_customer_360_enabled(self):
+        return self.env["helpdesk.feature.config"].is_enabled("helpdesk.customer.overview")
+
+    def _clear_helpdesk_360_metrics(self):
+        self.ensure_one()
+        self.helpdesk_360_health = False
+        self.helpdesk_360_open_ticket_count = 0
+        self.helpdesk_360_closed_ticket_count = 0
+        self.helpdesk_360_overdue_ticket_count = 0
+        self.helpdesk_360_escalated_ticket_count = 0
+        self.helpdesk_360_unassigned_ticket_count = 0
+        self.helpdesk_360_contract_count = 0
+        self.helpdesk_360_active_contract_count = 0
+        self.helpdesk_360_pending_approval_count = 0
+        self.helpdesk_360_dispatch_count = 0
+        self.helpdesk_360_scheduled_dispatch_count = 0
+        self.helpdesk_360_sales_handoff_count = 0
+        self.helpdesk_360_invoice_count = 0
+        self.helpdesk_360_knowledge_count = 0
+        self.helpdesk_360_portal_view_total = 0
+        self.helpdesk_360_avg_rating = 0.0
+        self.helpdesk_360_uninvoiced_hours = 0.0
+        self.helpdesk_360_contract_consumed_hours = 0.0
+        self.helpdesk_360_contract_remaining_hours = 0.0
+        self.helpdesk_360_last_ticket_update = False
+        self.helpdesk_360_last_closed_ticket_date = False
+        self.helpdesk_360_ticket_ids = [(6, 0, [])]
+        self.helpdesk_360_contract_ids = [(6, 0, [])]
+        self.helpdesk_360_approval_ids = [(6, 0, [])]
+        self.helpdesk_360_dispatch_ids = [(6, 0, [])]
+        self.helpdesk_360_sales_handoff_ids = [(6, 0, [])]
+        self.helpdesk_360_invoice_ids = [(6, 0, [])]
+        self.helpdesk_360_knowledge_ids = [(6, 0, [])]
+
     helpdesk_360_health = fields.Selection(
         [
             ("quiet", "Quiet"),
@@ -171,6 +205,16 @@ class ResPartner(models.Model):
             order="create_date desc, id desc",
         )
 
+    @api.model
+    def action_open_helpdesk_customer_360_menu(self):
+        self.env["helpdesk.feature.config"].ensure_enabled(
+            "helpdesk.customer.overview",
+            message=_("Customer Support Overview is disabled in Helpdesk feature settings."),
+        )
+        return self.env["ir.actions.actions"]._for_xml_id(
+            "helpdesk_custom_customer_360.action_helpdesk_customer_360"
+        )
+
     def _compute_helpdesk_360(self):
         contract_model = self.env["helpdesk.support.contract"].sudo()
         approval_model = self.env["helpdesk.ticket.approval"].sudo()
@@ -179,6 +223,9 @@ class ResPartner(models.Model):
         page_model = self.env["document.page"].sudo()
 
         for partner in self:
+            if not partner._is_customer_360_enabled():
+                partner._clear_helpdesk_360_metrics()
+                continue
             root = partner._get_helpdesk_360_root()
             tickets = partner._get_helpdesk_360_tickets()
             contracts = contract_model.search(
@@ -282,6 +329,10 @@ class ResPartner(models.Model):
 
     def action_open_helpdesk_360_tickets(self):
         self.ensure_one()
+        self.env["helpdesk.feature.config"].ensure_enabled(
+            "helpdesk.customer.overview",
+            message=_("Customer Support Overview is disabled in Helpdesk feature settings."),
+        )
         action = self.env["ir.actions.actions"]._for_xml_id(
             "helpdesk_mgmt.helpdesk_ticket_action"
         )
@@ -291,6 +342,10 @@ class ResPartner(models.Model):
 
     def action_open_helpdesk_360_contracts(self):
         self.ensure_one()
+        self.env["helpdesk.feature.config"].ensure_enabled(
+            "helpdesk.customer.overview",
+            message=_("Customer Support Overview is disabled in Helpdesk feature settings."),
+        )
         action = self.env["ir.actions.actions"]._for_xml_id(
             "helpdesk_custom_contract.action_helpdesk_support_contract"
         )
@@ -299,6 +354,10 @@ class ResPartner(models.Model):
 
     def action_open_helpdesk_360_approvals(self):
         self.ensure_one()
+        self.env["helpdesk.feature.config"].ensure_enabled(
+            "helpdesk.customer.overview",
+            message=_("Customer Support Overview is disabled in Helpdesk feature settings."),
+        )
         action = self.env["ir.actions.actions"]._for_xml_id(
             "helpdesk_custom_approval.action_helpdesk_ticket_approval"
         )
@@ -307,6 +366,10 @@ class ResPartner(models.Model):
 
     def action_open_helpdesk_360_dispatches(self):
         self.ensure_one()
+        self.env["helpdesk.feature.config"].ensure_enabled(
+            "helpdesk.customer.overview",
+            message=_("Customer Support Overview is disabled in Helpdesk feature settings."),
+        )
         action = self.env["ir.actions.actions"]._for_xml_id(
             "helpdesk_custom_dispatch.action_helpdesk_dispatch"
         )
@@ -315,6 +378,10 @@ class ResPartner(models.Model):
 
     def action_open_helpdesk_360_sales_handoffs(self):
         self.ensure_one()
+        self.env["helpdesk.feature.config"].ensure_enabled(
+            "helpdesk.customer.overview",
+            message=_("Customer Support Overview is disabled in Helpdesk feature settings."),
+        )
         action = self.env["ir.actions.actions"]._for_xml_id(
             "helpdesk_custom_sales_handoff.action_helpdesk_sales_handoff"
         )
@@ -323,6 +390,10 @@ class ResPartner(models.Model):
 
     def action_open_helpdesk_360_invoices(self):
         self.ensure_one()
+        self.env["helpdesk.feature.config"].ensure_enabled(
+            "helpdesk.customer.overview",
+            message=_("Customer Support Overview is disabled in Helpdesk feature settings."),
+        )
         action = self.env["ir.actions.actions"]._for_xml_id(
             "account.action_move_out_invoice_type"
         )
@@ -331,6 +402,10 @@ class ResPartner(models.Model):
 
     def action_open_helpdesk_360_knowledge(self):
         self.ensure_one()
+        self.env["helpdesk.feature.config"].ensure_enabled(
+            "helpdesk.customer.overview",
+            message=_("Customer Support Overview is disabled in Helpdesk feature settings."),
+        )
         action = self.env["ir.actions.actions"]._for_xml_id(
             "helpdesk_custom_knowledge.action_helpdesk_knowledge_articles"
         )

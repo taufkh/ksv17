@@ -9,6 +9,7 @@
     "license": "LGPL-3",
     "category": "Helpdesk",
     "depends": [
+        "helpdesk_feature_hub",
         "helpdesk_mgmt",
         "mail",
         "portal",

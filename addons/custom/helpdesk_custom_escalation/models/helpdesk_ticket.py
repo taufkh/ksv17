@@ -137,6 +137,8 @@ class HelpdeskTicket(models.Model):
 
     @api.model
     def _cron_process_escalation_rules(self, batch_size=200):
+        if not self.env["helpdesk.feature.config"].is_enabled("helpdesk.ops.escalation"):
+            return
         active_teams = self.env["helpdesk.escalation.rule"].search(
             [("active", "=", True)]
         ).mapped("team_id")

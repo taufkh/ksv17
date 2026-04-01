@@ -49,6 +49,10 @@ class HelpdeskDispatch(models.Model):
 
     def action_create_service_report(self):
         self.ensure_one()
+        self.env["helpdesk.feature.config"].ensure_enabled(
+            "helpdesk.ops.field_service_report",
+            message=_("Field service reporting is disabled in Helpdesk feature settings."),
+        )
         draft_report = self.service_report_ids.filtered(lambda report: report.state == "draft")[:1]
         report = draft_report or self.env["helpdesk.field.service.report"].create(
             {
@@ -75,6 +79,10 @@ class HelpdeskDispatch(models.Model):
 
     def action_open_service_reports(self):
         self.ensure_one()
+        self.env["helpdesk.feature.config"].ensure_enabled(
+            "helpdesk.ops.field_service_report",
+            message=_("Field service reporting is disabled in Helpdesk feature settings."),
+        )
         action = self.env["ir.actions.actions"]._for_xml_id(
             "helpdesk_custom_field_service_report.action_helpdesk_field_service_report"
         )

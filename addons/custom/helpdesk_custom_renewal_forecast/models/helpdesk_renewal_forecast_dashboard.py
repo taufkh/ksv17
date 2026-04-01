@@ -1,4 +1,4 @@
-from odoo import fields, models, tools
+from odoo import _, api, fields, models, tools
 
 
 class HelpdeskRenewalForecastDashboard(models.Model):
@@ -32,6 +32,16 @@ class HelpdeskRenewalForecastDashboard(models.Model):
     gap_to_budget = fields.Monetary(currency_field="currency_id", readonly=True)
     attainment_rate = fields.Float(readonly=True)
     budget_attainment_rate = fields.Float(readonly=True)
+
+    @api.model
+    def action_open_renewal_forecast_menu(self):
+        self.env["helpdesk.feature.config"].ensure_enabled(
+            "helpdesk.renewal.forecast",
+            message=_("Renewal forecast is disabled in Helpdesk feature settings."),
+        )
+        return self.env["ir.actions.actions"]._for_xml_id(
+            "helpdesk_custom_renewal_forecast.action_helpdesk_renewal_forecast_dashboard"
+        )
 
     def init(self):
         tools.drop_view_if_exists(self.env.cr, self._table)

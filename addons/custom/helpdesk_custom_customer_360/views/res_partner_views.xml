@@ -202,11 +202,18 @@
         <field name="search_view_id" ref="base.view_res_partner_filter" />
     </record>
 
+    <record id="action_helpdesk_customer_360_menu" model="ir.actions.server">
+        <field name="name">Customer Support Overview Menu</field>
+        <field name="model_id" ref="base.model_res_partner" />
+        <field name="state">code</field>
+        <field name="code">action = env["res.partner"].action_open_helpdesk_customer_360_menu()</field>
+    </record>
+
     <menuitem
         id="menu_helpdesk_customer_360"
         name="Customer Support Overview"
         parent="helpdesk_mgmt.helpdesk_ticket_reporting_menu"
-        action="action_helpdesk_customer_360"
+        action="action_helpdesk_customer_360_menu"
         sequence="45"
         groups="helpdesk_mgmt.group_helpdesk_user"
     />

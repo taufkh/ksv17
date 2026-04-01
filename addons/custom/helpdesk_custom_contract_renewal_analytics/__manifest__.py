@@ -6,6 +6,7 @@
     "author": "OpenAI",
     "license": "AGPL-3",
     "depends": [
+        "helpdesk_feature_hub",
         "helpdesk_custom_contract_renewal",
         "helpdesk_custom_customer_360",
     ],

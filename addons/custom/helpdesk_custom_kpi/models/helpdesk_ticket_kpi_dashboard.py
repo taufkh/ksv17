@@ -1,4 +1,4 @@
-from odoo import _, fields, models, tools
+from odoo import _, api, fields, models, tools
 
 
 class HelpdeskTicketKpiDashboard(models.Model):
@@ -51,6 +51,48 @@ class HelpdeskTicketKpiDashboard(models.Model):
         string="No Follow-up > 24h", readonly=True
     )
 
+    def _ensure_kpi_feature_enabled(self):
+        self.env["helpdesk.feature.config"].ensure_enabled(
+            "helpdesk.analytics.kpi",
+            message=_("Helpdesk KPI reporting is disabled in Helpdesk feature settings."),
+        )
+        return True
+
+    @api.model
+    def action_open_kpi_dashboard_menu(self):
+        self._ensure_kpi_feature_enabled()
+        return self.env["ir.actions.actions"]._for_xml_id(
+            "helpdesk_custom_kpi.action_helpdesk_ticket_kpi_dashboard"
+        )
+
+    @api.model
+    def action_open_kpi_analysis_menu(self):
+        self._ensure_kpi_feature_enabled()
+        return self.env["ir.actions.actions"]._for_xml_id(
+            "helpdesk_custom_kpi.action_helpdesk_ticket_kpi_analysis"
+        )
+
+    @api.model
+    def action_open_kpi_agent_menu(self):
+        self._ensure_kpi_feature_enabled()
+        return self.env["ir.actions.actions"]._for_xml_id(
+            "helpdesk_custom_kpi.action_helpdesk_ticket_kpi_agent"
+        )
+
+    @api.model
+    def action_open_kpi_customer_menu(self):
+        self._ensure_kpi_feature_enabled()
+        return self.env["ir.actions.actions"]._for_xml_id(
+            "helpdesk_custom_kpi.action_helpdesk_ticket_kpi_customer"
+        )
+
+    @api.model
+    def action_open_kpi_trend_menu(self):
+        self._ensure_kpi_feature_enabled()
+        return self.env["ir.actions.actions"]._for_xml_id(
+            "helpdesk_custom_kpi.action_helpdesk_ticket_kpi_trend"
+        )
+
     def _ticket_domain(self):
         self.ensure_one()
         domain = []
@@ -60,6 +102,7 @@ class HelpdeskTicketKpiDashboard(models.Model):
 
     def _ticket_action(self, extra_domain=None, name=None):
         self.ensure_one()
+        self._ensure_kpi_feature_enabled()
         action = self.env.ref("helpdesk_mgmt.helpdesk_ticket_action").read()[0]
         action["domain"] = self._ticket_domain() + (extra_domain or [])
         if name:
@@ -104,6 +147,7 @@ class HelpdeskTicketKpiDashboard(models.Model):
 
     def action_open_analysis(self):
         self.ensure_one()
+        self._ensure_kpi_feature_enabled()
         action = self.env.ref("helpdesk_custom_kpi.action_helpdesk_ticket_kpi_analysis")
         result = action.read()[0]
         domain = []

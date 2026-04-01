@@ -123,8 +123,17 @@ class HelpdeskFieldServiceReport(models.Model):
                 round((sum(bool(value) for value in checks) / len(checks)) * 100)
             )
 
+    @api.model
+    def _ensure_report_feature_enabled(self):
+        self.env["helpdesk.feature.config"].ensure_enabled(
+            "helpdesk.ops.field_service_report",
+            message=_("Field service reporting is disabled in Helpdesk feature settings."),
+        )
+        return True
+
     @api.model_create_multi
     def create(self, vals_list):
+        self._ensure_report_feature_enabled()
         for vals in vals_list:
             if vals.get("dispatch_id"):
                 dispatch = self.env["helpdesk.dispatch"].browse(vals["dispatch_id"])
@@ -162,6 +171,7 @@ class HelpdeskFieldServiceReport(models.Model):
                 )
 
     def action_submit(self):
+        self._ensure_report_feature_enabled()
         for report in self:
             if not report.executive_summary and not report.actions_performed:
                 raise ValidationError(
@@ -172,6 +182,7 @@ class HelpdeskFieldServiceReport(models.Model):
         return True
 
     def action_acknowledge(self):
+        self._ensure_report_feature_enabled()
         for report in self:
             values = {
                 "state": "acknowledged",
@@ -183,16 +194,19 @@ class HelpdeskFieldServiceReport(models.Model):
         return True
 
     def action_close(self):
+        self._ensure_report_feature_enabled()
         self.write({"state": "closed"})
         self.message_post(body=_("Service report closed."))
         return True
 
     def action_reset_draft(self):
+        self._ensure_report_feature_enabled()
         self.write({"state": "draft"})
         self.message_post(body=_("Service report reset to draft."))
         return True
 
     def action_cancel(self):
+        self._ensure_report_feature_enabled()
         self.write({"state": "cancelled"})
         self.message_post(body=_("Service report cancelled."))
         return True

@@ -5,6 +5,15 @@ from odoo.exceptions import UserError
 class HelpdeskTicket(models.Model):
     _inherit = "helpdesk.ticket"
 
+    def _ensure_billing_feature_enabled(self):
+        self.ensure_one()
+        self.env["helpdesk.feature.config"].ensure_enabled_for_team(
+            "helpdesk.billing.invoice",
+            team=self.team_id,
+            message=_("Helpdesk billing is disabled in Helpdesk feature settings."),
+        )
+        return True
+
     invoice_ids = fields.Many2many(
         "account.move",
         "helpdesk_ticket_account_move_rel",
@@ -165,8 +174,7 @@ class HelpdeskTicket(models.Model):
 
     def _create_invoice_from_timesheets(self, lines, grouping="time_type", invoice_date=False, partner=False):
         self.ensure_one()
-        if not self.team_id.allow_billing:
-            raise UserError(_("Billing is not enabled for this helpdesk team."))
+        self._ensure_billing_feature_enabled()
         if not lines:
             raise UserError(_("There are no billable timesheet lines to invoice."))
         partner = partner or self._get_default_invoice_partner()
@@ -228,6 +236,7 @@ class HelpdeskTicket(models.Model):
 
     def action_open_create_invoice_wizard(self):
         self.ensure_one()
+        self._ensure_billing_feature_enabled()
         return {
             "type": "ir.actions.act_window",
             "name": _("Create Invoice"),

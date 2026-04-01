@@ -6,7 +6,7 @@
     "summary": "Integrate Anthropic Claude AI for automatic ticket triage, customer responses, and developer guidance plans",
     "author": "Custom",
     "license": "LGPL-3",
-    "depends": ["helpdesk_mgmt", "mail"],
+    "depends": ["helpdesk_feature_hub", "helpdesk_mgmt", "mail"],
     "data": [
         "security/ir.model.access.csv",
         "data/ir_cron_data.xml",

@@ -36,6 +36,10 @@ PRIORITY_MAP = {
 class HelpdeskTicket(models.Model):
     _inherit = "helpdesk.ticket"
 
+    @api.model
+    def _is_claude_feature_enabled(self):
+        return self.env["helpdesk.feature.config"].is_enabled("helpdesk.ai.claude")
+
     # ── AI status & classification fields ────────────────────────────────────
     ai_status = fields.Selection(
         selection=[
@@ -124,7 +128,7 @@ class HelpdeskTicket(models.Model):
     def create(self, vals_list):
         tickets = super().create(vals_list)
         for ticket in tickets:
-            if ticket.team_id.ai_enabled:
+            if self._is_claude_feature_enabled() and ticket.team_id.ai_enabled:
                 ticket.ai_status = "pending"
         return tickets
 
@@ -135,6 +139,8 @@ class HelpdeskTicket(models.Model):
     @api.model
     def _cron_analyze_pending_tickets(self, batch_size=10):
         """Process up to batch_size pending tickets per cron run."""
+        if not self._is_claude_feature_enabled():
+            return
         pending = self.search(
             [("ai_status", "=", "pending"), ("team_id.ai_enabled", "=", True)],
             limit=batch_size,
@@ -539,6 +545,8 @@ Please analyse this ticket and respond with the JSON object."""
     def action_analyze_with_claude(self):
         """Manual trigger: analyse the current ticket immediately (synchronous)."""
         self.ensure_one()
+        if not self._is_claude_feature_enabled():
+            raise UserError(_("Claude AI is disabled in Helpdesk feature settings."))
         if not self.team_id.ai_enabled:
             raise UserError(
                 _(

@@ -6,6 +6,7 @@
     "author": "Custom",
     "license": "LGPL-3",
     "depends": [
+        "helpdesk_feature_hub",
         "helpdesk_custom_escalation",
         "helpdesk_mgmt_sla",
         "helpdesk_mgmt_rating",

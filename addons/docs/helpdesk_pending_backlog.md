@@ -1,6 +1,6 @@
 # Helpdesk Pending Backlog
 
-Last updated: 2026-03-31  
+Last updated: 2026-04-01  
 Target database: `ksv17-dev`
 
 This document lists items that are still pending and have not been developed yet in the current Helpdesk customization stream.
@@ -109,6 +109,37 @@ Current pending state:
 
 - no high-priority item remains in the original Helpdesk roadmap stream
 - current backlog is now purely optional optimization or business-specific extension
+
+### 2.2 Helpdesk modularization by centralized config
+
+Status:
+
+- delivered
+
+Why it matters:
+
+- custom Helpdesk scope is already broad and split across many addons
+- runtime behavior is not yet consistently gated by config
+- future maintenance will be safer if features can be controlled centrally and overridden per team where relevant
+
+Current phase:
+
+- Phase 1 audit completed in `addons/docs/helpdesk_modularization_phase1_audit.md`
+- Phase 2 to Phase 5 implementation delivered for feature registry, centralized settings, runtime guards, menu/report entry-point gating, and database rollout in `ksv17-dev`
+- detailed operational guide is available in `addons/docs/helpdesk_modular_config_guide.md`
+
+Delivered scope:
+
+- centralized Helpdesk feature registry via `helpdesk_feature_hub`
+- global feature toggles exposed in `Settings > Helpdesk`
+- runtime gating for cron, controller, API, business action, reporting menu, and review-pack PDF output
+- initial team-level override support for features that already had stable team fields
+- smoke test checklist documented in `addons/docs/helpdesk_modular_config_smoke_test_checklist.md`
+
+Current pending state:
+
+- no blocker remains for global feature enable/disable from config
+- further team-level expansion is optional follow-up work, not part of the current blocker
 
 ## 3. Priority Recommendation
 

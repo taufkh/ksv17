@@ -49,6 +49,10 @@ class HelpdeskFieldServiceReport(models.Model):
     )
 
     def action_submit(self):
+        if not self.env["helpdesk.feature.config"].is_enabled(
+            "helpdesk.ops.dispatch_execution"
+        ):
+            return super().action_submit()
         for report in self:
             if not report.dispatch_id:
                 raise ValidationError(_("A dispatch is required before submitting the service report."))

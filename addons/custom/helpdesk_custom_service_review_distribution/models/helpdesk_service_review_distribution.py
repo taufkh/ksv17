@@ -134,6 +134,10 @@ class HelpdeskServiceReviewDistribution(models.Model):
 
     @api.model
     def _cron_run_due_distributions(self):
+        if not self.env["helpdesk.feature.config"].is_enabled(
+            "helpdesk.review.distribution"
+        ):
+            return True
         due = self.search(
             [
                 ("active", "=", True),

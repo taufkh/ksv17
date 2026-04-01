@@ -6,6 +6,7 @@
     "author": "OpenAI",
     "license": "AGPL-3",
     "depends": [
+        "helpdesk_feature_hub",
         "helpdesk_custom_customer_communication_log",
         "helpdesk_custom_kpi",
         "helpdesk_custom_demo",

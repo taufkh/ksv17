@@ -1,4 +1,4 @@
-from odoo import fields, models, tools
+from odoo import _, api, fields, models, tools
 
 
 class HelpdeskCommunicationAnalyticsReport(models.Model):
@@ -73,6 +73,18 @@ class HelpdeskCommunicationAnalyticsReport(models.Model):
         ],
         readonly=True,
     )
+
+    @api.model
+    def action_open_communication_analytics_menu(self):
+        self.env["helpdesk.feature.config"].ensure_enabled(
+            "helpdesk.analytics.communication",
+            message=_(
+                "Communication analytics is disabled in Helpdesk feature settings."
+            ),
+        )
+        return self.env["ir.actions.actions"]._for_xml_id(
+            "helpdesk_custom_communication_analytics.action_helpdesk_communication_analytics_report"
+        )
 
     def init(self):
         tools.drop_view_if_exists(self.env.cr, self._table)

@@ -6,6 +6,7 @@
     "author": "Custom",
     "license": "LGPL-3",
     "depends": [
+        "helpdesk_feature_hub",
         "helpdesk_mgmt",
         "helpdesk_mgmt_sla",
         "mail",

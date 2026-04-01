@@ -5,6 +5,7 @@
     "author": "OpenAI",
     "license": "LGPL-3",
     "depends": [
+        "helpdesk_feature_hub",
         "helpdesk_custom_service_review_pack",
     ],
     "data": [

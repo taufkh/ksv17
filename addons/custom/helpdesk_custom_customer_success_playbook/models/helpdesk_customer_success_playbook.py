@@ -93,6 +93,10 @@ class HelpdeskCustomerSuccessPlaybook(models.Model):
 
     @api.model
     def _cron_schedule_due_playbooks(self):
+        if not self.env["helpdesk.feature.config"].is_enabled(
+            "helpdesk.success.playbook"
+        ):
+            return True
         due = self.search(
             [
                 ("state", "in", ["active", "monitoring"]),

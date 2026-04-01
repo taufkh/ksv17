@@ -1,4 +1,4 @@
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 
 
 class HelpdeskRenewalTarget(models.Model):
@@ -42,3 +42,20 @@ class HelpdeskRenewalTarget(models.Model):
                 if record.month_start
                 else False
             )
+
+    @api.model
+    def _ensure_forecast_feature_enabled(self):
+        self.env["helpdesk.feature.config"].ensure_enabled(
+            "helpdesk.renewal.forecast",
+            message=_("Renewal forecast is disabled in Helpdesk feature settings."),
+        )
+        return True
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        self._ensure_forecast_feature_enabled()
+        return super().create(vals_list)
+
+    def write(self, vals):
+        self._ensure_forecast_feature_enabled()
+        return super().write(vals)

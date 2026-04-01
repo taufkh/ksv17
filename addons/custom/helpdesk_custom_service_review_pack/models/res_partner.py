@@ -13,6 +13,9 @@ class ResPartner(models.Model):
     def _compute_helpdesk_service_review_pack_count(self):
         pack_model = self.env["helpdesk.service.review.pack"].sudo()
         for partner in self:
+            if not self.env["helpdesk.feature.config"].is_enabled("helpdesk.review.pack"):
+                partner.helpdesk_service_review_pack_count = 0
+                continue
             root = partner.commercial_partner_id or partner
             partner.helpdesk_service_review_pack_count = pack_model.search_count(
                 [("partner_id", "=", root.id)]
@@ -20,6 +23,10 @@ class ResPartner(models.Model):
 
     def action_generate_helpdesk_service_review_pack(self):
         self.ensure_one()
+        self.env["helpdesk.feature.config"].ensure_enabled(
+            "helpdesk.review.pack",
+            message=_("Service review packs are disabled in Helpdesk feature settings."),
+        )
         partner = self.commercial_partner_id or self
         pack = self.env["helpdesk.service.review.pack"].create(
             {
@@ -38,6 +45,10 @@ class ResPartner(models.Model):
 
     def action_open_helpdesk_service_review_packs(self):
         self.ensure_one()
+        self.env["helpdesk.feature.config"].ensure_enabled(
+            "helpdesk.review.pack",
+            message=_("Service review packs are disabled in Helpdesk feature settings."),
+        )
         root = self.commercial_partner_id or self
         action = self.env["ir.actions.actions"]._for_xml_id(
             "helpdesk_custom_service_review_pack.action_helpdesk_service_review_pack"
