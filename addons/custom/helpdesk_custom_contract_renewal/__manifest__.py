@@ -1,0 +1,24 @@
+{
+    "name": "Helpdesk Custom Contract Renewal",
+    "summary": "Renewal watchlist and commercial follow-up automation for support contracts",
+    "version": "17.0.1.0.0",
+    "category": "Helpdesk",
+    "author": "OpenAI",
+    "license": "AGPL-3",
+    "depends": [
+        "helpdesk_custom_contract",
+        "helpdesk_custom_sales_handoff",
+        "helpdesk_custom_customer_360",
+        "helpdesk_custom_demo",
+    ],
+    "data": [
+        "security/ir.model.access.csv",
+        "views/helpdesk_contract_renewal_views.xml",
+        "views/helpdesk_support_contract_views.xml",
+        "views/helpdesk_sales_handoff_views.xml",
+        "views/res_partner_views.xml",
+    ],
+    "post_init_hook": "post_init_hook",
+    "installable": True,
+    "application": False,
+}

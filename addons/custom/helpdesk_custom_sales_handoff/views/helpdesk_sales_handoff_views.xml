@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_helpdesk_sales_handoff_search" model="ir.ui.view">
+        <field name="name">helpdesk.sales.handoff.search</field>
+        <field name="model">helpdesk.sales.handoff</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="ticket_id" />
+                <field name="partner_id" />
+                <field name="sales_team_id" />
+                <field name="sales_user_id" />
+                <filter string="Requested" name="requested" domain="[('state', '=', 'requested')]" />
+                <filter string="In Review" name="in_review" domain="[('state', '=', 'in_review')]" />
+                <filter string="Approved" name="approved" domain="[('state', '=', 'approved')]" />
+                <filter string="Converted" name="converted" domain="[('state', '=', 'converted')]" />
+                <group expand="0" string="Group By">
+                    <filter string="State" name="group_state" context="{'group_by': 'state'}" />
+                    <filter string="Reason" name="group_reason" context="{'group_by': 'reason'}" />
+                    <filter string="Helpdesk Team" name="group_helpdesk_team" context="{'group_by': 'helpdesk_team_id'}" />
+                    <filter string="Sales Team" name="group_sales_team" context="{'group_by': 'sales_team_id'}" />
+                    <filter string="Salesperson" name="group_sales_user" context="{'group_by': 'sales_user_id'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_sales_handoff_tree" model="ir.ui.view">
+        <field name="name">helpdesk.sales.handoff.tree</field>
+        <field name="model">helpdesk.sales.handoff</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" />
+                <field name="ticket_id" />
+                <field name="partner_id" optional="show" />
+                <field name="reason" />
+                <field name="urgency" />
+                <field name="sales_team_id" optional="show" />
+                <field name="sales_user_id" optional="show" />
+                <field name="expected_revenue" optional="show" />
+                <field name="state" />
+                <field name="lead_id" optional="show" />
+                <field name="request_date" optional="show" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_sales_handoff_form" model="ir.ui.view">
+        <field name="name">helpdesk.sales.handoff.form</field>
+        <field name="model">helpdesk.sales.handoff</field>
+        <field name="arch" type="xml">
+            <form string="Sales Handoff">
+                <header>
+                    <button
+                        name="action_submit"
+                        type="object"
+                        string="Submit"
+                        class="btn-primary"
+                        invisible="state != 'draft'"
+                        groups="helpdesk_mgmt.group_helpdesk_user"
+                    />
+                    <button
+                        name="action_mark_in_review"
+                        type="object"
+                        string="Start Review"
+                        invisible="state not in ('requested', 'approved')"
+                        groups="sales_team.group_sale_salesman"
+                    />
+                    <button
+                        name="action_approve"
+                        type="object"
+                        string="Approve"
+                        class="btn-primary"
+                        invisible="state not in ('requested', 'in_review')"
+                        groups="sales_team.group_sale_salesman"
+                    />
+                    <button
+                        name="action_reject"
+                        type="object"
+                        string="Reject"
+                        invisible="state not in ('requested', 'in_review', 'approved')"
+                        groups="sales_team.group_sale_salesman"
+                    />
+                    <button
+                        name="action_convert_to_opportunity"
+                        type="object"
+                        string="Create Opportunity"
+                        class="btn-primary"
+                        invisible="state not in ('approved', 'in_review')"
+                        groups="sales_team.group_sale_salesman"
+                    />
+                    <button
+                        name="action_open_opportunity"
+                        type="object"
+                        string="Open Opportunity"
+                        invisible="not lead_id"
+                        groups="sales_team.group_sale_salesman"
+                    />
+                    <field name="state" widget="statusbar" statusbar_visible="draft,requested,in_review,approved,converted,rejected" />
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_ticket" type="object" class="oe_stat_button" icon="fa-life-ring">
+                            <span class="o_stat_text">Open Ticket</span>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only" />
+                        <h1><field name="name" /></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="ticket_id" />
+                            <field name="partner_id" readonly="1" />
+                            <field name="helpdesk_team_id" readonly="1" />
+                            <field name="helpdesk_user_id" readonly="1" />
+                            <field name="requester_id" readonly="1" />
+                            <field name="request_date" readonly="1" />
+                        </group>
+                        <group>
+                            <field name="reason" />
+                            <field name="urgency" />
+                            <field name="sales_team_id" />
+                            <field name="sales_user_id" />
+                            <field name="expected_revenue" />
+                            <field name="lead_id" readonly="1" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Context">
+                            <field name="note" widget="html" />
+                        </page>
+                        <page string="Decision">
+                            <group>
+                                <field name="review_date" readonly="1" />
+                                <field name="converted_date" readonly="1" />
+                                <field name="rejected_date" readonly="1" />
+                                <field name="decision_note" placeholder="Internal note for sales decision..." />
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" />
+                    <field name="activity_ids" widget="mail_activity" />
+                    <field name="message_ids" widget="mail_thread" />
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_helpdesk_sales_handoff" model="ir.actions.act_window">
+        <field name="name">Sales Handoffs</field>
+        <field name="res_model">helpdesk.sales.handoff</field>
+        <field name="view_mode">tree,form,pivot,graph</field>
+        <field name="search_view_id" ref="view_helpdesk_sales_handoff_search" />
+        <field name="context">{'search_default_requested': 1}</field>
+    </record>
+
+    <menuitem
+        id="menu_helpdesk_sales_handoff"
+        name="Sales Handoffs"
+        parent="helpdesk_mgmt.helpdesk_ticket_reporting_menu"
+        action="action_helpdesk_sales_handoff"
+        sequence="30"
+        groups="helpdesk_mgmt.group_helpdesk_manager,sales_team.group_sale_salesman"
+    />
+</odoo>

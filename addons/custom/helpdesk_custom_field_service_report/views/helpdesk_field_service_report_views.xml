@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_helpdesk_field_service_report_search" model="ir.ui.view">
+        <field name="name">helpdesk.field.service.report.search</field>
+        <field name="model">helpdesk.field.service.report</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="dispatch_id" />
+                <field name="ticket_id" />
+                <field name="partner_id" />
+                <field name="engineer_id" />
+                <filter string="Submitted" name="submitted" domain="[('state', '=', 'submitted')]" />
+                <filter string="Acknowledged" name="acknowledged" domain="[('state', '=', 'acknowledged')]" />
+                <filter string="Needs Follow-up" name="needs_followup" domain="[('followup_required', '=', True)]" />
+                <filter string="No Access" name="no_access" domain="[('visit_outcome', '=', 'no_access')]" />
+                <group expand="0" string="Group By">
+                    <filter string="State" name="group_state" context="{'group_by': 'state'}" />
+                    <filter string="Outcome" name="group_outcome" context="{'group_by': 'visit_outcome'}" />
+                    <filter string="Engineer" name="group_engineer" context="{'group_by': 'engineer_id'}" />
+                    <filter string="Customer" name="group_customer" context="{'group_by': 'partner_id'}" />
+                    <filter string="Team" name="group_team" context="{'group_by': 'team_id'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_field_service_report_tree" model="ir.ui.view">
+        <field name="name">helpdesk.field.service.report.tree</field>
+        <field name="model">helpdesk.field.service.report</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" />
+                <field name="service_date" />
+                <field name="dispatch_id" />
+                <field name="ticket_id" />
+                <field name="partner_id" />
+                <field name="engineer_id" />
+                <field name="visit_outcome" />
+                <field name="checklist_completion" />
+                <field name="customer_acknowledged" optional="show" />
+                <field name="state" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_field_service_report_form" model="ir.ui.view">
+        <field name="name">helpdesk.field.service.report.form</field>
+        <field name="model">helpdesk.field.service.report</field>
+        <field name="arch" type="xml">
+            <form string="Field Service Report">
+                <header>
+                    <button name="action_submit" type="object" string="Submit" class="btn-primary" invisible="state not in ('draft', 'cancelled')" groups="helpdesk_mgmt.group_helpdesk_user" />
+                    <button name="action_acknowledge" type="object" string="Acknowledge" invisible="state not in ('submitted', 'draft')" groups="helpdesk_mgmt.group_helpdesk_user" />
+                    <button name="action_close" type="object" string="Close" class="btn-primary" invisible="state not in ('acknowledged', 'submitted')" groups="helpdesk_mgmt.group_helpdesk_user" />
+                    <button name="action_cancel" type="object" string="Cancel" invisible="state in ('closed', 'cancelled')" groups="helpdesk_mgmt.group_helpdesk_user" />
+                    <button name="action_reset_draft" type="object" string="Reset Draft" invisible="state not in ('submitted', 'acknowledged', 'cancelled')" groups="helpdesk_mgmt.group_helpdesk_manager" />
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submitted,acknowledged,closed,cancelled" />
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_dispatch" type="object" class="oe_stat_button" icon="fa-truck">
+                            <span class="o_stat_text">Open Dispatch</span>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only" />
+                        <h1><field name="name" /></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="dispatch_id" />
+                            <field name="ticket_id" readonly="1" />
+                            <field name="partner_id" readonly="1" />
+                            <field name="team_id" readonly="1" />
+                        </group>
+                        <group>
+                            <field name="service_date" />
+                            <field name="engineer_id" readonly="1" />
+                            <field name="visit_outcome" />
+                            <field name="checklist_completion" readonly="1" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Executive Summary">
+                            <field name="executive_summary" widget="html" />
+                        </page>
+                        <page string="Checklist">
+                            <group col="3">
+                                <field name="issue_confirmed" />
+                                <field name="environment_checked" />
+                                <field name="logs_collected" />
+                                <field name="customer_briefed" />
+                                <field name="safety_check_completed" />
+                                <field name="resolution_confirmed" />
+                                <field name="followup_required" />
+                            </group>
+                        </page>
+                        <page string="Findings and Actions">
+                            <group>
+                                <field name="root_cause" placeholder="Root cause, blocker, or reason the visit outcome happened..." />
+                                <field name="actions_performed" widget="html" />
+                                <field name="parts_used" placeholder="Parts used, replacement details, or license/config changes..." />
+                                <field name="recommendations" placeholder="Recommendations shared with the customer or internal team..." />
+                                <field name="next_steps" placeholder="Next step, owner, and expected follow-up action..." />
+                            </group>
+                        </page>
+                        <page string="Customer Acknowledgement">
+                            <group>
+                                <group>
+                                    <field name="customer_contact_name" />
+                                    <field name="customer_contact_role" />
+                                    <field name="customer_feedback" placeholder="Customer feedback, acceptance note, or open concern..." />
+                                </group>
+                                <group>
+                                    <field name="customer_acknowledged" />
+                                    <field name="acknowledgement_date" invisible="customer_acknowledged == False" />
+                                    <field name="customer_signature" widget="image" filename="customer_signature_filename" class="oe_avatar" />
+                                    <field name="customer_signature_filename" invisible="1" />
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Internal Notes">
+                            <field name="internal_note" widget="html" />
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" />
+                    <field name="activity_ids" widget="mail_activity" />
+                    <field name="message_ids" widget="mail_thread" />
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_field_service_report_pivot" model="ir.ui.view">
+        <field name="name">helpdesk.field.service.report.pivot</field>
+        <field name="model">helpdesk.field.service.report</field>
+        <field name="arch" type="xml">
+            <pivot string="Field Service Report Analysis">
+                <field name="engineer_id" type="row" />
+                <field name="visit_outcome" type="col" />
+                <field name="id" type="measure" string="Reports" />
+                <field name="checklist_completion" type="measure" />
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_helpdesk_field_service_report" model="ir.actions.act_window">
+        <field name="name">Field Service Reports</field>
+        <field name="res_model">helpdesk.field.service.report</field>
+        <field name="view_mode">tree,form,pivot</field>
+        <field name="search_view_id" ref="view_helpdesk_field_service_report_search" />
+    </record>
+
+    <menuitem
+        id="menu_helpdesk_field_service_report"
+        name="Field Service Reports"
+        parent="helpdesk_mgmt.helpdesk_ticket_reporting_menu"
+        action="action_helpdesk_field_service_report"
+        sequence="45"
+        groups="helpdesk_mgmt.group_helpdesk_user"
+    />
+</odoo>

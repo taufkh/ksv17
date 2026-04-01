@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_helpdesk_ticket_team_form_ext" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.team.form.extended</field>
+        <field name="model">helpdesk.ticket.team</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.view_helpdesk_ticket_team_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+
+                <!-- SLA -->
+                <group string="SLA Policies">
+                    <field name="use_sla"/>
+                    <field name="resource_calendar_id"
+                           invisible="not use_sla"/>
+                </group>
+
+                <!-- Auto-Assignment -->
+                <group string="Ticket Assignment">
+                    <field name="assign_method"/>
+                </group>
+
+                <!-- Types -->
+                <group string="Ticket Types">
+                    <field name="type_ids" widget="many2many_tags"/>
+                </group>
+
+                <!-- Project -->
+                <group string="Project">
+                    <field name="default_project_id"/>
+                </group>
+
+                <!-- Timesheet -->
+                <group string="Timesheets">
+                    <field name="allow_timesheet"/>
+                </group>
+
+                <!-- Close Inactive -->
+                <group string="Auto-Close Inactive Tickets">
+                    <field name="close_inactive_tickets"/>
+                    <field name="inactivity_warning_days"
+                           invisible="not close_inactive_tickets"/>
+                    <field name="inactivity_close_days"
+                           invisible="not close_inactive_tickets"/>
+                    <field name="inactivity_warning_template_id"
+                           invisible="not close_inactive_tickets"/>
+                    <field name="inactivity_closing_template_id"
+                           invisible="not close_inactive_tickets"/>
+                    <field name="closing_ticket_stage_id"
+                           invisible="not close_inactive_tickets"/>
+                </group>
+
+                <!-- Auto-Update Stage -->
+                <group string="Customer Reply Auto-Advance">
+                    <field name="autoupdate_ticket_stage"/>
+                    <field name="autopupdate_src_stage_ids" widget="many2many_tags"
+                           invisible="not autoupdate_ticket_stage"/>
+                    <field name="autopupdate_dest_stage_id"
+                           invisible="not autoupdate_ticket_stage"/>
+                </group>
+
+                <!-- Portal Restriction -->
+                <group string="Portal Access Restriction">
+                    <field name="helpdesk_partner_ids" widget="many2many_tags"/>
+                </group>
+
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

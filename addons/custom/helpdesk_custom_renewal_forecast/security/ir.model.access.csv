@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_helpdesk_renewal_target_user,helpdesk.renewal.target.user,model_helpdesk_renewal_target,helpdesk_mgmt.group_helpdesk_user,1,0,0,0
+access_helpdesk_renewal_target_manager,helpdesk.renewal.target.manager,model_helpdesk_renewal_target,helpdesk_mgmt.group_helpdesk_manager,1,1,1,1
+access_helpdesk_renewal_forecast_dashboard_user,helpdesk.renewal.forecast.dashboard.user,model_helpdesk_renewal_forecast_dashboard,helpdesk_mgmt.group_helpdesk_user,1,0,0,0

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Configuration sub-menus under the base Helpdesk → Configuration menu -->
+    <menuitem id="menu_helpdesk_ticket_type"
+              name="Ticket Types"
+              parent="helpdesk_mgmt.helpdesk_ticket_menu_configuration"
+              action="action_helpdesk_ticket_type"
+              sequence="10"/>
+
+    <menuitem id="menu_helpdesk_sla"
+              name="SLA Policies"
+              parent="helpdesk_mgmt.helpdesk_ticket_menu_configuration"
+              action="action_helpdesk_sla"
+              sequence="20"/>
+
+</odoo>

@@ -31,7 +31,7 @@ Smoke test execution:
 Automated API test suite:
 
 - Test file:
-  `addons/v17/helpdesk/helpdesk_custom_api/tests/test_helpdesk_custom_api.py`
+  `addons/custom/helpdesk_custom_api/tests/test_helpdesk_custom_api.py`
 - Run tests:
   `docker exec -i odoo17-docker-community-web-1 /usr/bin/odoo -c /etc/odoo/odoo.conf --http-port=8071 -d ksv17-dev -u helpdesk_custom_api --test-enable --test-tags /helpdesk_custom_api --stop-after-init`
 

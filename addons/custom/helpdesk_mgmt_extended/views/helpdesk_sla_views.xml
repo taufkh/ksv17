@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_helpdesk_sla_list" model="ir.ui.view">
+        <field name="name">helpdesk.sla.list</field>
+        <field name="model">helpdesk.sla</field>
+        <field name="arch" type="xml">
+            <list string="SLA Policies">
+                <field name="name"/>
+                <field name="team_ids" widget="many2many_tags"/>
+                <field name="days"/>
+                <field name="hours"/>
+                <field name="priority"/>
+                <field name="active" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_sla_form" model="ir.ui.view">
+        <field name="name">helpdesk.sla.form</field>
+        <field name="model">helpdesk.sla</field>
+        <field name="arch" type="xml">
+            <form string="SLA Policy">
+                <sheet>
+                    <widget name="web_ribbon" title="Archived"
+                            bg_color="text-bg-danger"
+                            invisible="active"/>
+                    <group>
+                        <field name="name"/>
+                        <field name="active"/>
+                    </group>
+                    <group string="Applicability">
+                        <field name="team_ids" widget="many2many_tags"/>
+                        <field name="category_ids" widget="many2many_tags"/>
+                        <field name="tag_ids" widget="many2many_tags"/>
+                        <field name="priority"/>
+                        <field name="domain" widget="domain"
+                               options="{'model': 'helpdesk.ticket'}"/>
+                    </group>
+                    <group string="Target">
+                        <field name="stage_ids" widget="many2many_tags"/>
+                    </group>
+                    <group string="Deadline">
+                        <field name="days"/>
+                        <field name="hours"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_helpdesk_sla" model="ir.actions.act_window">
+        <field name="name">SLA Policies</field>
+        <field name="res_model">helpdesk.sla</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

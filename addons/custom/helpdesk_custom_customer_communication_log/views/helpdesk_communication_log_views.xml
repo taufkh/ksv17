@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_helpdesk_communication_log_search" model="ir.ui.view">
+        <field name="name">helpdesk.communication.log.search</field>
+        <field name="model">helpdesk.communication.log</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="ticket_id" />
+                <field name="partner_id" />
+                <field name="subject" />
+                <field name="channel" />
+                <filter string="Inbound" name="inbound" domain="[('direction', '=', 'inbound')]" />
+                <filter string="Outbound" name="outbound" domain="[('direction', '=', 'outbound')]" />
+                <filter string="Portal" name="portal" domain="[('channel', '=', 'portal')]" />
+                <filter string="WhatsApp" name="whatsapp" domain="[('channel', '=', 'whatsapp')]" />
+                <filter string="Needs Attention" name="failed" domain="[('status', 'in', ['failed', 'cancelled'])]" />
+                <group expand="0" string="Group By">
+                    <filter string="Channel" name="group_channel" context="{'group_by': 'channel'}" />
+                    <filter string="Direction" name="group_direction" context="{'group_by': 'direction'}" />
+                    <filter string="Type" name="group_type" context="{'group_by': 'communication_type'}" />
+                    <filter string="Customer" name="group_customer" context="{'group_by': 'partner_id'}" />
+                    <filter string="Ticket" name="group_ticket" context="{'group_by': 'ticket_id'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_communication_log_tree" model="ir.ui.view">
+        <field name="name">helpdesk.communication.log.tree</field>
+        <field name="model">helpdesk.communication.log</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="logged_at" />
+                <field name="ticket_id" />
+                <field name="partner_id" optional="show" />
+                <field name="channel" />
+                <field name="direction" />
+                <field name="communication_type" />
+                <field name="status" />
+                <field name="subject" />
+                <field name="user_id" optional="show" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_communication_log_form" model="ir.ui.view">
+        <field name="name">helpdesk.communication.log.form</field>
+        <field name="model">helpdesk.communication.log</field>
+        <field name="arch" type="xml">
+            <form string="Customer Communication Log">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="ticket_id" />
+                            <field name="partner_id" />
+                            <field name="user_id" />
+                            <field name="logged_at" />
+                        </group>
+                        <group>
+                            <field name="channel" />
+                            <field name="direction" />
+                            <field name="communication_type" />
+                            <field name="status" />
+                        </group>
+                    </group>
+                    <group>
+                        <field name="subject" />
+                        <field name="summary" />
+                        <field name="body" />
+                    </group>
+                    <group string="Source">
+                        <group>
+                            <field name="source_model" />
+                            <field name="source_res_id" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_helpdesk_communication_log" model="ir.actions.act_window">
+        <field name="name">Customer Communication Log</field>
+        <field name="res_model">helpdesk.communication.log</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_helpdesk_communication_log_search" />
+        <field name="context">{'search_default_inbound': 1}</field>
+    </record>
+
+    <menuitem
+        id="menu_helpdesk_communication_log"
+        name="Customer Communication Log"
+        parent="helpdesk_mgmt.helpdesk_ticket_reporting_menu"
+        action="action_helpdesk_communication_log"
+        sequence="47"
+        groups="helpdesk_mgmt.group_helpdesk_user"
+    />
+</odoo>

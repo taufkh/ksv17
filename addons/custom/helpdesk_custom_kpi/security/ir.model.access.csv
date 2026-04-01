@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_helpdesk_ticket_kpi_report_manager,helpdesk.ticket.kpi.report manager,model_helpdesk_ticket_kpi_report,helpdesk_mgmt.group_helpdesk_manager,1,0,0,0
+access_helpdesk_ticket_kpi_dashboard_manager,helpdesk.ticket.kpi.dashboard manager,model_helpdesk_ticket_kpi_dashboard,helpdesk_mgmt.group_helpdesk_manager,1,0,0,0
+access_helpdesk_ticket_kpi_agent_manager,helpdesk.ticket.kpi.agent manager,model_helpdesk_ticket_kpi_agent,helpdesk_mgmt.group_helpdesk_manager,1,0,0,0
+access_helpdesk_ticket_kpi_customer_manager,helpdesk.ticket.kpi.customer manager,model_helpdesk_ticket_kpi_customer,helpdesk_mgmt.group_helpdesk_manager,1,0,0,0
+access_helpdesk_ticket_kpi_trend_manager,helpdesk.ticket.kpi.trend manager,model_helpdesk_ticket_kpi_trend,helpdesk_mgmt.group_helpdesk_manager,1,0,0,0

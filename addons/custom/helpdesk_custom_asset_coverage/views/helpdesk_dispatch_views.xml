@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_helpdesk_dispatch_form_asset" model="ir.ui.view">
+        <field name="name">helpdesk.dispatch.form.asset</field>
+        <field name="model">helpdesk.dispatch</field>
+        <field name="inherit_id" ref="helpdesk_custom_dispatch.view_helpdesk_dispatch_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='site_contact_phone']" position="after">
+                <field name="support_asset_id" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_dispatch_tree_asset" model="ir.ui.view">
+        <field name="name">helpdesk.dispatch.tree.asset</field>
+        <field name="model">helpdesk.dispatch</field>
+        <field name="inherit_id" ref="helpdesk_custom_dispatch.view_helpdesk_dispatch_tree" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="support_asset_id" optional="show" />
+            </xpath>
+        </field>
+    </record>
+</odoo>

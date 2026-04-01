@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- project.project: add ticket smart button -->
+    <record id="view_project_project_form_ext" model="ir.ui.view">
+        <field name="name">project.project.form.helpdesk</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_open_tickets" type="object"
+                        class="oe_stat_button" icon="fa-ticket"
+                        invisible="ticket_count == 0">
+                    <field name="ticket_count" widget="statinfo" string="Tickets"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- project.task: add ticket smart button -->
+    <record id="view_project_task_form_ext" model="ir.ui.view">
+        <field name="name">project.task.form.helpdesk</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_open_tickets" type="object"
+                        class="oe_stat_button" icon="fa-ticket"
+                        invisible="ticket_count == 0">
+                    <field name="ticket_count" widget="statinfo" string="Tickets"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

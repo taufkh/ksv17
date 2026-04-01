@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_document_page_search_helpdesk_portal_publication" model="ir.ui.view">
+        <field name="name">document.page.search.helpdesk.portal.publication</field>
+        <field name="model">document.page</field>
+        <field name="inherit_id" ref="helpdesk_custom_knowledge.view_document_page_search_helpdesk" />
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='portal_ready']" position="after">
+                <filter string="Published To Portal" name="portal_published" domain="[('portal_publication_state', '=', 'published')]" />
+                <filter string="Portal Review" name="portal_review" domain="[('portal_publication_state', '=', 'review')]" />
+            </xpath>
+            <xpath expr="//search/group" position="inside">
+                <filter string="Portal Publication" name="group_portal_publication" context="{'group_by': 'portal_publication_state'}" />
+                <filter string="Portal Visibility" name="group_portal_visibility" context="{'group_by': 'portal_visibility'}" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_document_page_tree_helpdesk_portal_publication" model="ir.ui.view">
+        <field name="name">document.page.tree.helpdesk.portal.publication</field>
+        <field name="model">document.page</field>
+        <field name="inherit_id" ref="helpdesk_custom_knowledge.view_document_page_tree_helpdesk" />
+        <field name="arch" type="xml">
+            <xpath expr="//tree/field[@name='article_status']" position="after">
+                <field name="portal_publication_state" optional="show" />
+                <field name="portal_visibility" optional="show" />
+                <field name="portal_view_count" optional="show" />
+                <field name="portal_feedback_score" optional="show" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_document_page_form_helpdesk_portal_publication" model="ir.ui.view">
+        <field name="name">document.page.form.helpdesk.portal.publication</field>
+        <field name="model">document.page</field>
+        <field name="inherit_id" ref="helpdesk_custom_knowledge.view_document_page_form_helpdesk" />
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_submit_portal_review" type="object" string="Submit Portal Review" invisible="not is_helpdesk_article or portal_publication_state not in ('draft', 'retired')" />
+                <button name="action_approve_portal_publication" type="object" string="Approve For Portal" class="btn-primary" invisible="not is_helpdesk_article or portal_publication_state != 'review'" />
+                <button name="action_publish_to_portal" type="object" string="Publish To Portal" class="btn-primary" invisible="not is_helpdesk_article or portal_publication_state not in ('approved', 'retired')" />
+                <button name="action_retire_from_portal" type="object" string="Retire From Portal" invisible="not is_helpdesk_article or portal_publication_state != 'published'" />
+                <field name="portal_publication_state" widget="statusbar" statusbar_visible="draft,review,approved,published,retired" invisible="not is_helpdesk_article" />
+            </xpath>
+            <xpath expr="//page[@name='info']/group/group[2]" position="inside">
+                <field name="portal_visibility" invisible="not is_helpdesk_article" />
+                <field name="portal_summary" invisible="not is_helpdesk_article" />
+                <field name="portal_keywords" invisible="not is_helpdesk_article" />
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Portal Publication" invisible="not is_helpdesk_article">
+                    <group>
+                        <group>
+                            <field name="portal_visibility" />
+                            <field name="portal_partner_ids" widget="many2many_tags" invisible="portal_visibility != 'selected_customers'" />
+                            <field name="portal_contract_ids" widget="many2many_tags" invisible="portal_visibility != 'contract_customers'" />
+                            <field name="portal_summary" />
+                            <field name="portal_keywords" />
+                        </group>
+                        <group>
+                            <field name="portal_reviewed_by_id" readonly="1" />
+                            <field name="portal_reviewed_on" readonly="1" />
+                            <field name="portal_approved_by_id" readonly="1" />
+                            <field name="portal_approved_on" readonly="1" />
+                            <field name="portal_published_by_id" readonly="1" />
+                            <field name="portal_published_on" readonly="1" />
+                        </group>
+                    </group>
+                    <group string="Portal Metrics">
+                        <group>
+                            <field name="portal_view_count" readonly="1" />
+                            <field name="portal_helpful_count" readonly="1" />
+                        </group>
+                        <group>
+                            <field name="portal_not_helpful_count" readonly="1" />
+                            <field name="portal_deflection_count" readonly="1" />
+                            <field name="portal_feedback_score" readonly="1" />
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="action_report_helpdesk_service_review_pack" model="ir.actions.report">
+        <field name="name">Service Review Pack</field>
+        <field name="model">helpdesk.service.review.pack</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">helpdesk_custom_service_review_pack.report_helpdesk_service_review_pack_document</field>
+        <field name="report_file">helpdesk_custom_service_review_pack.report_helpdesk_service_review_pack_document</field>
+        <field name="print_report_name">'Service Review - %s' % (object.partner_id.display_name)</field>
+        <field name="binding_model_id" ref="model_helpdesk_service_review_pack" />
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_helpdesk_service_review_pack_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Customer Service Review Pack</h2>
+                        <p>
+                            <strong>Customer:</strong>
+                            <span t-field="o.partner_id" />
+                            <br />
+                            <strong>Period:</strong>
+                            <span t-field="o.date_from" />
+                            <span> to </span>
+                            <span t-field="o.date_to" />
+                            <br />
+                            <strong>Prepared:</strong>
+                            <span t-field="o.prepared_at" />
+                            <span t-if="o.prepared_by_id">
+                                <span> by </span>
+                                <span t-field="o.prepared_by_id" />
+                            </span>
+                        </p>
+
+                        <h3>Executive Summary</h3>
+                        <div t-field="o.executive_summary_html" />
+
+                        <h3>Operational Highlights</h3>
+                        <table class="table table-sm o_main_table">
+                            <tbody>
+                                <tr>
+                                    <td>Current Health</td>
+                                    <td><span t-field="o.health" /></td>
+                                    <td>Current Open Tickets</td>
+                                    <td><span t-field="o.current_open_ticket_count" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Tickets Created</td>
+                                    <td><span t-field="o.tickets_created_count" /></td>
+                                    <td>Tickets Closed</td>
+                                    <td><span t-field="o.tickets_closed_count" /></td>
+                                </tr>
+                                <tr>
+                                    <td>SLA Overdue</td>
+                                    <td><span t-field="o.current_overdue_ticket_count" /></td>
+                                    <td>Escalated</td>
+                                    <td><span t-field="o.current_escalated_ticket_count" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Unassigned</td>
+                                    <td><span t-field="o.current_unassigned_ticket_count" /></td>
+                                    <td>Avg Resolution Hours</td>
+                                    <td><span t-field="o.avg_resolution_hours" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Average Rating</td>
+                                    <td><span t-field="o.avg_rating" /></td>
+                                    <td>Portal Views</td>
+                                    <td><span t-field="o.portal_views_total" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h3>Communication And Execution</h3>
+                        <table class="table table-sm o_main_table">
+                            <tbody>
+                                <tr>
+                                    <td>Total Communications</td>
+                                    <td><span t-field="o.communication_count" /></td>
+                                    <td>Inbound</td>
+                                    <td><span t-field="o.inbound_communication_count" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Outbound</td>
+                                    <td><span t-field="o.outbound_communication_count" /></td>
+                                    <td>Failed</td>
+                                    <td><span t-field="o.failed_communication_count" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Dispatches</td>
+                                    <td><span t-field="o.dispatch_count" /></td>
+                                    <td>Completed Dispatches</td>
+                                    <td><span t-field="o.completed_dispatch_count" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Pending Approvals</td>
+                                    <td><span t-field="o.pending_approval_count" /></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h3>Commercial And Coverage</h3>
+                        <table class="table table-sm o_main_table">
+                            <tbody>
+                                <tr>
+                                    <td>Active Contracts</td>
+                                    <td><span t-field="o.active_contract_count" /></td>
+                                    <td>Consumed Hours</td>
+                                    <td><span t-field="o.contract_consumed_hours" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Remaining Hours</td>
+                                    <td><span t-field="o.contract_remaining_hours" /></td>
+                                    <td>Uninvoiced Hours</td>
+                                    <td><span t-field="o.uninvoiced_hours" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Invoice Count</td>
+                                    <td><span t-field="o.invoice_count" /></td>
+                                    <td>Invoiced Amount</td>
+                                    <td><span t-field="o.invoiced_amount" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Renewal Risk</td>
+                                    <td><span t-field="o.renewal_risk_segment" /></td>
+                                    <td>Renewal Watch Items</td>
+                                    <td><span t-field="o.renewal_watch_count" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Overdue Renewal Follow-ups</td>
+                                    <td><span t-field="o.renewal_overdue_followup_count" /></td>
+                                    <td>Weighted Renewal Revenue</td>
+                                    <td><span t-field="o.renewal_weighted_revenue" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Revenue At Risk</td>
+                                    <td><span t-field="o.revenue_at_risk" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}" /></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

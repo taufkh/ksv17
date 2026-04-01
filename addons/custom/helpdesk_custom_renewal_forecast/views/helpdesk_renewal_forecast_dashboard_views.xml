@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_helpdesk_renewal_forecast_dashboard_search" model="ir.ui.view">
+        <field name="name">helpdesk.renewal.forecast.dashboard.search</field>
+        <field name="model">helpdesk.renewal.forecast.dashboard</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="month_start" />
+                <filter string="Below Target" name="below_target" domain="[('gap_to_target', '&lt;', 0)]" />
+                <filter string="Above Budget" name="above_budget" domain="[('gap_to_budget', '&lt;', 0)]" />
+                <group expand="0" string="Group By">
+                    <filter string="Month" name="group_month" context="{'group_by': 'month_start'}" />
+                    <filter string="Scope" name="group_scope" context="{'group_by': 'scope_type'}" />
+                    <filter string="Team" name="group_team" context="{'group_by': 'team_id'}" />
+                    <filter string="Salesperson" name="group_sales" context="{'group_by': 'sales_user_id'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_renewal_forecast_dashboard_tree" model="ir.ui.view">
+        <field name="name">helpdesk.renewal.forecast.dashboard.tree</field>
+        <field name="model">helpdesk.renewal.forecast.dashboard</field>
+        <field name="arch" type="xml">
+            <tree decoration-danger="gap_to_target &lt; 0" decoration-warning="revenue_at_risk &gt; 0">
+                <field name="month_label" />
+                <field name="scope_type" />
+                <field name="name" />
+                <field name="target_amount" />
+                <field name="budget_amount" optional="show" />
+                <field name="weighted_forecast_amount" />
+                <field name="pipeline_amount" optional="show" />
+                <field name="won_amount" optional="show" />
+                <field name="revenue_at_risk" optional="show" />
+                <field name="gap_to_target" />
+                <field name="attainment_rate" />
+                <field name="overdue_follow_up_count" optional="show" />
+                <field name="open_watch_count" optional="show" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_renewal_forecast_dashboard_pivot" model="ir.ui.view">
+        <field name="name">helpdesk.renewal.forecast.dashboard.pivot</field>
+        <field name="model">helpdesk.renewal.forecast.dashboard</field>
+        <field name="arch" type="xml">
+            <pivot string="Renewal Forecast">
+                <field name="month_start" type="row" interval="month" />
+                <field name="scope_type" type="col" />
+                <field name="target_amount" type="measure" />
+                <field name="budget_amount" type="measure" />
+                <field name="weighted_forecast_amount" type="measure" />
+                <field name="won_amount" type="measure" />
+                <field name="revenue_at_risk" type="measure" />
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_renewal_forecast_dashboard_graph" model="ir.ui.view">
+        <field name="name">helpdesk.renewal.forecast.dashboard.graph</field>
+        <field name="model">helpdesk.renewal.forecast.dashboard</field>
+        <field name="arch" type="xml">
+            <graph string="Renewal Forecast" type="bar">
+                <field name="month_start" interval="month" />
+                <field name="target_amount" type="measure" />
+                <field name="weighted_forecast_amount" type="measure" />
+                <field name="won_amount" type="measure" />
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_helpdesk_renewal_forecast_dashboard" model="ir.actions.act_window">
+        <field name="name">Renewal Forecast</field>
+        <field name="res_model">helpdesk.renewal.forecast.dashboard</field>
+        <field name="view_mode">pivot,graph,tree</field>
+        <field name="search_view_id" ref="view_helpdesk_renewal_forecast_dashboard_search" />
+    </record>
+
+    <menuitem
+        id="menu_helpdesk_renewal_forecast_dashboard"
+        name="Renewal Forecast"
+        parent="helpdesk_mgmt.helpdesk_ticket_reporting_menu"
+        action="action_helpdesk_renewal_forecast_dashboard"
+        sequence="46"
+        groups="helpdesk_mgmt.group_helpdesk_user,sales_team.group_sale_salesman"
+    />
+</odoo>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_helpdesk_team_form_custom_invoice" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.team.form.custom.invoice</field>
+        <field name="model">helpdesk.ticket.team</field>
+        <field name="inherit_id" ref="helpdesk_mgmt_timesheet.timesheet_helpdesk_team_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='allow_timesheet']" position="after">
+                <field name="allow_billing" />
+                <field
+                    name="default_invoice_product_id"
+                    invisible="not allow_billing"
+                />
+                <field
+                    name="invoice_grouping"
+                    invisible="not allow_billing"
+                />
+            </xpath>
+        </field>
+    </record>
+</odoo>

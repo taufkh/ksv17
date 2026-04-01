@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_helpdesk_ticket_form_custom_portal" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.form.custom.portal</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.ticket_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button
+                    name="action_open_public_portal_link"
+                    type="object"
+                    string="Open Public Portal"
+                    class="btn-primary"
+                />
+                <button
+                    name="action_regenerate_public_portal_link"
+                    type="object"
+                    string="Refresh Public Link"
+                />
+                <button
+                    name="action_copy_public_portal_link"
+                    type="object"
+                    string="Copy Public Link"
+                />
+                <button
+                    name="action_send_public_portal_link_email"
+                    type="object"
+                    string="Send via Email"
+                />
+                <button
+                    name="action_send_public_portal_link_whatsapp"
+                    type="object"
+                    string="Send via WhatsApp"
+                />
+                <button
+                    name="action_send_public_portal_digest_now"
+                    type="object"
+                    string="Send Digest Now"
+                />
+                <button
+                    name="action_retry_public_portal_digest"
+                    type="object"
+                    string="Retry Digest"
+                    invisible="public_portal_digest_failure_count == 0"
+                />
+                <button
+                    name="action_revoke_public_portal_link"
+                    type="object"
+                    string="Revoke Public Link"
+                />
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button
+                    name="action_open_public_portal_link"
+                    type="object"
+                    class="oe_stat_button"
+                    icon="fa-external-link"
+                >
+                    <field
+                        name="public_portal_view_count"
+                        widget="statinfo"
+                        string="Portal Views"
+                    />
+                </button>
+            </xpath>
+            <xpath expr="//page[@name='other_info']/group" position="inside">
+                <field name="public_portal_state" readonly="1" />
+                <field name="public_portal_url" widget="url" readonly="1" />
+                <field name="public_portal_token_valid_until" readonly="1" />
+                <field name="public_portal_token_revoked" readonly="1" />
+                <field name="public_portal_last_view_at" readonly="1" />
+                <field name="public_portal_view_count" readonly="1" />
+                <field name="public_portal_sla_status" readonly="1" />
+                <field name="public_portal_sla_label" readonly="1" />
+                <field name="public_portal_can_reopen" readonly="1" />
+                <field name="public_portal_can_escalate" readonly="1" />
+                <field name="public_portal_notify_email" />
+                <field name="public_portal_notify_whatsapp" />
+                <field name="public_portal_digest_mode" />
+                <field name="public_portal_last_digest_sent_at" readonly="1" />
+                <field name="public_portal_last_digest_attempt_at" readonly="1" />
+                <field name="public_portal_digest_failure_count" readonly="1" />
+                <field name="public_portal_last_digest_error" readonly="1" />
+                <field name="public_portal_resolution_summary" placeholder="Write a clear customer-facing resolution summary." />
+                <field name="public_portal_last_escalation_at" readonly="1" />
+                <field name="public_portal_escalation_count" readonly="1" />
+                <field name="public_portal_last_escalation_channel" readonly="1" />
+                <field name="public_portal_last_escalation_callback_at" readonly="1" />
+                <field name="public_portal_last_escalation_reason" readonly="1" />
+                <field name="public_portal_last_customer_update_at" readonly="1" />
+                <field name="public_portal_last_support_update_at" readonly="1" />
+                <field name="public_portal_last_followup_activity_at" readonly="1" />
+                <field name="public_portal_last_low_csat_at" readonly="1" />
+                <field name="public_portal_low_csat_count" readonly="1" />
+                <field name="public_portal_collaborator_ids" widget="many2many_tags" />
+                <field name="public_portal_last_reopen_reason" readonly="1" />
+                <field name="public_portal_last_reopen_detail" readonly="1" />
+                <field name="public_portal_last_reopen_at" readonly="1" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_team_form_custom_portal" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.team.form.custom.portal</field>
+        <field name="model">helpdesk.ticket.team</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.view_helpdesk_team_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='show_in_portal']" position="after">
+                <field name="portal_digest_policy" />
+                <field name="portal_allow_escalation" />
+                <field
+                    name="portal_escalation_stage_id"
+                    invisible="not portal_allow_escalation"
+                />
+                <field name="portal_share_email_subject_template" />
+                <field name="portal_share_email_template" />
+                <field name="portal_share_whatsapp_template" />
+                <field name="portal_allow_reopen" />
+                <field
+                    name="portal_reopen_stage_id"
+                    invisible="not portal_allow_reopen"
+                />
+            </xpath>
+        </field>
+    </record>
+</odoo>

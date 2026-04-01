@@ -1,0 +1,1070 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <template
+        id="portal_ticket_public_link"
+        inherit_id="helpdesk_mgmt.portal_helpdesk_ticket_page"
+    >
+        <xpath expr="//div[@class='mt32']" position="before">
+            <div class="alert alert-info d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>Public tracking link</strong>
+                    <div class="small">
+                        Share a secure link with customer stakeholders who do not log into the portal.
+                    </div>
+                </div>
+                <a
+                    t-if="ticket.public_portal_url"
+                    class="btn btn-outline-primary btn-sm"
+                    t-att-href="ticket.public_portal_url"
+                    target="_blank"
+                >Open Public Page</a>
+            </div>
+        </xpath>
+    </template>
+
+    <template id="public_helpdesk_ticket_page" name="Public Helpdesk Tracking">
+        <t t-call="portal.portal_layout">
+            <div class="o_helpdesk_public_portal">
+                <section class="o_helpdesk_public_hero">
+                    <div class="o_helpdesk_public_hero_main" role="region" aria-label="Ticket summary">
+                        <span class="o_helpdesk_public_badge">Public Tracking</span>
+                        <h1>
+                            <span t-field="ticket.name" />
+                        </h1>
+                        <p class="o_helpdesk_public_subtitle">
+                            Track status, share updates, and collaborate with the support team.
+                        </p>
+                        <div class="o_helpdesk_public_meta">
+                            <span class="o_helpdesk_public_chip">
+                                <strong>#</strong>
+                                <span t-field="ticket.number" />
+                            </span>
+                            <span class="o_helpdesk_public_chip">
+                                <strong>Stage</strong>
+                                <span t-field="ticket.stage_id.name" />
+                            </span>
+                            <span class="o_helpdesk_public_chip" t-if="ticket.team_id">
+                                <strong>Team</strong>
+                                <span t-field="ticket.team_id.name" />
+                            </span>
+                            <span class="o_helpdesk_public_chip" t-if="ticket.sla_deadline">
+                                <strong>SLA</strong>
+                                <span t-field="ticket.sla_deadline" t-options='{"widget": "datetime"}' />
+                            </span>
+                            <span
+                                class="o_helpdesk_public_chip o_helpdesk_public_chip_status"
+                                t-att-data-status="ticket.public_portal_sla_status"
+                                t-att-aria-label="'SLA status: %s' % ticket.public_portal_sla_label"
+                            >
+                                <strong>SLA</strong>
+                                <span t-esc="ticket.public_portal_sla_label" />
+                            </span>
+                        </div>
+                    </div>
+                    <div class="o_helpdesk_public_hero_side">
+                        <div class="o_helpdesk_public_metric">
+                            <span class="label">Submitted</span>
+                            <strong t-field="ticket.create_date" t-options='{"widget": "datetime"}' />
+                        </div>
+                        <div class="o_helpdesk_public_metric">
+                            <span class="label">Last Stage Update</span>
+                            <strong t-field="ticket.last_stage_update" t-options='{"widget": "datetime"}' />
+                        </div>
+                        <div class="o_helpdesk_public_metric" t-if="ticket.closed_date">
+                            <span class="label">Closed</span>
+                            <strong t-field="ticket.closed_date" t-options='{"widget": "datetime"}' />
+                        </div>
+                    </div>
+                </section>
+
+                <section class="o_helpdesk_public_action_bar" role="navigation" aria-label="Customer actions">
+                    <a href="#portal-update-form" class="btn btn-primary">Send Update</a>
+                    <a
+                        t-if="closed_stages and not ticket.closed_date"
+                        href="#portal-close-form"
+                        class="btn btn-outline-dark"
+                    >Close Ticket</a>
+                    <button
+                        t-if="can_reopen"
+                        type="button"
+                        class="btn btn-outline-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#portalReopenModal"
+                    >Reopen Ticket</button>
+                    <button
+                        t-if="can_escalate"
+                        type="button"
+                        class="btn btn-outline-danger"
+                        data-bs-toggle="modal"
+                        data-bs-target="#portalEscalationModal"
+                    >Request Escalation</button>
+                </section>
+
+                <t t-if="request.params.get('reply_success')">
+                    <div class="alert alert-success mt-3">
+                        Your update was sent successfully.
+                    </div>
+                </t>
+                <t t-if="request.params.get('close_success')">
+                    <div class="alert alert-success mt-3">
+                        Ticket has been closed successfully.
+                    </div>
+                </t>
+                <t t-if="request.params.get('reopen_success')">
+                    <div class="alert alert-success mt-3">
+                        The ticket has been reopened and returned to the support queue.
+                    </div>
+                </t>
+                <t t-if="request.params.get('escalation_success')">
+                    <div class="alert alert-success mt-3">
+                        Escalation request sent. Support team has been notified.
+                    </div>
+                </t>
+                <t t-if="request.params.get('feedback_success')">
+                    <div class="alert alert-success mt-3">
+                        Your feedback has been shared with the support team.
+                    </div>
+                </t>
+                <t t-if="request.params.get('close_error')">
+                    <div class="alert alert-danger mt-3">
+                        <t t-esc="request.params.get('close_error')" />
+                    </div>
+                </t>
+                <t t-if="request.params.get('reopen_error')">
+                    <div class="alert alert-danger mt-3">
+                        <t t-esc="request.params.get('reopen_error')" />
+                    </div>
+                </t>
+                <t t-if="request.params.get('escalation_error')">
+                    <div class="alert alert-danger mt-3">
+                        <t t-esc="request.params.get('escalation_error')" />
+                    </div>
+                </t>
+                <t t-if="request.params.get('reply_error')">
+                    <div class="alert alert-danger mt-3">
+                        <t t-esc="request.params.get('reply_error')" />
+                    </div>
+                </t>
+                <t t-if="request.params.get('reply_warning')">
+                    <div class="alert alert-warning mt-3">
+                        <t t-esc="request.params.get('reply_warning')" />
+                    </div>
+                </t>
+                <t t-if="request.params.get('prefs_success')">
+                    <div class="alert alert-success mt-3">
+                        Notification preferences updated.
+                    </div>
+                </t>
+                <t t-if="request.params.get('prefs_error')">
+                    <div class="alert alert-danger mt-3">
+                        <t t-esc="request.params.get('prefs_error')" />
+                    </div>
+                </t>
+                <t t-if="request.params.get('prefs_warning')">
+                    <div class="alert alert-warning mt-3">
+                        <t t-esc="request.params.get('prefs_warning')" />
+                    </div>
+                </t>
+                <t t-if="request.params.get('rating_success')">
+                    <div class="alert alert-success mt-3">
+                        Thank you. Your satisfaction rating has been recorded.
+                    </div>
+                </t>
+                <t t-if="request.params.get('rating_error')">
+                    <div class="alert alert-danger mt-3">
+                        <t t-esc="request.params.get('rating_error')" />
+                    </div>
+                </t>
+
+                <section class="o_helpdesk_public_grid">
+                    <div class="o_helpdesk_public_main">
+                        <article class="o_helpdesk_public_panel" t-if="ticket.description">
+                            <h3>Description</h3>
+                            <div class="o_helpdesk_public_body" t-field="ticket.description" />
+                        </article>
+
+                        <article class="o_helpdesk_public_panel">
+                            <h3 t-if="ticket.closed_date">Resolution Summary</h3>
+                            <h3 t-if="not ticket.closed_date">What Happens Next</h3>
+                            <t t-if="ticket.closed_date">
+                                <div class="o_helpdesk_public_resolution_card">
+                                    <div>
+                                        <span class="label">Current Status</span>
+                                        <strong t-field="ticket.stage_id.name" />
+                                    </div>
+                                    <div>
+                                        <span class="label">Closed At</span>
+                                        <strong t-field="ticket.closed_date" t-options='{"widget": "datetime"}' />
+                                    </div>
+                                    <div t-if="ticket.public_portal_resolution_summary">
+                                        <span class="label">Resolution Summary</span>
+                                        <p class="mb-0" t-esc="ticket.public_portal_resolution_summary" />
+                                    </div>
+                                    <p class="mb-0">
+                                        If the issue returns, use <strong>Reopen Ticket</strong> from this page.
+                                    </p>
+                                </div>
+                            </t>
+                            <t t-if="not ticket.closed_date">
+                                <div class="o_helpdesk_public_resolution_card">
+                                    <p class="mb-2">
+                                        Support will review your latest update and continue handling this ticket.
+                                    </p>
+                                    <ul class="o_helpdesk_public_steps mb-0">
+                                        <li>Send a structured update if anything changes.</li>
+                                        <li>Attach logs or screenshots to speed up investigation.</li>
+                                        <li>Close the ticket once the issue is fully resolved.</li>
+                                    </ul>
+                                </div>
+                            </t>
+                        </article>
+
+                        <article class="o_helpdesk_public_panel">
+                            <div class="o_helpdesk_public_panel_head">
+                                <h3>Conversation</h3>
+                                <span class="small text-muted">Latest updates and files shared on this ticket</span>
+                            </div>
+                            <div class="o_helpdesk_public_messages">
+                                <t t-if="not public_messages">
+                                    <div class="text-muted">No conversation yet.</div>
+                                </t>
+                                <t t-foreach="public_messages" t-as="message">
+                                    <div
+                                        t-attf-class="o_helpdesk_public_message #{'is-customer' if (message.author_id and ticket.partner_id and message.author_id.id == ticket.partner_id.id) else ('is-system' if not message.author_id else 'is-support')}"
+                                    >
+                                        <div class="o_helpdesk_public_message_head">
+                                            <div class="o_helpdesk_public_message_identity">
+                                                <strong t-esc="message.author_id.name or 'System'" />
+                                                <span
+                                                    class="o_helpdesk_public_message_role"
+                                                    t-esc="'Customer' if (message.author_id and ticket.partner_id and message.author_id.id == ticket.partner_id.id) else ('System' if not message.author_id else 'Support')"
+                                                />
+                                            </div>
+                                            <span t-field="message.date" t-options='{"widget": "datetime"}' />
+                                        </div>
+                                        <div t-if="message.body" t-field="message.body" class="o_helpdesk_public_body" />
+                                        <t t-if="message.tracking_value_ids">
+                                            <ul class="o_helpdesk_public_tracking">
+                                                <t t-foreach="message.tracking_value_ids" t-as="tracking">
+                                                    <li>
+                                                        <strong t-esc="tracking.field_id.field_description or tracking.field_id.name" />
+                                                        <span>
+                                                            <t t-esc="tracking.old_value_char or tracking.old_value_integer or '-'" />
+                                                            →
+                                                            <t t-esc="tracking.new_value_char or tracking.new_value_integer or '-'" />
+                                                        </span>
+                                                    </li>
+                                                </t>
+                                            </ul>
+                                        </t>
+                                        <t t-if="message.attachment_ids">
+                                            <div class="o_helpdesk_public_file_list">
+                                                <a
+                                                    t-foreach="message.attachment_ids"
+                                                    t-as="attachment"
+                                                    class="o_helpdesk_public_file"
+                                                    t-attf-href="/web/content/#{attachment.id}?download=true&amp;access_token=#{attachment.access_token}"
+                                                    target="_blank"
+                                                >
+                                                    <span class="fa fa-paperclip" />
+                                                    <span t-esc="attachment.name" />
+                                                </a>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </t>
+                            </div>
+                        </article>
+                    </div>
+
+                    <aside class="o_helpdesk_public_sidebar">
+                        <article class="o_helpdesk_public_panel">
+                            <h3>Ticket Snapshot</h3>
+                            <dl class="o_helpdesk_public_snapshot">
+                                <div>
+                                    <dt>Customer</dt>
+                                    <dd><span t-esc="ticket.partner_id.name" /></dd>
+                                </div>
+                                <div t-if="ticket.category_id">
+                                    <dt>Category</dt>
+                                    <dd><span t-esc="ticket.category_id.complete_name" /></dd>
+                                </div>
+                                <div t-if="ticket.type_id">
+                                    <dt>Type</dt>
+                                    <dd><span t-esc="ticket.type_id.name" /></dd>
+                                </div>
+                                <div t-if="ticket.user_id">
+                                    <dt>Assignee</dt>
+                                    <dd><span t-esc="ticket.user_id.name" /></dd>
+                                </div>
+                                <div>
+                                    <dt>Priority</dt>
+                                    <dd t-esc="dict(ticket._fields['priority'].selection).get(ticket.priority)" />
+                                </div>
+                                <div>
+                                    <dt>Public Link</dt>
+                                    <dd>
+                                        <span
+                                            t-field="ticket.public_portal_token_valid_until"
+                                            t-options='{"widget": "datetime"}'
+                                        />
+                                    </dd>
+                                </div>
+                                <div>
+                                    <dt>SLA Outlook</dt>
+                                    <dd>
+                                        <span
+                                            class="o_helpdesk_public_inline_status"
+                                            t-att-data-status="ticket.public_portal_sla_status"
+                                            t-esc="ticket.public_portal_sla_label"
+                                        />
+                                    </dd>
+                                </div>
+                            </dl>
+                        </article>
+
+                        <article class="o_helpdesk_public_panel">
+                            <h3>Timeline</h3>
+                            <div class="o_helpdesk_public_timeline">
+                                <t t-foreach="public_timeline" t-as="event">
+                                    <div class="o_helpdesk_public_timeline_item" t-att-data-kind="event['kind']">
+                                        <div class="o_helpdesk_public_timeline_dot" />
+                                        <div class="o_helpdesk_public_timeline_body">
+                                            <strong t-esc="event['title']" />
+                                            <div class="small text-muted" t-esc="event['detail']" />
+                                            <div
+                                                class="small"
+                                                t-esc="event['date'].strftime('%Y-%m-%d %H:%M:%S') if event['date'] else ''"
+                                            />
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                        </article>
+
+                        <article class="o_helpdesk_public_panel" t-if="ticket.public_portal_last_escalation_at">
+                            <h3>Last Escalation Request</h3>
+                            <dl class="o_helpdesk_public_snapshot">
+                                <div>
+                                    <dt>Requested At</dt>
+                                    <dd>
+                                        <span
+                                            t-field="ticket.public_portal_last_escalation_at"
+                                            t-options='{"widget": "datetime"}'
+                                        />
+                                    </dd>
+                                </div>
+                                <div t-if="ticket.public_portal_last_escalation_channel">
+                                    <dt>Preferred Channel</dt>
+                                    <dd t-esc="dict(ticket._fields['public_portal_last_escalation_channel'].selection).get(ticket.public_portal_last_escalation_channel)" />
+                                </div>
+                                <div t-if="ticket.public_portal_last_escalation_callback_at">
+                                    <dt>Preferred Callback</dt>
+                                    <dd>
+                                        <span
+                                            t-field="ticket.public_portal_last_escalation_callback_at"
+                                            t-options='{"widget": "datetime"}'
+                                        />
+                                    </dd>
+                                </div>
+                                <div t-if="ticket.public_portal_last_escalation_reason">
+                                    <dt>Reason</dt>
+                                    <dd t-esc="ticket.public_portal_last_escalation_reason" />
+                                </div>
+                            </dl>
+                        </article>
+
+                        <article class="o_helpdesk_public_panel" t-if="public_collaborator_activity">
+                            <h3>Collaborator Activity</h3>
+                            <p class="text-muted mb-3">
+                                Recent actions and updates from customer contacts on this ticket.
+                            </p>
+                            <div class="o_helpdesk_public_activity_feed">
+                                <div
+                                    class="o_helpdesk_public_activity_item"
+                                    t-foreach="public_collaborator_activity"
+                                    t-as="activity_item"
+                                >
+                                    <div class="o_helpdesk_public_activity_head">
+                                        <strong t-esc="activity_item['actor']" />
+                                        <span class="o_helpdesk_public_activity_role" t-esc="activity_item['role']" />
+                                    </div>
+                                    <div class="o_helpdesk_public_activity_detail" t-esc="activity_item['detail']" />
+                                    <div class="small text-muted">
+                                        <t t-esc="activity_item['date'].strftime('%Y-%m-%d %H:%M:%S') if activity_item['date'] else ''" />
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="o_helpdesk_public_panel">
+                            <h3>Notification Preferences</h3>
+                            <p class="text-muted mb-3">
+                                Control how your contacts receive ticket updates.
+                            </p>
+                            <t t-set="effective_digest_label" t-value="dict(digest_options).get(effective_digest_mode, 'Disabled')" />
+                            <t t-if="digest_policy_locked">
+                                <div class="alert alert-info py-2 mb-3">
+                                    Digest mode is controlled by support team policy:
+                                    <strong t-esc="effective_digest_label" />.
+                                </div>
+                            </t>
+                            <form
+                                class="o_helpdesk_public_preferences_form"
+                                t-attf-action="/helpdesk/track/#{ticket.public_portal_token}/preferences?db=#{public_db_name}"
+                                method="POST"
+                            >
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+                                <input type="hidden" name="preferences_submit" value="1" />
+                                <div class="o_helpdesk_public_pref_toggles">
+                                    <label class="form-check">
+                                        <input
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            name="notify_email"
+                                            value="1"
+                                            t-att-checked="'checked' if ticket.public_portal_notify_email else None"
+                                        />
+                                        <span class="form-check-label">
+                                            Notify by Email
+                                        </span>
+                                    </label>
+                                    <label class="form-check">
+                                        <input
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            name="notify_whatsapp"
+                                            value="1"
+                                            t-att-checked="'checked' if ticket.public_portal_notify_whatsapp else None"
+                                        />
+                                        <span class="form-check-label">
+                                            Notify by WhatsApp
+                                        </span>
+                                    </label>
+                                </div>
+                                <div>
+                                    <label class="form-label mb-1" for="portal_digest_mode">
+                                        Update Frequency
+                                    </label>
+                                    <select
+                                        id="portal_digest_mode"
+                                        name="digest_mode"
+                                        class="form-select"
+                                        required="required"
+                                        t-att-disabled="'disabled' if digest_policy_locked else None"
+                                    >
+                                        <option
+                                            t-foreach="digest_options"
+                                            t-as="digest_option"
+                                            t-att-value="digest_option[0]"
+                                            t-att-selected="'selected' if effective_digest_mode == digest_option[0] else None"
+                                            t-esc="digest_option[1]"
+                                        />
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-outline-dark">Save Preferences</button>
+                            </form>
+                            <div class="mt-3">
+                                <div class="o_helpdesk_public_collaborator_title">Shared Contacts</div>
+                                <div class="o_helpdesk_public_collaborators">
+                                    <t t-if="not public_collaborators">
+                                        <span class="text-muted small">
+                                            No collaborator is registered yet.
+                                        </span>
+                                    </t>
+                                    <t t-foreach="public_collaborators" t-as="collaborator">
+                                        <div class="o_helpdesk_public_collaborator_chip">
+                                            <span t-esc="collaborator.name" />
+                                            <small t-esc="collaborator.email or '-'" />
+                                            <form
+                                                t-if="ticket.partner_id and collaborator.id != ticket.partner_id.id"
+                                                t-attf-action="/helpdesk/track/#{ticket.public_portal_token}/preferences?db=#{public_db_name}"
+                                                method="POST"
+                                                class="o_helpdesk_public_collaborator_remove"
+                                            >
+                                                <input
+                                                    type="hidden"
+                                                    name="csrf_token"
+                                                    t-att-value="request.csrf_token()"
+                                                />
+                                                <input
+                                                    type="hidden"
+                                                    name="remove_collaborator_id"
+                                                    t-att-value="collaborator.id"
+                                                />
+                                                <button
+                                                    type="submit"
+                                                    class="btn btn-link btn-sm p-0"
+                                                    aria-label="Remove collaborator"
+                                                >Remove</button>
+                                            </form>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="o_helpdesk_public_panel" t-if="pending_rating and public_rating_token">
+                            <h3>Rate This Ticket</h3>
+                            <p class="text-muted mb-3">Rate the outcome and add a short note for the service team.</p>
+                            <form
+                                class="o_helpdesk_public_feedback_form o_helpdesk_public_rating_form"
+                                t-att-data-low-rating-max="low_rating_max"
+                                t-attf-action="/helpdesk/track/#{ticket.public_portal_token}/rating?db=#{public_db_name}"
+                                method="POST"
+                            >
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+                                <div class="o_helpdesk_public_rating">
+                                    <label class="o_helpdesk_public_rating_choice" data-rate="5">
+                                        <input type="radio" name="rate" value="5" checked="checked" />
+                                        <span>Great</span>
+                                    </label>
+                                    <label class="o_helpdesk_public_rating_choice" data-rate="3">
+                                        <input type="radio" name="rate" value="3" />
+                                        <span>Okay</span>
+                                    </label>
+                                    <label class="o_helpdesk_public_rating_choice" data-rate="1">
+                                        <input type="radio" name="rate" value="1" />
+                                        <span>Poor</span>
+                                    </label>
+                                </div>
+                                <div class="o_helpdesk_public_low_score_reason" data-role="low-score-reason-wrap">
+                                    <label class="form-label mb-1" for="portal_low_score_reason">
+                                        Low Score Reason
+                                    </label>
+                                    <textarea
+                                        id="portal_low_score_reason"
+                                        name="low_score_reason"
+                                        class="form-control"
+                                        rows="3"
+                                        data-role="low-score-reason-input"
+                                        placeholder="Please explain why the service did not meet expectations."
+                                    />
+                                    <div class="invalid-feedback">
+                                        This reason is required for low ratings.
+                                    </div>
+                                </div>
+                                <textarea
+                                    name="feedback"
+                                    class="form-control"
+                                    rows="3"
+                                    placeholder="What went well, and what should the team improve next time?"
+                                />
+                                <button type="submit" class="btn btn-dark">Submit Rating</button>
+                            </form>
+                        </article>
+
+                        <article class="o_helpdesk_public_panel">
+                            <h3>Attachments</h3>
+                            <div class="o_helpdesk_public_preview" t-if="public_image_files">
+                                <a
+                                    t-foreach="public_image_files"
+                                    t-as="image_file"
+                                    class="o_helpdesk_public_preview_item"
+                                    t-attf-href="/web/content/#{image_file.id}?download=true&amp;access_token=#{image_file.access_token}"
+                                    target="_blank"
+                                >
+                                    <img
+                                        t-att-alt="image_file.name"
+                                        t-att-src="'/web/image/%s?access_token=%s' % (image_file.id, image_file.access_token)"
+                                    />
+                                    <span t-esc="image_file.name" />
+                                </a>
+                            </div>
+                            <div class="o_helpdesk_public_file_list">
+                                <t t-if="not public_files">
+                                    <span class="text-muted">No attachments available.</span>
+                                </t>
+                                <a
+                                    t-foreach="public_other_files"
+                                    t-as="file"
+                                    class="o_helpdesk_public_file"
+                                    t-attf-href="/web/content/#{file.id}?download=true&amp;access_token=#{file.access_token}"
+                                    target="_blank"
+                                >
+                                    <span class="fa fa-download" />
+                                    <span t-esc="file.name" />
+                                </a>
+                            </div>
+                        </article>
+
+                        <article class="o_helpdesk_public_panel">
+                            <h3>Send Update</h3>
+                            <p class="text-muted mb-3">
+                                Share the latest customer context with impact and urgency so support can prioritize correctly.
+                            </p>
+                            <form
+                                id="portal-update-form"
+                                class="o_helpdesk_public_reply_form"
+                                t-attf-action="/helpdesk/track/#{ticket.public_portal_token}/reply?db=#{public_db_name}"
+                                method="POST"
+                                enctype="multipart/form-data"
+                            >
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+                                <label class="form-label mb-1" for="portal_update_message">Message</label>
+                                <textarea
+                                    id="portal_update_message"
+                                    name="message"
+                                    class="form-control"
+                                    rows="5"
+                                    placeholder="Describe latest status, blocker, or question for support."
+                                />
+                                <div class="o_helpdesk_public_form_grid">
+                                    <div>
+                                        <label class="form-label mb-1" for="portal_update_impact">Impact</label>
+                                        <select id="portal_update_impact" name="impact_level" class="form-select">
+                                            <option value="">Select impact</option>
+                                            <option
+                                                t-foreach="reply_impact_options"
+                                                t-as="impact_option"
+                                                t-att-value="impact_option[0]"
+                                                t-esc="impact_option[1]"
+                                            />
+                                        </select>
+                                        <div class="o_helpdesk_public_help_text">
+                                            How much this issue affects your business operations.
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="form-label mb-1" for="portal_update_urgency">Urgency</label>
+                                        <select id="portal_update_urgency" name="urgency_level" class="form-select">
+                                            <option value="">Select urgency</option>
+                                            <option
+                                                t-foreach="reply_urgency_options"
+                                                t-as="urgency_option"
+                                                t-att-value="urgency_option[0]"
+                                                t-esc="urgency_option[1]"
+                                            />
+                                        </select>
+                                        <div class="o_helpdesk_public_help_text">
+                                            Tell support how quickly this requires attention.
+                                        </div>
+                                    </div>
+                                </div>
+                                <label class="form-label mb-1" for="portal_update_changes">
+                                    What changed since last update
+                                </label>
+                                <textarea
+                                    id="portal_update_changes"
+                                    name="change_summary"
+                                    class="form-control"
+                                    rows="3"
+                                    placeholder="Example: issue now impacts all branch users, not only finance team."
+                                />
+                                <label class="form-label mb-1" for="portal_update_collaborators">
+                                    Add Collaborator Emails
+                                </label>
+                                <textarea
+                                    id="portal_update_collaborators"
+                                    name="collaborator_emails"
+                                    class="form-control"
+                                    rows="2"
+                                    placeholder="Example: finance.manager@example.com, ops.lead@example.com"
+                                />
+                                <div class="o_helpdesk_public_help_text">
+                                    Only contacts from your company can be added as ticket collaborators.
+                                </div>
+                                <label class="form-label mb-1" for="portal_update_attachment">Attachments</label>
+                                <div
+                                    class="o_helpdesk_public_dropzone"
+                                    data-role="attachment-dropzone"
+                                    tabindex="0"
+                                    aria-label="Upload attachments by drag and drop or click"
+                                >
+                                    <div class="o_helpdesk_public_dropzone_title">Drag and drop files here</div>
+                                    <div class="o_helpdesk_public_dropzone_hint">or click to browse files</div>
+                                    <button
+                                        type="button"
+                                        class="btn btn-outline-secondary btn-sm"
+                                        data-role="attachment-browse"
+                                    >Choose Files</button>
+                                    <input
+                                        id="portal_update_attachment"
+                                        type="file"
+                                        class="d-none"
+                                        name="attachment"
+                                        multiple="multiple"
+                                    />
+                                </div>
+                                <div
+                                    class="o_helpdesk_public_selected_files"
+                                    data-role="attachment-list"
+                                    aria-live="polite"
+                                />
+                                <div class="small text-muted">
+                                    Supported files:
+                                    <t t-esc="allowed_extensions or 'configured by admin'" />.
+                                    Maximum size:
+                                    <t t-esc="max_attachment_mb" /> MB.
+                                </div>
+                                <button type="submit" class="btn btn-primary">Send Update</button>
+                            </form>
+                        </article>
+
+                        <article class="o_helpdesk_public_panel" t-if="closed_stages and not ticket.closed_date">
+                            <h3>Close Ticket</h3>
+                            <p class="text-muted mb-3">
+                                Confirm this issue is fully resolved before closing the ticket.
+                            </p>
+                            <form
+                                id="portal-close-form"
+                                class="o_helpdesk_public_close_form"
+                                t-attf-action="/helpdesk/track/#{ticket.public_portal_token}/close?db=#{public_db_name}"
+                                method="POST"
+                            >
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+                                <label class="form-label mb-1" for="portal_close_stage">Close Action</label>
+                                <select id="portal_close_stage" class="form-select" name="stage_id" required="required">
+                                    <option value="">Select close action</option>
+                                    <option
+                                        t-foreach="closed_stages"
+                                        t-as="close_stage"
+                                        t-att-value="close_stage.id"
+                                        t-esc="close_stage.name"
+                                    />
+                                </select>
+                                <div class="form-check">
+                                    <input
+                                        id="portal_close_confirm"
+                                        class="form-check-input"
+                                        type="checkbox"
+                                        name="confirm_resolved"
+                                        value="1"
+                                        required="required"
+                                    />
+                                    <label class="form-check-label" for="portal_close_confirm">
+                                        I confirm this issue is resolved.
+                                    </label>
+                                </div>
+                                <button type="submit" class="btn btn-outline-dark">
+                                    Close Ticket
+                                </button>
+                            </form>
+                        </article>
+
+                        <article class="o_helpdesk_public_panel">
+                            <h3>Share Feedback</h3>
+                            <p class="text-muted mb-3">
+                                Leave context for the support lead without changing the ticket status.
+                            </p>
+                            <form
+                                class="o_helpdesk_public_feedback_form"
+                                t-attf-action="/helpdesk/track/#{ticket.public_portal_token}/feedback?db=#{public_db_name}"
+                                method="POST"
+                            >
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+                                <textarea
+                                    name="feedback"
+                                    class="form-control"
+                                    rows="4"
+                                    placeholder="Share blockers, next steps, or service feedback"
+                                    required="required"
+                                />
+                                <button type="submit" class="btn btn-outline-dark">Send Feedback</button>
+                            </form>
+                        </article>
+                    </aside>
+                </section>
+
+                <div
+                    t-if="can_reopen"
+                    class="modal fade"
+                    id="portalReopenModal"
+                    tabindex="-1"
+                    aria-labelledby="portalReopenModalLabel"
+                    aria-hidden="true"
+                >
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content o_helpdesk_reopen_modal">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="portalReopenModalLabel">Reopen Ticket</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" />
+                            </div>
+                            <form
+                                class="modal-body o_helpdesk_public_reopen_form"
+                                t-attf-action="/helpdesk/track/#{ticket.public_portal_token}/reopen?db=#{public_db_name}"
+                                method="POST"
+                            >
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+                                <label class="form-label mb-1" for="portal_reopen_reason">
+                                    Reason for Reopen
+                                </label>
+                                <select
+                                    id="portal_reopen_reason"
+                                    name="reopen_reason"
+                                    class="form-select"
+                                    required="required"
+                                >
+                                    <option value="">Select reason</option>
+                                    <option
+                                        t-foreach="reopen_reason_options"
+                                        t-as="reason_option"
+                                        t-att-value="reason_option[0]"
+                                        t-esc="reason_option[1]"
+                                    />
+                                </select>
+                                <label class="form-label mb-1" for="portal_reopen_detail">
+                                    Additional Detail
+                                </label>
+                                <textarea
+                                    id="portal_reopen_detail"
+                                    name="reopen_detail"
+                                    class="form-control"
+                                    rows="4"
+                                    placeholder="Explain what is still unresolved or what changed."
+                                />
+                                <div class="form-check">
+                                    <input
+                                        id="portal_reopen_confirm"
+                                        class="form-check-input"
+                                        type="checkbox"
+                                        name="confirm_reopen"
+                                        value="1"
+                                        required="required"
+                                    />
+                                    <label class="form-check-label" for="portal_reopen_confirm">
+                                        I confirm this ticket still needs support.
+                                    </label>
+                                </div>
+                                <div class="modal-footer px-0 pb-0">
+                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                                        Cancel
+                                    </button>
+                                    <button type="submit" class="btn btn-primary">Reopen Ticket</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    t-if="can_escalate"
+                    class="modal fade"
+                    id="portalEscalationModal"
+                    tabindex="-1"
+                    aria-labelledby="portalEscalationModalLabel"
+                    aria-hidden="true"
+                >
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content o_helpdesk_reopen_modal">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="portalEscalationModalLabel">Request Escalation</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" />
+                            </div>
+                            <form
+                                class="modal-body o_helpdesk_public_reopen_form"
+                                t-attf-action="/helpdesk/track/#{ticket.public_portal_token}/escalate?db=#{public_db_name}"
+                                method="POST"
+                            >
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+                                <label class="form-label mb-1" for="portal_escalation_reason">
+                                    Escalation Reason
+                                </label>
+                                <textarea
+                                    id="portal_escalation_reason"
+                                    name="escalation_reason"
+                                    class="form-control"
+                                    rows="4"
+                                    required="required"
+                                    placeholder="Explain urgency, current business impact, and expected response."
+                                />
+                                <label class="form-label mb-1" for="portal_escalation_channel">
+                                    Preferred Contact Channel
+                                </label>
+                                <select
+                                    id="portal_escalation_channel"
+                                    name="preferred_channel"
+                                    class="form-select"
+                                >
+                                    <option value="">No preference</option>
+                                    <option
+                                        t-foreach="escalation_channel_options"
+                                        t-as="channel_option"
+                                        t-att-value="channel_option[0]"
+                                        t-esc="channel_option[1]"
+                                    />
+                                </select>
+                                <label class="form-label mb-1" for="portal_escalation_callback">
+                                    Preferred Callback Time
+                                </label>
+                                <input
+                                    id="portal_escalation_callback"
+                                    name="preferred_callback_at"
+                                    type="datetime-local"
+                                    class="form-control"
+                                />
+                                <div class="form-check">
+                                    <input
+                                        id="portal_escalation_confirm"
+                                        class="form-check-input"
+                                        type="checkbox"
+                                        name="confirm_escalation"
+                                        value="1"
+                                        required="required"
+                                    />
+                                    <label class="form-check-label" for="portal_escalation_confirm">
+                                        I confirm this issue needs urgent escalation.
+                                    </label>
+                                </div>
+                                <div class="modal-footer px-0 pb-0">
+                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                                        Cancel
+                                    </button>
+                                    <button type="submit" class="btn btn-danger">Submit Escalation</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <script type="text/javascript">
+                    <![CDATA[
+                    document.addEventListener("DOMContentLoaded", function () {
+                        var updateForm = document.getElementById("portal-update-form");
+                        if (updateForm) {
+                            var attachmentInput = updateForm.querySelector("#portal_update_attachment");
+                            var dropzone = updateForm.querySelector("[data-role='attachment-dropzone']");
+                            var browseButton = updateForm.querySelector("[data-role='attachment-browse']");
+                            var attachmentList = updateForm.querySelector("[data-role='attachment-list']");
+
+                            var formatFileSize = function (bytes) {
+                                if (!bytes) {
+                                    return "0 KB";
+                                }
+                                var sizeKb = bytes / 1024;
+                                if (sizeKb < 1024) {
+                                    return sizeKb.toFixed(1) + " KB";
+                                }
+                                return (sizeKb / 1024).toFixed(1) + " MB";
+                            };
+
+                            var mergeFiles = function (first, second) {
+                                if (typeof DataTransfer === "undefined") {
+                                    return second || first;
+                                }
+                                var transfer = new DataTransfer();
+                                var seen = {};
+                                var appendFile = function (file) {
+                                    var key = [file.name, file.size, file.lastModified].join("::");
+                                    if (!seen[key]) {
+                                        seen[key] = true;
+                                        transfer.items.add(file);
+                                    }
+                                };
+                                Array.from(first || []).forEach(appendFile);
+                                Array.from(second || []).forEach(appendFile);
+                                return transfer.files;
+                            };
+
+                            var renderSelectedFiles = function (files) {
+                                if (!attachmentList) {
+                                    return;
+                                }
+                                if (!files || !files.length) {
+                                    attachmentList.innerHTML = "";
+                                    return;
+                                }
+                                attachmentList.innerHTML = "";
+                                Array.from(files).forEach(function (file) {
+                                    var row = document.createElement("div");
+                                    row.className = "o_helpdesk_public_selected_file";
+                                    var nameEl = document.createElement("span");
+                                    nameEl.textContent = file.name;
+                                    var sizeEl = document.createElement("small");
+                                    sizeEl.textContent = formatFileSize(file.size);
+                                    row.appendChild(nameEl);
+                                    row.appendChild(sizeEl);
+                                    attachmentList.appendChild(row);
+                                });
+                            };
+
+                            if (browseButton && attachmentInput) {
+                                browseButton.addEventListener("click", function () {
+                                    attachmentInput.click();
+                                });
+                            }
+                            if (dropzone && attachmentInput) {
+                                dropzone.addEventListener("click", function () {
+                                    attachmentInput.click();
+                                });
+                                dropzone.addEventListener("keydown", function (event) {
+                                    if (event.key === "Enter" || event.key === " ") {
+                                        event.preventDefault();
+                                        attachmentInput.click();
+                                    }
+                                });
+                                ["dragenter", "dragover"].forEach(function (eventName) {
+                                    dropzone.addEventListener(eventName, function (event) {
+                                        event.preventDefault();
+                                        dropzone.classList.add("is-dragover");
+                                    });
+                                });
+                                ["dragleave", "drop"].forEach(function (eventName) {
+                                    dropzone.addEventListener(eventName, function (event) {
+                                        event.preventDefault();
+                                        dropzone.classList.remove("is-dragover");
+                                    });
+                                });
+                                dropzone.addEventListener("drop", function (event) {
+                                    var droppedFiles = event.dataTransfer ? event.dataTransfer.files : null;
+                                    if (!droppedFiles || !droppedFiles.length) {
+                                        return;
+                                    }
+                                    var merged = mergeFiles(attachmentInput.files, droppedFiles);
+                                    if (merged) {
+                                        attachmentInput.files = merged;
+                                    }
+                                    renderSelectedFiles(attachmentInput.files);
+                                });
+                            }
+                            if (attachmentInput) {
+                                attachmentInput.addEventListener("change", function () {
+                                    renderSelectedFiles(attachmentInput.files);
+                                });
+                            }
+                        }
+
+                        var ratingForm = document.querySelector(".o_helpdesk_public_rating_form");
+                        if (ratingForm) {
+                            var lowLimit = parseInt(ratingForm.getAttribute("data-low-rating-max") || "3", 10);
+                            var lowReasonWrap = ratingForm.querySelector("[data-role='low-score-reason-wrap']");
+                            var lowReasonInput = ratingForm.querySelector("[data-role='low-score-reason-input']");
+                            var ratingInputs = ratingForm.querySelectorAll("input[name='rate']");
+
+                            var toggleLowReason = function () {
+                                var checkedInput = ratingForm.querySelector("input[name='rate']:checked");
+                                var currentRate = checkedInput ? parseInt(checkedInput.value || "0", 10) : 0;
+                                var required = currentRate > 0 && currentRate <= lowLimit;
+                                if (!lowReasonWrap || !lowReasonInput) {
+                                    return;
+                                }
+                                lowReasonWrap.classList.toggle("is-visible", required);
+                                lowReasonInput.required = required;
+                                if (!required) {
+                                    lowReasonInput.classList.remove("is-invalid");
+                                }
+                            };
+
+                            ratingInputs.forEach(function (input) {
+                                input.addEventListener("change", toggleLowReason);
+                            });
+                            toggleLowReason();
+
+                            ratingForm.addEventListener("submit", function (event) {
+                                if (!lowReasonInput || !lowReasonInput.required) {
+                                    return;
+                                }
+                                if (!lowReasonInput.value.trim()) {
+                                    event.preventDefault();
+                                    lowReasonInput.classList.add("is-invalid");
+                                    lowReasonInput.focus();
+                                }
+                            });
+                        }
+                    });
+                    ]]>
+                </script>
+            </div>
+        </t>
+    </template>
+</odoo>

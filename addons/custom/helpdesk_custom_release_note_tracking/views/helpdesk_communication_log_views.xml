@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_helpdesk_communication_log_search_release_note" model="ir.ui.view">
+        <field name="name">helpdesk.communication.log.search.release.note</field>
+        <field name="model">helpdesk.communication.log</field>
+        <field name="inherit_id" ref="helpdesk_custom_customer_communication_log.view_helpdesk_communication_log_search" />
+        <field name="arch" type="xml">
+            <xpath expr="//search/field[@name='channel']" position="after">
+                <field name="release_note_id" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_communication_log_tree_release_note" model="ir.ui.view">
+        <field name="name">helpdesk.communication.log.tree.release.note</field>
+        <field name="model">helpdesk.communication.log</field>
+        <field name="inherit_id" ref="helpdesk_custom_customer_communication_log.view_helpdesk_communication_log_tree" />
+        <field name="arch" type="xml">
+            <xpath expr="//tree/field[@name='subject']" position="before">
+                <field name="release_note_id" optional="show" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_communication_log_form_release_note" model="ir.ui.view">
+        <field name="name">helpdesk.communication.log.form.release.note</field>
+        <field name="model">helpdesk.communication.log</field>
+        <field name="inherit_id" ref="helpdesk_custom_customer_communication_log.view_helpdesk_communication_log_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='source_res_id']" position="after">
+                <field name="release_note_id" />
+            </xpath>
+        </field>
+    </record>
+</odoo>

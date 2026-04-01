@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_helpdesk_ticket_form_custom_whatsapp" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.form.custom.whatsapp</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.ticket_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button
+                    name="action_view_whatsapp_messages"
+                    type="object"
+                    class="oe_stat_button"
+                    icon="fa-whatsapp"
+                >
+                    <field
+                        name="whatsapp_message_count"
+                        widget="statinfo"
+                        string="WhatsApp"
+                    />
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>

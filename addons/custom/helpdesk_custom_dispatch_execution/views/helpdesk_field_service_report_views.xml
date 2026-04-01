@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_helpdesk_field_service_report_tree_execution" model="ir.ui.view">
+        <field name="name">helpdesk.field.service.report.tree.execution</field>
+        <field name="model">helpdesk.field.service.report</field>
+        <field name="inherit_id" ref="helpdesk_custom_field_service_report.view_helpdesk_field_service_report_tree" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='checklist_completion']" position="after">
+                <field name="dispatch_execution_completion" optional="show" />
+                <field name="dispatch_evidence_count" optional="show" />
+                <field name="dispatch_signoff_status" optional="show" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_field_service_report_form_execution" model="ir.ui.view">
+        <field name="name">helpdesk.field.service.report.form.execution</field>
+        <field name="model">helpdesk.field.service.report</field>
+        <field name="inherit_id" ref="helpdesk_custom_field_service_report.view_helpdesk_field_service_report_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//group[group/field[@name='service_date']]" position="after">
+                <group string="Dispatch Execution Summary">
+                    <group>
+                        <field name="dispatch_pre_departure_completion" readonly="1" />
+                        <field name="dispatch_onsite_completion" readonly="1" />
+                        <field name="dispatch_execution_completion" readonly="1" />
+                    </group>
+                    <group>
+                        <field name="dispatch_evidence_count" readonly="1" />
+                        <field name="dispatch_signoff_status" readonly="1" />
+                        <field name="dispatch_travel_duration_hours" readonly="1" />
+                        <field name="dispatch_onsite_duration_hours" readonly="1" />
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

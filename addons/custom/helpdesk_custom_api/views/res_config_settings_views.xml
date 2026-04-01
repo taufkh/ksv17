@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="res_config_settings_view_form_helpdesk_custom_api" model="ir.ui.view">
+        <field name="name">res.config.settings.form.helpdesk.custom.api</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.res_config_settings_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//setting[@id='show_categories_form']" position="after">
+                <block title="Helpdesk API">
+                    <setting
+                        id="helpdesk_custom_api_enabled"
+                        string="Enable API"
+                        help="Allow external systems to authenticate with a bearer token and manage helpdesk tickets."
+                    >
+                        <field name="helpdesk_api_enabled" />
+                    </setting>
+                    <setting
+                        id="helpdesk_custom_api_token"
+                        string="Bearer Token"
+                        help="Static bearer token used by external callers. Rotate it if it has been shared."
+                    >
+                        <field name="helpdesk_api_token" password="True" />
+                    </setting>
+                    <setting
+                        id="helpdesk_custom_api_defaults"
+                        string="Default API Behavior"
+                        help="Used when the caller does not supply a team and when attachments are uploaded."
+                    >
+                        <div class="content-group">
+                            <field name="helpdesk_api_default_team_id" />
+                            <field name="helpdesk_api_allow_attachment_upload" />
+                            <field name="helpdesk_api_max_attachment_mb" />
+                        </div>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>

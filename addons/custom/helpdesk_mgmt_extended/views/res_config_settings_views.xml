@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_config_settings_view_form_helpdesk_ext" model="ir.ui.view">
+        <field name="name">res.config.settings.view.helpdesk.extended</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base_setup.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@id='general_information']" position="after">
+                <app data-string="Helpdesk Extended" string="Helpdesk Extended"
+                     name="helpdesk_mgmt_extended" img="helpdesk_mgmt/static/description/icon.png">
+                    <block title="Tickets">
+                        <setting string="Show Ticket Type in Portal"
+                                 help="Allow customers to select a ticket type on the portal form.">
+                            <field name="helpdesk_mgmt_portal_type"/>
+                        </setting>
+                    </block>
+                    <block title="Activity Tracking">
+                        <setting string="Models Linkable to Tickets"
+                                 help="Select which Odoo models can be linked to tickets for activity tracking.">
+                            <field name="helpdesk_available_model_ids" widget="many2many_tags"
+                                   options="{'no_create': True}"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

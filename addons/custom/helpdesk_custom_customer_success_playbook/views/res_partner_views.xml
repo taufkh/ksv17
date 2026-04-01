@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_partner_form_helpdesk_customer_success_playbook" model="ir.ui.view">
+        <field name="name">res.partner.form.helpdesk.customer.success.playbook</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="helpdesk_custom_customer_360.view_partner_form_helpdesk_360" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_open_helpdesk_success_playbooks" type="object" class="oe_stat_button" icon="fa-heartbeat" groups="helpdesk_mgmt.group_helpdesk_user">
+                    <field name="helpdesk_success_playbook_count" widget="statinfo" string="Playbooks" />
+                </button>
+                <button name="action_create_helpdesk_success_playbook" type="object" class="oe_stat_button" icon="fa-plus-circle" groups="helpdesk_mgmt.group_helpdesk_user">
+                    <span class="o_stat_text">New Playbook</span>
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>

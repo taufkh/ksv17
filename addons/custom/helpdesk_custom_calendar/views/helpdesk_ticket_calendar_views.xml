@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_helpdesk_ticket_calendar" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.calendar</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="arch" type="xml">
+            <calendar
+                string="Helpdesk Calendar"
+                date_start="create_date"
+                date_stop="sla_deadline"
+                color="team_id"
+                event_open_popup="1"
+                quick_create="0"
+                mode="month"
+            >
+                <field name="number"/>
+                <field name="name"/>
+                <field name="team_id"/>
+                <field name="partner_id"/>
+                <field name="user_id"/>
+                <field name="priority"/>
+                <field name="stage_id"/>
+                <field name="create_date"/>
+                <field name="sla_deadline"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="action_helpdesk_ticket_calendar" model="ir.actions.act_window">
+        <field name="name">Calendar</field>
+        <field name="res_model">helpdesk.ticket</field>
+        <field name="view_mode">calendar,kanban,tree,form,pivot</field>
+    </record>
+
+    <record id="act_window_view_helpdesk_ticket_action_kanban" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="helpdesk_mgmt.view_helpdesk_ticket_kanban"/>
+        <field name="act_window_id" ref="helpdesk_mgmt.helpdesk_ticket_action"/>
+    </record>
+
+    <record id="act_window_view_helpdesk_my_tickets_action_kanban" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="helpdesk_mgmt.view_helpdesk_ticket_kanban"/>
+        <field name="act_window_id" ref="helpdesk_mgmt.helpdesk_my_tickets_action"/>
+    </record>
+
+    <record id="act_window_view_helpdesk_dashboard_ticket_action_kanban" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="helpdesk_mgmt.view_helpdesk_ticket_kanban"/>
+        <field name="act_window_id" ref="helpdesk_mgmt.action_helpdesk_ticket_kanban_from_dashboard"/>
+    </record>
+
+    <record id="act_window_view_helpdesk_ticket_action_calendar" model="ir.actions.act_window.view">
+        <field name="sequence" eval="3"/>
+        <field name="view_mode">calendar</field>
+        <field name="view_id" ref="view_helpdesk_ticket_calendar"/>
+        <field name="act_window_id" ref="helpdesk_mgmt.helpdesk_ticket_action"/>
+    </record>
+
+    <record id="act_window_view_helpdesk_my_tickets_action_calendar" model="ir.actions.act_window.view">
+        <field name="sequence" eval="3"/>
+        <field name="view_mode">calendar</field>
+        <field name="view_id" ref="view_helpdesk_ticket_calendar"/>
+        <field name="act_window_id" ref="helpdesk_mgmt.helpdesk_my_tickets_action"/>
+    </record>
+
+    <record id="act_window_view_helpdesk_dashboard_ticket_action_calendar" model="ir.actions.act_window.view">
+        <field name="sequence" eval="2"/>
+        <field name="view_mode">calendar</field>
+        <field name="view_id" ref="view_helpdesk_ticket_calendar"/>
+        <field name="act_window_id" ref="helpdesk_mgmt.action_helpdesk_ticket_kanban_from_dashboard"/>
+    </record>
+
+    <record id="helpdesk_mgmt.helpdesk_ticket_action" model="ir.actions.act_window">
+        <field name="view_mode">kanban,tree,calendar,form,pivot</field>
+        <field name="view_id" ref="helpdesk_mgmt.view_helpdesk_ticket_kanban"/>
+    </record>
+
+    <record id="helpdesk_mgmt.helpdesk_my_tickets_action" model="ir.actions.act_window">
+        <field name="view_mode">kanban,tree,calendar,form,pivot</field>
+        <field name="view_id" ref="helpdesk_mgmt.view_helpdesk_ticket_kanban"/>
+    </record>
+
+    <record id="helpdesk_mgmt.action_helpdesk_ticket_kanban_from_dashboard" model="ir.actions.act_window">
+        <field name="view_mode">kanban,calendar,tree,form</field>
+        <field name="view_id" ref="helpdesk_mgmt.view_helpdesk_ticket_kanban"/>
+    </record>
+
+    <menuitem
+        id="menu_helpdesk_ticket_calendar"
+        name="Calendar"
+        parent="helpdesk_mgmt.helpdesk_ticket_main_menu"
+        action="action_helpdesk_ticket_calendar"
+        sequence="15"
+    />
+</odoo>

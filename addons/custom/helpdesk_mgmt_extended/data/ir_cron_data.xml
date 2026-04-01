@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- SLA check — runs every hour -->
+    <record id="ir_cron_check_sla" model="ir.cron">
+        <field name="name">Helpdesk: Check SLA Expiry</field>
+        <field name="model_id" ref="model_helpdesk_sla"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_check_sla()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="numbercall">-1</field>
+        <field name="active" eval="True"/>
+        <field name="user_id" ref="base.user_root"/>
+    </record>
+
+    <!-- Close inactive tickets — runs every day at 02:00 -->
+    <record id="ir_cron_close_inactive" model="ir.cron">
+        <field name="name">Helpdesk: Auto-Close Inactive Tickets</field>
+        <field name="model_id" ref="helpdesk_mgmt.model_helpdesk_ticket_team"/>
+        <field name="state">code</field>
+        <field name="code">
+for team in model.search([('close_inactive_tickets', '=', True)]):
+    team.close_team_inactive_tickets()
+        </field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="active" eval="True"/>
+        <field name="user_id" ref="base.user_root"/>
+    </record>
+
+</odoo>

@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <template
+        id="portal_my_home_helpdesk_knowledge"
+        inherit_id="helpdesk_mgmt.portal_my_home"
+    >
+        <xpath expr="//div[@id='portal_common_category']" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="icon" t-value="'/helpdesk_mgmt/static/src/img/helpdesk_icon.svg'" />
+                <t t-set="title">Knowledge</t>
+                <t t-set="url" t-value="'/my/helpdesk/knowledge'" />
+                <t t-set="placeholder_count" t-value="'helpdesk_knowledge_count'" />
+            </t>
+        </xpath>
+    </template>
+
+    <template
+        id="portal_breadcrumbs_helpdesk_knowledge"
+        inherit_id="helpdesk_mgmt.portal_layout"
+    >
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li
+                t-if="page_name == 'helpdesk_knowledge' and not article"
+                class="breadcrumb-item active"
+            >
+                Knowledge
+            </li>
+            <li
+                t-if="page_name == 'helpdesk_knowledge' and article"
+                class="breadcrumb-item"
+            >
+                <a t-attf-href="/my/helpdesk/knowledge">Knowledge</a>
+            </li>
+            <li t-if="page_name == 'helpdesk_knowledge' and article" class="breadcrumb-item active text-truncate">
+                <span t-field="article.name" />
+            </li>
+        </xpath>
+    </template>
+
+    <template id="portal_my_helpdesk_knowledge" name="Portal Helpdesk Knowledge">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True" />
+            <div class="container py-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <h2 class="mb-1">Knowledge</h2>
+                        <p class="text-muted mb-0">Customer self-service guidance published by the support team.</p>
+                    </div>
+                    <form method="GET" action="/my/helpdesk/knowledge" class="d-flex gap-2">
+                        <input type="text" name="search" class="form-control" placeholder="Search knowledge" t-att-value="search or ''" />
+                        <button type="submit" class="btn btn-outline-secondary">Search</button>
+                    </form>
+                </div>
+                <t t-if="not articles">
+                    <div class="alert alert-warning">No published knowledge articles are available for your support scope.</div>
+                </t>
+                <div class="row g-3">
+                    <t t-foreach="articles" t-as="article">
+                        <div class="col-lg-6">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h4 class="h5 mb-0">
+                                            <a t-attf-href="/my/helpdesk/knowledge/#{article.id}">
+                                                <span t-field="article.name" />
+                                            </a>
+                                        </h4>
+                                        <span class="badge text-bg-light" t-if="article.helpdesk_team_id">
+                                            <span t-esc="article.helpdesk_team_id.name" />
+                                        </span>
+                                    </div>
+                                    <p class="text-muted mb-3" t-esc="article.portal_summary or ''" />
+                                    <div class="small text-muted">
+                                        <span t-if="article.helpdesk_category_id"><strong>Category:</strong> <t t-esc="article.helpdesk_category_id.complete_name" /></span>
+                                        <span t-if="article.portal_published_on" class="ms-3"><strong>Published:</strong> <t t-field="article.portal_published_on" t-options='{"widget": "datetime"}' /></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+                <t t-call="portal.portal_pager" />
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_helpdesk_knowledge_article" name="Portal Helpdesk Knowledge Article">
+        <t t-call="portal.portal_layout">
+            <div class="container py-4">
+                <div class="mb-4">
+                    <a href="/my/helpdesk/knowledge" class="btn btn-link px-0">Back to Knowledge</a>
+                    <h1 class="mt-2"><span t-field="article.name" /></h1>
+                    <p class="text-muted mb-0" t-esc="article.portal_summary or ''" />
+                </div>
+                <div class="row g-4">
+                    <div class="col-lg-8">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <div t-field="article.content" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="card shadow-sm mb-3">
+                            <div class="card-body">
+                                <h5>Article Context</h5>
+                                <dl class="row mb-0">
+                                    <dt class="col-5">Category</dt>
+                                    <dd class="col-7" t-esc="article.helpdesk_category_id.complete_name or '-'" />
+                                    <dt class="col-5">Type</dt>
+                                    <dd class="col-7" t-esc="article.helpdesk_type_id.name or '-'" />
+                                    <dt class="col-5">Views</dt>
+                                    <dd class="col-7" t-esc="article.portal_view_count" />
+                                    <dt class="col-5">Helpful</dt>
+                                    <dd class="col-7" t-esc="article.portal_feedback_score and ('%s%%' % article.portal_feedback_score) or '0%'" />
+                                </dl>
+                            </div>
+                        </div>
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h5>Was this helpful?</h5>
+                                <p class="text-muted small">Your feedback helps the support team improve self-service guidance.</p>
+                                <div class="d-flex gap-2">
+                                    <form t-attf-action="/my/helpdesk/knowledge/#{article.id}/feedback" method="POST">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+                                        <input type="hidden" name="helpful" value="yes" />
+                                        <button type="submit" class="btn btn-outline-success">Helpful</button>
+                                    </form>
+                                    <form t-attf-action="/my/helpdesk/knowledge/#{article.id}/feedback" method="POST">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+                                        <input type="hidden" name="helpful" value="no" />
+                                        <button type="submit" class="btn btn-outline-secondary">Not Helpful</button>
+                                    </form>
+                                </div>
+                                <t t-if="request.params.get('feedback')">
+                                    <div class="alert alert-success mt-3 mb-0">Feedback recorded.</div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template
+        id="public_helpdesk_ticket_page_suggested_articles"
+        inherit_id="helpdesk_custom_portal.public_helpdesk_ticket_page"
+    >
+        <xpath expr="//form[contains(@class, 'o_helpdesk_public_reply_form')]/.." position="before">
+            <article class="o_helpdesk_public_panel" t-if="suggested_articles">
+                <h3>Suggested Knowledge Articles</h3>
+                <p class="text-muted mb-3">
+                    Self-service guides that match this ticket's category, team, or support scope.
+                </p>
+                <div class="d-grid gap-3">
+                    <div class="border rounded p-3" t-foreach="suggested_articles" t-as="article">
+                        <h4 class="h6 mb-2">
+                            <a t-attf-href="/helpdesk/track/#{ticket.public_portal_token}/knowledge/#{article.id}?db=#{public_db_name}">
+                                <span t-field="article.name" />
+                            </a>
+                        </h4>
+                        <p class="small text-muted mb-2" t-esc="article.portal_summary or ''" />
+                        <div class="d-flex flex-wrap gap-2">
+                            <a
+                                class="btn btn-outline-secondary btn-sm"
+                                t-attf-href="/helpdesk/track/#{ticket.public_portal_token}/knowledge/#{article.id}?db=#{public_db_name}"
+                            >Open Article</a>
+                            <form
+                                t-attf-action="/helpdesk/track/#{ticket.public_portal_token}/knowledge/#{article.id}/deflect?db=#{public_db_name}"
+                                method="POST"
+                            >
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+                                <button type="submit" class="btn btn-outline-success btn-sm">Solved My Question</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </xpath>
+        <xpath expr="//section[@class='o_helpdesk_public_grid']" position="before">
+            <t t-if="request.params.get('article_helped')">
+                <div class="alert alert-success mt-3">
+                    Great. The knowledge article has been marked as helpful for this ticket.
+                </div>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="public_helpdesk_knowledge_article" name="Public Helpdesk Knowledge Article">
+        <t t-call="portal.portal_layout">
+            <div class="o_helpdesk_public_portal">
+                <section class="o_helpdesk_public_hero">
+                    <div class="o_helpdesk_public_hero_main">
+                        <span class="o_helpdesk_public_badge">Knowledge</span>
+                        <h1><span t-field="article.name" /></h1>
+                        <p class="mb-0" t-esc="article.portal_summary or ''" />
+                    </div>
+                    <div class="o_helpdesk_public_hero_side">
+                        <div class="o_helpdesk_public_metric">
+                            <span class="label">Ticket</span>
+                            <strong t-field="ticket.number" />
+                        </div>
+                        <div class="o_helpdesk_public_metric" t-if="article.portal_published_on">
+                            <span class="label">Published</span>
+                            <strong t-field="article.portal_published_on" t-options='{"widget": "datetime"}' />
+                        </div>
+                    </div>
+                </section>
+                <section class="o_helpdesk_public_grid">
+                    <div class="o_helpdesk_public_main">
+                        <article class="o_helpdesk_public_panel">
+                            <div t-field="article.content" class="o_helpdesk_public_body" />
+                        </article>
+                    </div>
+                    <aside class="o_helpdesk_public_sidebar">
+                        <article class="o_helpdesk_public_panel">
+                            <h3>Need More Help?</h3>
+                            <div class="d-grid gap-2">
+                                <a
+                                    class="btn btn-outline-secondary"
+                                    t-attf-href="/helpdesk/track/#{ticket.public_portal_token}?db=#{public_db_name}"
+                                >Back To Ticket</a>
+                                <form
+                                    t-attf-action="/helpdesk/track/#{ticket.public_portal_token}/knowledge/#{article.id}/deflect?db=#{public_db_name}"
+                                    method="POST"
+                                >
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+                                    <button type="submit" class="btn btn-outline-success w-100">This Solved My Question</button>
+                                </form>
+                            </div>
+                        </article>
+                        <article class="o_helpdesk_public_panel">
+                            <h3>Was This Helpful?</h3>
+                            <div class="d-flex flex-wrap gap-2">
+                                <form
+                                    t-attf-action="/helpdesk/track/#{ticket.public_portal_token}/knowledge/#{article.id}/feedback?db=#{public_db_name}"
+                                    method="POST"
+                                >
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+                                    <input type="hidden" name="helpful" value="yes" />
+                                    <button type="submit" class="btn btn-outline-success btn-sm">Helpful</button>
+                                </form>
+                                <form
+                                    t-attf-action="/helpdesk/track/#{ticket.public_portal_token}/knowledge/#{article.id}/feedback?db=#{public_db_name}"
+                                    method="POST"
+                                >
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+                                    <input type="hidden" name="helpful" value="no" />
+                                    <button type="submit" class="btn btn-outline-secondary btn-sm">Not Helpful</button>
+                                </form>
+                            </div>
+                        </article>
+                    </aside>
+                </section>
+            </div>
+        </t>
+    </template>
+</odoo>

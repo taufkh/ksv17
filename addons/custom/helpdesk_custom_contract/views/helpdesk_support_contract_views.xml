@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_helpdesk_support_contract_search" model="ir.ui.view">
+        <field name="name">helpdesk.support.contract.search</field>
+        <field name="model">helpdesk.support.contract</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="partner_id" />
+                <field name="team_id" />
+                <filter string="Active" name="active" domain="[('state', '=', 'active')]" />
+                <filter string="Expiring" name="expiring" domain="[('state', '=', 'expiring')]" />
+                <filter string="Expired" name="expired" domain="[('state', '=', 'expired')]" />
+                <filter string="Overrun" name="overrun" domain="[('remaining_hours', '&lt;', 0)]" />
+                <group expand="0" string="Group By">
+                    <filter string="Customer" name="group_partner" context="{'group_by': 'partner_id'}" />
+                    <filter string="State" name="group_state" context="{'group_by': 'state'}" />
+                    <filter string="Team" name="group_team" context="{'group_by': 'team_id'}" />
+                    <filter string="SLA Tier" name="group_sla_tier" context="{'group_by': 'sla_tier'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_support_contract_tree" model="ir.ui.view">
+        <field name="name">helpdesk.support.contract.tree</field>
+        <field name="model">helpdesk.support.contract</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" />
+                <field name="partner_id" />
+                <field name="team_id" optional="show" />
+                <field name="contract_type" />
+                <field name="sla_tier" />
+                <field name="state" />
+                <field name="start_date" optional="show" />
+                <field name="end_date" />
+                <field name="included_hours" />
+                <field name="consumed_hours" />
+                <field name="remaining_hours" />
+                <field name="active_ticket_count" optional="show" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_support_contract_form" model="ir.ui.view">
+        <field name="name">helpdesk.support.contract.form</field>
+        <field name="model">helpdesk.support.contract</field>
+        <field name="arch" type="xml">
+            <form string="Support Contract">
+                <header>
+                    <button name="action_set_draft" type="object" string="Set Draft" invisible="manual_state == 'draft'" groups="helpdesk_mgmt.group_helpdesk_manager" />
+                    <button name="action_activate" type="object" string="Activate" class="btn-primary" invisible="manual_state == 'active'" groups="helpdesk_mgmt.group_helpdesk_manager" />
+                    <button name="action_suspend" type="object" string="Suspend" invisible="manual_state != 'active'" groups="helpdesk_mgmt.group_helpdesk_manager" />
+                    <button name="action_cancel" type="object" string="Cancel" invisible="manual_state == 'cancelled'" groups="helpdesk_mgmt.group_helpdesk_manager" />
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,expiring,expired,suspended,cancelled" />
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_tickets" type="object" class="oe_stat_button" icon="fa-life-ring">
+                            <field name="covered_ticket_count" widget="statinfo" string="Tickets" />
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only" />
+                        <h1><field name="name" /></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="partner_id" />
+                            <field name="team_id" />
+                            <field name="contract_type" />
+                            <field name="sla_tier" />
+                            <field name="manual_state" />
+                        </group>
+                        <group>
+                            <field name="start_date" />
+                            <field name="end_date" />
+                            <field name="included_hours" />
+                            <field name="warning_hours" />
+                            <field name="allow_overrun" />
+                        </group>
+                    </group>
+                    <group string="Coverage">
+                        <group>
+                            <field name="consumed_hours" readonly="1" />
+                            <field name="remaining_hours" readonly="1" />
+                            <field name="overrun_hours" readonly="1" />
+                        </group>
+                        <group>
+                            <field name="utilization_rate" readonly="1" />
+                            <field name="active_ticket_count" readonly="1" />
+                            <field name="covered_ticket_count" readonly="1" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Notes">
+                            <field name="notes" widget="html" />
+                        </page>
+                        <page string="Tickets">
+                            <field name="ticket_ids" readonly="1">
+                                <tree>
+                                    <field name="number" />
+                                    <field name="name" />
+                                    <field name="stage_id" />
+                                    <field name="user_id" />
+                                    <field name="total_hours" />
+                                    <field name="contract_coverage_status" />
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" />
+                    <field name="activity_ids" widget="mail_activity" />
+                    <field name="message_ids" widget="mail_thread" />
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_support_contract_pivot" model="ir.ui.view">
+        <field name="name">helpdesk.support.contract.pivot</field>
+        <field name="model">helpdesk.support.contract</field>
+        <field name="arch" type="xml">
+            <pivot string="Contract Analysis">
+                <field name="partner_id" type="row" />
+                <field name="state" type="col" />
+                <field name="included_hours" type="measure" />
+                <field name="consumed_hours" type="measure" />
+                <field name="remaining_hours" type="measure" />
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_helpdesk_support_contract" model="ir.actions.act_window">
+        <field name="name">Support Contracts</field>
+        <field name="res_model">helpdesk.support.contract</field>
+        <field name="view_mode">tree,form,pivot</field>
+        <field name="search_view_id" ref="view_helpdesk_support_contract_search" />
+        <field name="context">{'search_default_active': 1}</field>
+    </record>
+
+    <menuitem
+        id="menu_helpdesk_support_contract"
+        name="Support Contracts"
+        parent="helpdesk_mgmt.helpdesk_ticket_config_main_menu"
+        action="action_helpdesk_support_contract"
+        sequence="55"
+        groups="helpdesk_mgmt.group_helpdesk_user"
+    />
+</odoo>
+

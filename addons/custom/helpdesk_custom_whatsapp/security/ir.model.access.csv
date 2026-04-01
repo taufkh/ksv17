@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_helpdesk_whatsapp_template_user,helpdesk.whatsapp.template user,model_helpdesk_whatsapp_template,helpdesk_mgmt.group_helpdesk_user,1,0,0,0
+access_helpdesk_whatsapp_template_manager,helpdesk.whatsapp.template manager,model_helpdesk_whatsapp_template,helpdesk_mgmt.group_helpdesk_manager,1,1,1,1
+access_helpdesk_whatsapp_message_user,helpdesk.whatsapp.message user,model_helpdesk_whatsapp_message,helpdesk_mgmt.group_helpdesk_user,1,1,1,0
+access_helpdesk_whatsapp_message_manager,helpdesk.whatsapp.message manager,model_helpdesk_whatsapp_message,helpdesk_mgmt.group_helpdesk_manager,1,1,1,1

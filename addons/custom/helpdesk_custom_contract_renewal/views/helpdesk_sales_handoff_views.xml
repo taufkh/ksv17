@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_helpdesk_sales_handoff_search_contract_renewal" model="ir.ui.view">
+        <field name="name">helpdesk.sales.handoff.search.contract.renewal</field>
+        <field name="model">helpdesk.sales.handoff</field>
+        <field name="inherit_id" ref="helpdesk_custom_sales_handoff.view_helpdesk_sales_handoff_search" />
+        <field name="arch" type="xml">
+            <xpath expr="//search/field[@name='partner_id']" position="after">
+                <field name="source_contract_id" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_sales_handoff_tree_contract_renewal" model="ir.ui.view">
+        <field name="name">helpdesk.sales.handoff.tree.contract.renewal</field>
+        <field name="model">helpdesk.sales.handoff</field>
+        <field name="inherit_id" ref="helpdesk_custom_sales_handoff.view_helpdesk_sales_handoff_tree" />
+        <field name="arch" type="xml">
+            <xpath expr="//tree/field[@name='partner_id']" position="after">
+                <field name="source_contract_id" optional="show" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_sales_handoff_form_contract_renewal" model="ir.ui.view">
+        <field name="name">helpdesk.sales.handoff.form.contract.renewal</field>
+        <field name="model">helpdesk.sales.handoff</field>
+        <field name="inherit_id" ref="helpdesk_custom_sales_handoff.view_helpdesk_sales_handoff_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='ticket_id']" position="after">
+                <field name="source_contract_id" readonly="1" />
+            </xpath>
+        </field>
+    </record>
+</odoo>

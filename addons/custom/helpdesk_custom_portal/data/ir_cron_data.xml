@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <record id="ir_cron_helpdesk_public_portal_digest" model="ir.cron">
+        <field name="name">Helpdesk Public Portal Digest</field>
+        <field name="model_id" ref="helpdesk_mgmt.model_helpdesk_ticket" />
+        <field name="state">code</field>
+        <field name="code">model._cron_send_public_portal_digests(limit=200)</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="numbercall">-1</field>
+        <field name="active">True</field>
+    </record>
+    <record id="ir_cron_helpdesk_public_portal_digest_retry" model="ir.cron">
+        <field name="name">Helpdesk Public Portal Digest Retry</field>
+        <field name="model_id" ref="helpdesk_mgmt.model_helpdesk_ticket" />
+        <field name="state">code</field>
+        <field name="code">model._cron_retry_failed_public_portal_digests(limit=100)</field>
+        <field name="interval_number">2</field>
+        <field name="interval_type">hours</field>
+        <field name="numbercall">-1</field>
+        <field name="active">True</field>
+    </record>
+    <record id="ir_cron_helpdesk_public_portal_customer_followup" model="ir.cron">
+        <field name="name">Helpdesk Public Portal Customer Follow-up Reminder</field>
+        <field name="model_id" ref="helpdesk_mgmt.model_helpdesk_ticket" />
+        <field name="state">code</field>
+        <field name="code">model._cron_schedule_public_portal_customer_followups(limit=200)</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="numbercall">-1</field>
+        <field name="active">True</field>
+    </record>
+</odoo>

@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_helpdesk_customer_success_playbook_user,helpdesk.customer.success.playbook.user,model_helpdesk_customer_success_playbook,helpdesk_mgmt.group_helpdesk_user,1,1,1,0
+access_helpdesk_customer_success_playbook_manager,helpdesk.customer.success.playbook.manager,model_helpdesk_customer_success_playbook,helpdesk_mgmt.group_helpdesk_manager,1,1,1,1

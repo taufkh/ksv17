@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Extend stage form to show rating template and required fields -->
+    <record id="view_helpdesk_ticket_stage_form_ext" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.stage.form.extended</field>
+        <field name="model">helpdesk.ticket.stage</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.view_helpdesk_ticket_stage_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="Rating">
+                    <field name="rating_mail_template_id"/>
+                </group>
+                <group string="Stage Validation">
+                    <field name="validate_field_ids" widget="many2many_tags"
+                           options="{'no_create': True}"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

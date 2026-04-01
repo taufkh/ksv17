@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_helpdesk_whatsapp_message_tree" model="ir.ui.view">
+        <field name="name">helpdesk.whatsapp.message.tree</field>
+        <field name="model">helpdesk.whatsapp.message</field>
+        <field name="arch" type="xml">
+            <tree decoration-success="state == 'sent'" decoration-danger="state == 'failed'" decoration-warning="state == 'queued'">
+                <field name="name" />
+                <field name="ticket_id" />
+                <field name="trigger" />
+                <field name="recipient_name" />
+                <field name="recipient_phone" />
+                <field name="state" />
+                <field name="is_sandbox" />
+                <field name="attempt_count" />
+                <field name="sent_at" optional="show" />
+                <field name="error_message" optional="show" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_whatsapp_message_form" model="ir.ui.view">
+        <field name="name">helpdesk.whatsapp.message.form</field>
+        <field name="model">helpdesk.whatsapp.message</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_process_now" type="object" string="Process Now" invisible="state == 'sent' or state == 'cancelled'" />
+                    <button name="action_retry" type="object" string="Retry" invisible="state != 'failed'" />
+                    <button name="action_cancel" type="object" string="Cancel" invisible="state == 'sent' or state == 'cancelled'" />
+                    <field name="state" widget="statusbar" statusbar_visible="queued,sent,failed,cancelled" />
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="ticket_id" />
+                            <field name="template_id" />
+                            <field name="trigger" />
+                            <field name="team_id" readonly="1" />
+                        </group>
+                        <group>
+                            <field name="recipient_partner_id" />
+                            <field name="recipient_name" />
+                            <field name="recipient_phone" />
+                            <field name="is_sandbox" readonly="1" />
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="scheduled_at" readonly="1" />
+                            <field name="next_attempt_at" readonly="1" />
+                            <field name="sent_at" readonly="1" />
+                        </group>
+                        <group>
+                            <field name="attempt_count" readonly="1" />
+                            <field name="max_attempts" />
+                            <field name="provider_message_id" readonly="1" />
+                        </group>
+                    </group>
+                    <group>
+                        <field name="body" widget="text" />
+                        <field name="error_message" widget="text" readonly="1" />
+                        <field name="provider_response" widget="text" readonly="1" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_whatsapp_message_search" model="ir.ui.view">
+        <field name="name">helpdesk.whatsapp.message.search</field>
+        <field name="model">helpdesk.whatsapp.message</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="ticket_id" />
+                <field name="recipient_name" />
+                <field name="recipient_phone" />
+                <field name="trigger" />
+                <field name="state" />
+                <filter name="queued" string="Queued" domain="[('state', '=', 'queued')]" />
+                <filter name="sent" string="Sent" domain="[('state', '=', 'sent')]" />
+                <filter name="failed" string="Failed" domain="[('state', '=', 'failed')]" />
+                <filter name="sandbox" string="Sandbox" domain="[('is_sandbox', '=', True)]" />
+                <group expand="0" string="Group By">
+                    <filter name="group_state" string="State" context="{'group_by': 'state'}" />
+                    <filter name="group_trigger" string="Trigger" context="{'group_by': 'trigger'}" />
+                    <filter name="group_team" string="Team" context="{'group_by': 'team_id'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_helpdesk_whatsapp_message" model="ir.actions.act_window">
+        <field name="name">WhatsApp Messages</field>
+        <field name="res_model">helpdesk.whatsapp.message</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_helpdesk_whatsapp_message_search" />
+    </record>
+
+    <menuitem
+        id="menu_helpdesk_whatsapp_messages"
+        name="WhatsApp Logs"
+        parent="helpdesk_mgmt.helpdesk_ticket_reporting_menu"
+        action="action_helpdesk_whatsapp_message"
+        sequence="40"
+        groups="helpdesk_mgmt.group_helpdesk_user"
+    />
+</odoo>

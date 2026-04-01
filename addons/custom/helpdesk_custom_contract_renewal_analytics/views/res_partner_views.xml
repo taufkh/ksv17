@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_partner_form_helpdesk_360_contract_renewal_analytics" model="ir.ui.view">
+        <field name="name">res.partner.form.helpdesk.360.contract.renewal.analytics</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="helpdesk_custom_contract_renewal.view_partner_form_helpdesk_360_contract_renewal" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='helpdesk_360_contract_risk_count']" position="after">
+                <field name="helpdesk_360_renewal_risk_segment" readonly="1" />
+                <field name="helpdesk_360_renewal_overdue_followup_count" readonly="1" />
+            </xpath>
+            <xpath expr="//field[@name='helpdesk_360_renewal_watch_count']" position="after">
+                <field name="helpdesk_360_renewal_weighted_revenue" readonly="1" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_partner_tree_helpdesk_360_contract_renewal_analytics" model="ir.ui.view">
+        <field name="name">res.partner.tree.helpdesk.360.contract.renewal.analytics</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="helpdesk_custom_customer_360.view_partner_tree_helpdesk_360" />
+        <field name="arch" type="xml">
+            <xpath expr="//tree/field[@name='helpdesk_360_active_contract_count']" position="after">
+                <field name="helpdesk_360_renewal_risk_segment" optional="show" />
+                <field name="helpdesk_360_renewal_overdue_followup_count" optional="show" />
+            </xpath>
+        </field>
+    </record>
+</odoo>

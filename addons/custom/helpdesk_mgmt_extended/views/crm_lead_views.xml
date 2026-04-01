@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_crm_lead_form_ext" model="ir.ui.view">
+        <field name="name">crm.lead.form.helpdesk</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_all_leads"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="Helpdesk" invisible="not ticket_id">
+                    <field name="ticket_id"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

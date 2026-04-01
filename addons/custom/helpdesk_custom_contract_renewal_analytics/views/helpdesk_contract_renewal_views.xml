@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_helpdesk_contract_renewal_search_analytics" model="ir.ui.view">
+        <field name="name">helpdesk.contract.renewal.search.analytics</field>
+        <field name="model">helpdesk.contract.renewal</field>
+        <field name="inherit_id" ref="helpdesk_custom_contract_renewal.view_helpdesk_contract_renewal_search" />
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <filter string="Follow-up Overdue" name="followup_overdue" domain="[('follow_up_overdue', '=', True)]" />
+                <filter string="High Value" name="high_value" domain="[('expected_revenue', '&gt;=', 10000000)]" />
+                <filter string="At Risk Revenue" name="at_risk_revenue" domain="[('revenue_at_risk', '&gt;', 0)]" />
+                <filter string="Probability 75-100%" name="probability_high" domain="[('probability_bucket', '=', '75_100')]" />
+            </xpath>
+            <xpath expr="//search/group" position="inside">
+                <filter string="Probability Bucket" name="group_probability_bucket" context="{'group_by': 'probability_bucket'}" />
+                <filter string="Expiry Bucket" name="group_expiry_bucket" context="{'group_by': 'expiry_bucket'}" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_contract_renewal_tree_analytics" model="ir.ui.view">
+        <field name="name">helpdesk.contract.renewal.tree.analytics</field>
+        <field name="model">helpdesk.contract.renewal</field>
+        <field name="inherit_id" ref="helpdesk_custom_contract_renewal.view_helpdesk_contract_renewal_tree" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='renewal_probability']" position="after">
+                <field name="weighted_revenue" optional="show" />
+                <field name="revenue_at_risk" optional="show" />
+                <field name="follow_up_overdue_days" optional="show" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_contract_renewal_form_analytics" model="ir.ui.view">
+        <field name="name">helpdesk.contract.renewal.form.analytics</field>
+        <field name="model">helpdesk.contract.renewal</field>
+        <field name="inherit_id" ref="helpdesk_custom_contract_renewal.view_helpdesk_contract_renewal_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='expected_revenue']" position="after">
+                <field name="weighted_revenue" readonly="1" />
+                <field name="revenue_at_risk" readonly="1" />
+            </xpath>
+            <xpath expr="//field[@name='decision_note']" position="before">
+                <field name="follow_up_overdue" readonly="1" />
+                <field name="follow_up_overdue_days" readonly="1" invisible="follow_up_overdue == False" />
+                <field name="probability_bucket" readonly="1" />
+                <field name="expiry_bucket" readonly="1" />
+            </xpath>
+        </field>
+    </record>
+</odoo>

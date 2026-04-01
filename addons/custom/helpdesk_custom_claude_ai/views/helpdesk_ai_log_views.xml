@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="helpdesk_ai_log_list_view" model="ir.ui.view">
+        <field name="name">helpdesk.ai.log.list</field>
+        <field name="model">helpdesk.ai.log</field>
+        <field name="arch" type="xml">
+            <list string="AI Analysis Log"
+                  decoration-danger="error != False"
+                  decoration-success="error == False and classification != False">
+                <field name="create_date" string="Date"/>
+                <field name="ticket_id"/>
+                <field name="classification"/>
+                <field name="confidence" widget="percentage"/>
+                <field name="trigger"/>
+                <field name="model_used"/>
+                <field name="prompt_tokens"/>
+                <field name="completion_tokens"/>
+                <field name="duration_ms" string="Duration (ms)"/>
+                <field name="response_summary"/>
+                <field name="error" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="helpdesk_ai_log_form_view" model="ir.ui.view">
+        <field name="name">helpdesk.ai.log.form</field>
+        <field name="model">helpdesk.ai.log</field>
+        <field name="arch" type="xml">
+            <form string="AI Analysis Log Entry">
+                <sheet>
+                    <group>
+                        <group string="Ticket">
+                            <field name="ticket_id"/>
+                            <field name="trigger"/>
+                            <field name="create_date" string="Analysed At"/>
+                        </group>
+                        <group string="Result">
+                            <field name="classification"/>
+                            <field name="confidence" widget="percentage"/>
+                            <field name="model_used"/>
+                        </group>
+                    </group>
+                    <group string="Usage">
+                        <field name="prompt_tokens"/>
+                        <field name="completion_tokens"/>
+                        <field name="duration_ms"/>
+                    </group>
+                    <group string="Summary">
+                        <field name="response_summary" nolabel="1"/>
+                    </group>
+                    <group string="Error" invisible="not error">
+                        <field name="error" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="helpdesk_ai_log_search_view" model="ir.ui.view">
+        <field name="name">helpdesk.ai.log.search</field>
+        <field name="model">helpdesk.ai.log</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="ticket_id"/>
+                <field name="classification"/>
+                <filter string="Errors" name="errors" domain="[('error','!=',False)]"/>
+                <filter string="Auto" name="auto" domain="[('trigger','=','auto')]"/>
+                <filter string="Manual" name="manual" domain="[('trigger','=','manual')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Classification" name="by_class"
+                            context="{'group_by': 'classification'}"/>
+                    <filter string="Model" name="by_model"
+                            context="{'group_by': 'model_used'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_helpdesk_ai_log" model="ir.actions.act_window">
+        <field name="name">AI Analysis Log</field>
+        <field name="res_model">helpdesk.ai.log</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="helpdesk_ai_log_search_view"/>
+    </record>
+
+    <!-- Add menu under Helpdesk > Reporting -->
+    <menuitem id="menu_helpdesk_ai_log"
+              name="AI Analysis Log"
+              parent="helpdesk_mgmt.helpdesk_ticket_menu_config"
+              action="action_helpdesk_ai_log"
+              sequence="90"
+              groups="helpdesk_mgmt.group_helpdesk_manager"/>
+</odoo>

@@ -1,0 +1,540 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_helpdesk_ticket_kpi_dashboard_search" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.kpi.dashboard.search</field>
+        <field name="model">helpdesk.ticket.kpi.dashboard</field>
+        <field name="arch" type="xml">
+            <search string="KPI Dashboard">
+                <field name="scope_name" />
+                <field name="company_id" />
+                <field name="team_id" />
+                <filter name="filter_overall" string="Overall" domain="[('scope_type', '=', 'overall')]" />
+                <filter name="filter_team" string="Team" domain="[('scope_type', '=', 'team')]" />
+                <filter name="filter_hotspot" string="Needs Attention" domain="['|', ('overdue_count', '&gt;', 0), ('unassigned_count', '&gt;', 0)]" />
+                <filter
+                    name="filter_csat_hotspot"
+                    string="CSAT Risk"
+                    domain="['|', ('scope_type', '=', 'overall'), '|', ('low_csat_open_count', '&gt;', 0), '|', ('recovery_sla_miss_count', '&gt;', 0), ('no_followup_24h_count', '&gt;', 0)]"
+                />
+                <filter name="filter_backlog" string="Backlog &gt; 7 Days" domain="[('backlog_7d_count', '&gt;', 0)]" />
+                <separator />
+                <filter name="group_company" string="Company" context="{'group_by': 'company_id'}" />
+                <filter name="group_scope" string="Scope Type" context="{'group_by': 'scope_type'}" />
+            </search>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_ticket_kpi_dashboard_kanban" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.kpi.dashboard.kanban</field>
+        <field name="model">helpdesk.ticket.kpi.dashboard</field>
+        <field name="arch" type="xml">
+            <kanban class="o_helpdesk_kpi_dashboard" create="0" edit="0" delete="0">
+                <field name="scope_type" />
+                <field name="scope_name" />
+                <field name="total_count" />
+                <field name="open_count" />
+                <field name="closed_count" />
+                <field name="closed_month_count" />
+                <field name="overdue_count" />
+                <field name="escalated_count" />
+                <field name="unassigned_count" />
+                <field name="due_today_count" />
+                <field name="high_priority_open_count" />
+                <field name="backlog_7d_count" />
+                <field name="backlog_30d_count" />
+                <field name="customer_count" />
+                <field name="rated_ticket_count" />
+                <field name="avg_assign_hours" />
+                <field name="avg_close_hours" />
+                <field name="avg_open_hours" />
+                <field name="avg_rating" />
+                <field name="breach_rate" />
+                <field name="same_day_resolution_rate" />
+                <field name="assigned_within_4h_rate" />
+                <field name="low_csat_open_count" />
+                <field name="recovery_sla_miss_count" />
+                <field name="no_followup_24h_count" />
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="o_helpdesk_kpi_card">
+                            <div class="o_helpdesk_kpi_head">
+                                <div>
+                                    <div class="o_helpdesk_kpi_scope">
+                                        <field name="scope_name" />
+                                    </div>
+                                </div>
+                                <div class="o_helpdesk_kpi_scope_type">
+                                    <field name="scope_type" />
+                                </div>
+                            </div>
+
+                            <div class="o_helpdesk_kpi_hero">
+                                <div class="o_helpdesk_kpi_total">
+                                    <div class="o_helpdesk_kpi_total_label">Active Watchlist</div>
+                                    <div class="o_helpdesk_kpi_total_value">
+                                        <field name="open_count" />
+                                    </div>
+                                    <div class="o_helpdesk_kpi_split">
+                                        <span>
+                                            <span class="o_helpdesk_kpi_metric_label">Total</span>
+                                            <strong><field name="total_count" /></strong>
+                                        </span>
+                                        <span>
+                                            <span class="o_helpdesk_kpi_metric_label">Closed</span>
+                                            <strong><field name="closed_count" /></strong>
+                                        </span>
+                                        <span>
+                                            <span class="o_helpdesk_kpi_metric_label">This Month</span>
+                                            <strong><field name="closed_month_count" /></strong>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="o_helpdesk_kpi_stack">
+                                    <div class="o_helpdesk_kpi_metric">
+                                        <div class="o_helpdesk_kpi_metric_label">Breach Rate</div>
+                                        <div class="o_helpdesk_kpi_metric_value is-alert">
+                                            <field name="breach_rate" />%
+                                        </div>
+                                    </div>
+                                    <div class="o_helpdesk_kpi_metric">
+                                        <div class="o_helpdesk_kpi_metric_label">Avg Rating</div>
+                                        <div class="o_helpdesk_kpi_metric_value is-good">
+                                            <field name="avg_rating" /> / 5
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="o_helpdesk_kpi_grid">
+                                <div class="o_helpdesk_kpi_metric">
+                                    <div class="o_helpdesk_kpi_metric_label">SLA Overdue</div>
+                                    <div class="o_helpdesk_kpi_metric_value is-alert"><field name="overdue_count" /></div>
+                                </div>
+                                <div class="o_helpdesk_kpi_metric">
+                                    <div class="o_helpdesk_kpi_metric_label">Escalated</div>
+                                    <div class="o_helpdesk_kpi_metric_value is-warn"><field name="escalated_count" /></div>
+                                </div>
+                                <div class="o_helpdesk_kpi_metric">
+                                    <div class="o_helpdesk_kpi_metric_label">Unassigned</div>
+                                    <div class="o_helpdesk_kpi_metric_value is-warn"><field name="unassigned_count" /></div>
+                                </div>
+                                <div class="o_helpdesk_kpi_metric">
+                                    <div class="o_helpdesk_kpi_metric_label">High Priority Open</div>
+                                    <div class="o_helpdesk_kpi_metric_value"><field name="high_priority_open_count" /></div>
+                                </div>
+                                <div class="o_helpdesk_kpi_metric">
+                                    <div class="o_helpdesk_kpi_metric_label">Due Today</div>
+                                    <div class="o_helpdesk_kpi_metric_value"><field name="due_today_count" /></div>
+                                </div>
+                                <div class="o_helpdesk_kpi_metric">
+                                    <div class="o_helpdesk_kpi_metric_label">Backlog &gt; 7d</div>
+                                    <div class="o_helpdesk_kpi_metric_value is-alert"><field name="backlog_7d_count" /></div>
+                                </div>
+                                <div class="o_helpdesk_kpi_metric">
+                                    <div class="o_helpdesk_kpi_metric_label">Backlog &gt; 30d</div>
+                                    <div class="o_helpdesk_kpi_metric_value is-alert"><field name="backlog_30d_count" /></div>
+                                </div>
+                                <div class="o_helpdesk_kpi_metric">
+                                    <div class="o_helpdesk_kpi_metric_label">Customers Covered</div>
+                                    <div class="o_helpdesk_kpi_metric_value"><field name="customer_count" /></div>
+                                </div>
+                            </div>
+
+                            <div class="o_helpdesk_kpi_footer">
+                                <div>
+                                    <span class="o_helpdesk_kpi_metric_label">Avg Assign</span>
+                                    <span class="o_helpdesk_kpi_footer_value"><field name="avg_assign_hours" /> h</span>
+                                </div>
+                                <div>
+                                    <span class="o_helpdesk_kpi_metric_label">Avg Close</span>
+                                    <span class="o_helpdesk_kpi_footer_value"><field name="avg_close_hours" /> h</span>
+                                </div>
+                                <div>
+                                    <span class="o_helpdesk_kpi_metric_label">Same-Day Close</span>
+                                    <span class="o_helpdesk_kpi_footer_value"><field name="same_day_resolution_rate" />%</span>
+                                </div>
+                                <div>
+                                    <span class="o_helpdesk_kpi_metric_label">Assigned Within 4h</span>
+                                    <span class="o_helpdesk_kpi_footer_value"><field name="assigned_within_4h_rate" />%</span>
+                                </div>
+                            </div>
+
+                            <div class="o_helpdesk_kpi_grid mt-2">
+                                <div class="o_helpdesk_kpi_metric">
+                                    <div class="o_helpdesk_kpi_metric_label">Low CSAT Open</div>
+                                    <div class="o_helpdesk_kpi_metric_value is-alert"><field name="low_csat_open_count" /></div>
+                                </div>
+                                <div class="o_helpdesk_kpi_metric">
+                                    <div class="o_helpdesk_kpi_metric_label">Recovery SLA Miss</div>
+                                    <div class="o_helpdesk_kpi_metric_value is-alert"><field name="recovery_sla_miss_count" /></div>
+                                </div>
+                                <div class="o_helpdesk_kpi_metric">
+                                    <div class="o_helpdesk_kpi_metric_label">No Follow-up &gt; 24h</div>
+                                    <div class="o_helpdesk_kpi_metric_value is-warn"><field name="no_followup_24h_count" /></div>
+                                </div>
+                            </div>
+
+                            <div class="o_helpdesk_kpi_actions">
+                                <button type="object" name="action_view_open_tickets" class="btn btn-light btn-sm">Open Queue</button>
+                                <button type="object" name="action_view_overdue_tickets" class="btn btn-danger btn-sm">SLA Watchlist</button>
+                                <button type="object" name="action_view_unassigned_tickets" class="btn btn-warning btn-sm">Unassigned</button>
+                                <button type="object" name="action_view_high_priority_tickets" class="btn btn-secondary btn-sm">Priority</button>
+                                <button type="object" name="action_view_escalated_tickets" class="btn btn-info btn-sm">Escalated</button>
+                                <button type="object" name="action_view_low_csat_open_tickets" class="btn btn-danger btn-sm">Low CSAT Open</button>
+                                <button type="object" name="action_view_recovery_sla_miss_tickets" class="btn btn-danger btn-sm">Recovery SLA Miss</button>
+                                <button type="object" name="action_view_no_followup_tickets" class="btn btn-warning btn-sm">No Follow-up</button>
+                                <button type="object" name="action_open_analysis" class="btn btn-primary btn-sm">Deep Analysis</button>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_ticket_kpi_dashboard_tree" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.kpi.dashboard.tree</field>
+        <field name="model">helpdesk.ticket.kpi.dashboard</field>
+        <field name="arch" type="xml">
+            <tree string="KPI Overview" create="0" edit="0" delete="0">
+                <field name="scope_name" />
+                <field name="scope_type" />
+                <field name="open_count" />
+                <field name="overdue_count" />
+                <field name="escalated_count" />
+                <field name="unassigned_count" />
+                <field name="high_priority_open_count" />
+                <field name="avg_assign_hours" />
+                <field name="avg_close_hours" />
+                <field name="breach_rate" />
+                <field name="avg_rating" />
+                <field name="low_csat_open_count" />
+                <field name="recovery_sla_miss_count" />
+                <field name="no_followup_24h_count" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_ticket_kpi_report_search" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.kpi.report.search</field>
+        <field name="model">helpdesk.ticket.kpi.report</field>
+        <field name="arch" type="xml">
+            <search string="Helpdesk KPI Analysis">
+                <field name="number" />
+                <field name="name" />
+                <field name="partner_id" />
+                <field name="commercial_partner_id" />
+                <field name="team_id" />
+                <field name="user_id" />
+                <field name="category_id" />
+                <field name="type_id" />
+                <field name="channel_id" />
+                <field name="stage_id" />
+                <field name="priority" />
+                <filter name="filter_open" string="Open" domain="[('closed', '=', False)]" />
+                <filter name="filter_closed" string="Closed" domain="[('closed', '=', True)]" />
+                <filter name="filter_sla_overdue" string="SLA Overdue" domain="[('sla_expired', '=', True)]" />
+                <filter name="filter_breached_open" string="Open Breach" domain="[('overdue_open_flag', '&gt;', 0)]" />
+                <filter name="filter_escalated" string="Escalated" domain="[('escalated', '=', True)]" />
+                <filter name="filter_unassigned" string="Unassigned" domain="[('assignment_bucket', '=', 'unassigned')]" />
+                <filter name="filter_high_priority" string="High Priority" domain="[('high_priority', '=', True)]" />
+                <filter name="filter_stale" string="Backlog &gt; 7 Days" domain="[('age_bucket', '=', 'stale')]" />
+                <filter name="filter_rated" string="Rated" domain="[('is_rated', '=', True)]" />
+                <separator />
+                <filter name="group_team" string="Team" context="{'group_by': 'team_id'}" />
+                <filter name="group_stage" string="Stage" context="{'group_by': 'stage_id'}" />
+                <filter name="group_user" string="Assigned User" context="{'group_by': 'user_id'}" />
+                <filter name="group_category" string="Category" context="{'group_by': 'category_id'}" />
+                <filter name="group_type" string="Type" context="{'group_by': 'type_id'}" />
+                <filter name="group_channel" string="Channel" context="{'group_by': 'channel_id'}" />
+                <filter name="group_customer" string="Customer" context="{'group_by': 'commercial_partner_id'}" />
+                <filter name="group_priority" string="Priority" context="{'group_by': 'priority'}" />
+                <filter name="group_age" string="Age Bucket" context="{'group_by': 'age_bucket'}" />
+                <filter name="group_assignment" string="Assignment Speed" context="{'group_by': 'assignment_bucket'}" />
+                <filter name="group_resolution" string="Resolution Bucket" context="{'group_by': 'resolution_bucket'}" />
+                <filter name="group_sla_status" string="SLA Status" context="{'group_by': 'sla_status'}" />
+                <filter name="group_rating" string="Rating Band" context="{'group_by': 'rating_bucket'}" />
+                <filter name="group_submit_month" string="Submitted Month" context="{'group_by': 'create_date:month'}" />
+                <filter name="group_close_month" string="Closed Month" context="{'group_by': 'closed_date:month'}" />
+            </search>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_ticket_kpi_report_tree" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.kpi.report.tree</field>
+        <field name="model">helpdesk.ticket.kpi.report</field>
+        <field name="arch" type="xml">
+            <tree string="Helpdesk KPI Analysis" create="0" edit="0" delete="0">
+                <field name="number" />
+                <field name="name" />
+                <field name="team_id" />
+                <field name="user_id" />
+                <field name="commercial_partner_id" />
+                <field name="priority" />
+                <field name="stage_id" />
+                <field name="age_bucket" />
+                <field name="sla_status" />
+                <field name="rating_bucket" />
+                <field name="create_date" />
+                <field name="sla_deadline" />
+                <field name="closed_date" />
+                <field name="hours_to_assign" optional="hide" />
+                <field name="hours_to_close" optional="hide" />
+                <field name="hours_open" optional="hide" />
+                <field name="sla_delay_hours" optional="hide" />
+                <field name="rating_value" optional="hide" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_ticket_kpi_report_pivot" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.kpi.report.pivot</field>
+        <field name="model">helpdesk.ticket.kpi.report</field>
+        <field name="arch" type="xml">
+            <pivot string="Helpdesk KPI Analysis" disable_linking="False">
+                <field name="team_id" type="row" />
+                <field name="stage_id" type="row" />
+                <field name="user_id" type="col" />
+                <field name="ticket_count" type="measure" />
+                <field name="breach_flag" type="measure" />
+                <field name="overdue_open_flag" type="measure" />
+                <field name="rated_ticket_count" type="measure" />
+                <field name="same_day_resolution_hit" type="measure" />
+                <field name="assigned_within_4h_hit" type="measure" />
+                <field name="hours_to_assign" type="measure" />
+                <field name="hours_to_close" type="measure" />
+                <field name="hours_open" type="measure" />
+                <field name="age_days" type="measure" />
+                <field name="sla_target_hours" type="measure" />
+                <field name="sla_delay_hours" type="measure" />
+                <field name="rating_value" type="measure" />
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_ticket_kpi_report_graph" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.kpi.report.graph</field>
+        <field name="model">helpdesk.ticket.kpi.report</field>
+        <field name="arch" type="xml">
+            <graph string="Helpdesk KPI Analysis" type="bar" sample="1">
+                <field name="create_date" interval="month" />
+                <field name="team_id" />
+                <field name="ticket_count" type="measure" />
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_helpdesk_ticket_kpi_dashboard" model="ir.actions.act_window">
+        <field name="name">KPI Overview</field>
+        <field name="res_model">helpdesk.ticket.kpi.dashboard</field>
+        <field name="view_mode">kanban,tree</field>
+        <field name="search_view_id" ref="view_helpdesk_ticket_kpi_dashboard_search" />
+        <field name="context">{'search_default_filter_hotspot': 1}</field>
+        <field name="help" type="html">
+            <p>
+                Operational command center for backlog, SLA risk, escalation load, response speed, and resolution quality.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_helpdesk_ticket_kpi_analysis" model="ir.actions.act_window">
+        <field name="name">KPI Analysis</field>
+        <field name="res_model">helpdesk.ticket.kpi.report</field>
+        <field name="view_mode">pivot,graph,tree</field>
+        <field name="search_view_id" ref="view_helpdesk_ticket_kpi_report_search" />
+        <field name="context">{'search_default_group_team': 1}</field>
+        <field name="help" type="html">
+            <p>
+                Explore workload, SLA compliance, lifecycle speed, customer concentration, and rating quality by slicing ticket data across teams and time.
+            </p>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_ticket_kpi_agent_search" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.kpi.agent.search</field>
+        <field name="model">helpdesk.ticket.kpi.agent</field>
+        <field name="arch" type="xml">
+            <search string="Agent Performance">
+                <field name="scope_name" />
+                <field name="user_id" />
+                <filter name="filter_overloaded" string="Overloaded" domain="['|', ('open_count', '&gt;', 0), ('overdue_count', '&gt;', 0)]" />
+                <filter name="filter_overdue" string="Has Overdue" domain="[('overdue_count', '&gt;', 0)]" />
+                <filter name="filter_escalated" string="Has Escalation" domain="[('escalated_count', '&gt;', 0)]" />
+            </search>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_ticket_kpi_agent_tree" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.kpi.agent.tree</field>
+        <field name="model">helpdesk.ticket.kpi.agent</field>
+        <field name="arch" type="xml">
+            <tree string="Agent Performance" create="0" edit="0" delete="0">
+                <button type="object" name="action_view_queue" string="Queue" class="oe_link" />
+                <button type="object" name="action_view_overdue" string="SLA Watchlist" class="oe_link" />
+                <button type="object" name="action_view_analysis" string="Analysis" class="oe_link" />
+                <field name="scope_name" />
+                <field name="open_count" />
+                <field name="overdue_count" />
+                <field name="escalated_count" />
+                <field name="high_priority_open_count" />
+                <field name="closed_month_count" />
+                <field name="avg_assign_hours" />
+                <field name="avg_close_hours" />
+                <field name="breach_rate" />
+                <field name="avg_rating" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_ticket_kpi_customer_search" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.kpi.customer.search</field>
+        <field name="model">helpdesk.ticket.kpi.customer</field>
+        <field name="arch" type="xml">
+            <search string="Customer Insights">
+                <field name="partner_id" />
+                <filter name="filter_active_issue" string="Active Issues" domain="[('open_count', '&gt;', 0)]" />
+                <filter name="filter_sla_risk" string="SLA Risk" domain="[('overdue_count', '&gt;', 0)]" />
+                <filter name="filter_high_touch" string="High Touch" domain="[('total_count', '&gt;', 1)]" />
+            </search>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_ticket_kpi_customer_tree" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.kpi.customer.tree</field>
+        <field name="model">helpdesk.ticket.kpi.customer</field>
+        <field name="arch" type="xml">
+            <tree string="Customer Insights" create="0" edit="0" delete="0">
+                <button type="object" name="action_view_tickets" string="Tickets" class="oe_link" />
+                <button type="object" name="action_view_analysis" string="Analysis" class="oe_link" />
+                <field name="partner_id" />
+                <field name="total_count" />
+                <field name="open_count" />
+                <field name="overdue_count" />
+                <field name="escalated_count" />
+                <field name="high_priority_count" />
+                <field name="team_count" />
+                <field name="channel_count" />
+                <field name="avg_close_hours" />
+                <field name="avg_rating" />
+                <field name="breach_rate" />
+                <field name="last_ticket_date" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_ticket_kpi_trend_search" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.kpi.trend.search</field>
+        <field name="model">helpdesk.ticket.kpi.trend</field>
+        <field name="arch" type="xml">
+            <search string="Trend Monitor">
+                <field name="period_date" />
+                <field name="team_id" />
+                <filter name="group_team" string="Team" context="{'group_by': 'team_id'}" />
+                <filter name="group_month" string="Month" context="{'group_by': 'period_date:month'}" />
+            </search>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_ticket_kpi_trend_tree" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.kpi.trend.tree</field>
+        <field name="model">helpdesk.ticket.kpi.trend</field>
+        <field name="arch" type="xml">
+            <tree string="Trend Monitor" create="0" edit="0" delete="0">
+                <field name="period_date" />
+                <field name="team_id" />
+                <field name="submitted_count" />
+                <field name="closed_count" />
+                <field name="escalated_count" />
+                <field name="overdue_count" />
+                <field name="rated_count" />
+                <field name="avg_assign_hours" />
+                <field name="avg_close_hours" />
+                <field name="avg_rating" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_ticket_kpi_trend_graph" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.kpi.trend.graph</field>
+        <field name="model">helpdesk.ticket.kpi.trend</field>
+        <field name="arch" type="xml">
+            <graph string="Trend Monitor" type="line" sample="1">
+                <field name="period_date" interval="day" />
+                <field name="team_id" />
+                <field name="submitted_count" type="measure" />
+                <field name="closed_count" type="measure" />
+                <field name="escalated_count" type="measure" />
+                <field name="overdue_count" type="measure" />
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_helpdesk_ticket_kpi_agent" model="ir.actions.act_window">
+        <field name="name">Agent Performance</field>
+        <field name="res_model">helpdesk.ticket.kpi.agent</field>
+        <field name="view_mode">tree</field>
+        <field name="search_view_id" ref="view_helpdesk_ticket_kpi_agent_search" />
+        <field name="context">{'search_default_filter_overloaded': 1}</field>
+    </record>
+
+    <record id="action_helpdesk_ticket_kpi_customer" model="ir.actions.act_window">
+        <field name="name">Customer Insights</field>
+        <field name="res_model">helpdesk.ticket.kpi.customer</field>
+        <field name="view_mode">tree</field>
+        <field name="search_view_id" ref="view_helpdesk_ticket_kpi_customer_search" />
+        <field name="context">{'search_default_filter_active_issue': 1}</field>
+    </record>
+
+    <record id="action_helpdesk_ticket_kpi_trend" model="ir.actions.act_window">
+        <field name="name">Trend Monitor</field>
+        <field name="res_model">helpdesk.ticket.kpi.trend</field>
+        <field name="view_mode">graph,tree</field>
+        <field name="search_view_id" ref="view_helpdesk_ticket_kpi_trend_search" />
+        <field name="context">{'search_default_group_month': 1}</field>
+    </record>
+
+    <menuitem
+        id="menu_helpdesk_ticket_kpi_report"
+        name="KPI Overview"
+        parent="helpdesk_mgmt.helpdesk_ticket_reporting_menu"
+        action="action_helpdesk_ticket_kpi_dashboard"
+        sequence="20"
+        groups="helpdesk_mgmt.group_helpdesk_manager"
+    />
+
+    <menuitem
+        id="menu_helpdesk_ticket_kpi_analysis"
+        name="KPI Analysis"
+        parent="helpdesk_mgmt.helpdesk_ticket_reporting_menu"
+        action="action_helpdesk_ticket_kpi_analysis"
+        sequence="25"
+        groups="helpdesk_mgmt.group_helpdesk_manager"
+    />
+
+    <menuitem
+        id="menu_helpdesk_ticket_kpi_agent"
+        name="Agent Performance"
+        parent="helpdesk_mgmt.helpdesk_ticket_reporting_menu"
+        action="action_helpdesk_ticket_kpi_agent"
+        sequence="30"
+        groups="helpdesk_mgmt.group_helpdesk_manager"
+    />
+
+    <menuitem
+        id="menu_helpdesk_ticket_kpi_customer"
+        name="Customer Insights"
+        parent="helpdesk_mgmt.helpdesk_ticket_reporting_menu"
+        action="action_helpdesk_ticket_kpi_customer"
+        sequence="35"
+        groups="helpdesk_mgmt.group_helpdesk_manager"
+    />
+
+    <menuitem
+        id="menu_helpdesk_ticket_kpi_trend"
+        name="Trend Monitor"
+        parent="helpdesk_mgmt.helpdesk_ticket_reporting_menu"
+        action="action_helpdesk_ticket_kpi_trend"
+        sequence="40"
+        groups="helpdesk_mgmt.group_helpdesk_manager"
+    />
+</odoo>

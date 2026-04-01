@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_helpdesk_communication_analytics_report_search" model="ir.ui.view">
+        <field name="name">helpdesk.communication.analytics.report.search</field>
+        <field name="model">helpdesk.communication.analytics.report</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="number" />
+                <field name="name" />
+                <field name="team_id" />
+                <field name="partner_id" />
+                <field name="user_id" />
+                <field name="stage_id" />
+                <field name="last_communication_channel" />
+                <filter string="Response Due" name="response_due" domain="[('response_due', '=', True)]" />
+                <filter string="Waiting Customer" name="waiting_customer" domain="[('waiting_customer', '=', True)]" />
+                <filter string="Stale > 24h" name="stale" domain="[('stale_after_24h', '=', True)]" />
+                <filter string="No Communication" name="no_communication" domain="[('no_communication', '=', True)]" />
+                <filter string="Failed Delivery" name="failed_delivery" domain="[('failed_count', '&gt;', 0)]" />
+                <group expand="0" string="Group By">
+                    <filter string="Team" name="group_team" context="{'group_by': 'team_id'}" />
+                    <filter string="Assigned User" name="group_user" context="{'group_by': 'user_id'}" />
+                    <filter string="Customer" name="group_partner" context="{'group_by': 'partner_id'}" />
+                    <filter string="Stage" name="group_stage" context="{'group_by': 'stage_id'}" />
+                    <filter string="Last Channel" name="group_last_channel" context="{'group_by': 'last_communication_channel'}" />
+                    <filter string="Response Bucket" name="group_response_bucket" context="{'group_by': 'response_bucket'}" />
+                    <filter string="Inactivity Bucket" name="group_inactivity_bucket" context="{'group_by': 'inactivity_bucket'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_communication_analytics_report_tree" model="ir.ui.view">
+        <field name="name">helpdesk.communication.analytics.report.tree</field>
+        <field name="model">helpdesk.communication.analytics.report</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="number" />
+                <field name="name" />
+                <field name="team_id" optional="show" />
+                <field name="user_id" optional="show" />
+                <field name="stage_id" optional="show" />
+                <field name="communication_count" />
+                <field name="inbound_count" />
+                <field name="outbound_count" />
+                <field name="failed_count" />
+                <field name="last_communication_channel" optional="show" />
+                <field name="first_response_hours" optional="show" />
+                <field name="no_update_hours" optional="show" />
+                <field name="customer_silence_hours" optional="show" />
+                <field name="response_due" />
+                <field name="waiting_customer" optional="show" />
+                <field name="stale_after_24h" optional="show" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_communication_analytics_report_pivot" model="ir.ui.view">
+        <field name="name">helpdesk.communication.analytics.report.pivot</field>
+        <field name="model">helpdesk.communication.analytics.report</field>
+        <field name="arch" type="xml">
+            <pivot string="Communication Analytics">
+                <field name="team_id" type="row" />
+                <field name="response_bucket" type="col" />
+                <field name="communication_count" type="measure" />
+                <field name="inbound_count" type="measure" />
+                <field name="outbound_count" type="measure" />
+                <field name="failed_count" type="measure" />
+                <field name="portal_count" type="measure" />
+                <field name="whatsapp_count" type="measure" />
+                <field name="email_count" type="measure" />
+                <field name="api_count" type="measure" />
+                <field name="first_response_hours" type="measure" />
+                <field name="no_update_hours" type="measure" />
+                <field name="customer_silence_hours" type="measure" />
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_communication_analytics_report_graph" model="ir.ui.view">
+        <field name="name">helpdesk.communication.analytics.report.graph</field>
+        <field name="model">helpdesk.communication.analytics.report</field>
+        <field name="arch" type="xml">
+            <graph string="Communication Analytics" type="bar">
+                <field name="team_id" />
+                <field name="communication_count" type="measure" />
+                <field name="failed_count" type="measure" />
+                <field name="first_response_hours" type="measure" />
+                <field name="no_update_hours" type="measure" />
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_helpdesk_communication_analytics_report" model="ir.actions.act_window">
+        <field name="name">Communication Analytics</field>
+        <field name="res_model">helpdesk.communication.analytics.report</field>
+        <field name="view_mode">tree,pivot,graph</field>
+        <field name="search_view_id" ref="view_helpdesk_communication_analytics_report_search" />
+        <field name="context">{'search_default_response_due': 1}</field>
+    </record>
+
+    <menuitem
+        id="menu_helpdesk_communication_analytics_report"
+        name="Communication Analytics"
+        parent="helpdesk_mgmt.helpdesk_ticket_reporting_menu"
+        action="action_helpdesk_communication_analytics_report"
+        sequence="48"
+        groups="helpdesk_mgmt.group_helpdesk_user"
+    />
+</odoo>

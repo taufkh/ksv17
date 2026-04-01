@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="seq_helpdesk_service_review_pack" model="ir.sequence">
+        <field name="name">Helpdesk Service Review Pack</field>
+        <field name="code">helpdesk.service.review.pack</field>
+        <field name="prefix">SRP%(y)s%(month)s-</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False" />
+    </record>
+
+    <record id="view_helpdesk_service_review_pack_search" model="ir.ui.view">
+        <field name="name">helpdesk.service.review.pack.search</field>
+        <field name="model">helpdesk.service.review.pack</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="partner_id" />
+                <filter string="Generated" name="generated" domain="[('state', '=', 'generated')]" />
+                <filter string="Critical" name="critical" domain="[('health', '=', 'critical')]" />
+                <group expand="0" string="Group By">
+                    <filter string="Customer" name="group_partner" context="{'group_by': 'partner_id'}" />
+                    <filter string="Health" name="group_health" context="{'group_by': 'health'}" />
+                    <filter string="Renewal Risk" name="group_renewal" context="{'group_by': 'renewal_risk_segment'}" />
+                    <filter string="Prepared By" name="group_user" context="{'group_by': 'prepared_by_id'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_service_review_pack_tree" model="ir.ui.view">
+        <field name="name">helpdesk.service.review.pack.tree</field>
+        <field name="model">helpdesk.service.review.pack</field>
+        <field name="arch" type="xml">
+            <tree decoration-danger="health == 'critical'" decoration-warning="health == 'attention'" decoration-success="health == 'stable'">
+                <field name="name" />
+                <field name="partner_id" />
+                <field name="date_from" />
+                <field name="date_to" />
+                <field name="health" />
+                <field name="tickets_created_count" />
+                <field name="tickets_closed_count" />
+                <field name="current_open_ticket_count" />
+                <field name="avg_rating" optional="show" />
+                <field name="invoice_count" optional="show" />
+                <field name="renewal_risk_segment" optional="show" />
+                <field name="prepared_at" optional="show" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_service_review_pack_form" model="ir.ui.view">
+        <field name="name">helpdesk.service.review.pack.form</field>
+        <field name="model">helpdesk.service.review.pack</field>
+        <field name="arch" type="xml">
+            <form string="Service Review Pack">
+                <header>
+                    <button name="action_generate_snapshot" type="object" string="Refresh Snapshot" class="btn-primary" />
+                    <button name="action_print_pack" type="object" string="Print Pack" class="btn-secondary" />
+                    <field name="state" widget="statusbar" statusbar_visible="draft,generated" />
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_customer" type="object" class="oe_stat_button" icon="fa-building-o">
+                            <span class="o_stat_text">Customer</span>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1" />
+                            <field name="partner_id" options="{'no_open': False}" />
+                            <field name="company_id" readonly="1" />
+                        </group>
+                        <group>
+                            <field name="date_from" />
+                            <field name="date_to" />
+                            <field name="prepared_by_id" readonly="1" />
+                            <field name="prepared_at" readonly="1" />
+                        </group>
+                    </group>
+                    <group string="Executive Snapshot">
+                        <group>
+                            <field name="health" readonly="1" />
+                            <field name="tickets_created_count" readonly="1" />
+                            <field name="tickets_closed_count" readonly="1" />
+                            <field name="current_open_ticket_count" readonly="1" />
+                            <field name="current_overdue_ticket_count" readonly="1" />
+                            <field name="current_escalated_ticket_count" readonly="1" />
+                            <field name="current_unassigned_ticket_count" readonly="1" />
+                            <field name="avg_resolution_hours" readonly="1" />
+                            <field name="avg_rating" readonly="1" />
+                        </group>
+                        <group>
+                            <field name="communication_count" readonly="1" />
+                            <field name="inbound_communication_count" readonly="1" />
+                            <field name="outbound_communication_count" readonly="1" />
+                            <field name="failed_communication_count" readonly="1" />
+                            <field name="dispatch_count" readonly="1" />
+                            <field name="completed_dispatch_count" readonly="1" />
+                            <field name="pending_approval_count" readonly="1" />
+                            <field name="portal_views_total" readonly="1" />
+                        </group>
+                    </group>
+                    <group string="Commercial And Coverage">
+                        <group>
+                            <field name="active_contract_count" readonly="1" />
+                            <field name="contract_consumed_hours" readonly="1" />
+                            <field name="contract_remaining_hours" readonly="1" />
+                            <field name="uninvoiced_hours" readonly="1" />
+                            <field name="invoice_count" readonly="1" />
+                            <field name="invoiced_amount" readonly="1" />
+                        </group>
+                        <group>
+                            <field name="renewal_watch_count" readonly="1" />
+                            <field name="renewal_overdue_followup_count" readonly="1" />
+                            <field name="renewal_risk_segment" readonly="1" />
+                            <field name="renewal_weighted_revenue" readonly="1" />
+                            <field name="revenue_at_risk" readonly="1" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Executive Summary">
+                            <field name="executive_summary_html" readonly="1" widget="html" nolabel="1" />
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter />
+            </form>
+        </field>
+    </record>
+
+    <record id="action_helpdesk_service_review_pack" model="ir.actions.act_window">
+        <field name="name">Service Review Packs</field>
+        <field name="res_model">helpdesk.service.review.pack</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_helpdesk_service_review_pack_search" />
+    </record>
+
+    <menuitem
+        id="menu_helpdesk_service_review_pack"
+        name="Service Review Packs"
+        parent="helpdesk_mgmt.helpdesk_ticket_reporting_menu"
+        action="action_helpdesk_service_review_pack"
+        sequence="60"
+        groups="helpdesk_mgmt.group_helpdesk_user"
+    />
+</odoo>
