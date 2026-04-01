@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="page_services" name="Services Page">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure">
+
+                <!-- ═══════════════════════════════════════
+                     PAGE HERO
+                ════════════════════════════════════════ -->
+                <section class="page-hero">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <span class="section-label">What We Offer</span>
+                                <h1>Our Services</h1>
+                                <p class="lead">
+                                    Comprehensive Odoo ERP consulting services — from initial
+                                    implementation to long-term support. Everything your business
+                                    needs to get the most out of Odoo.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ═══════════════════════════════════════
+                     SERVICE DETAIL CARDS
+                ════════════════════════════════════════ -->
+                <section style="padding: 4rem 0 5rem;">
+                    <div class="container">
+                        <t t-foreach="services" t-as="svc">
+                            <div class="service-detail-card" t-att-id="svc['id']">
+                                <!-- Header -->
+                                <div class="service-detail-header">
+                                    <div class="detail-icon">
+                                        <i t-att-class="'fa ' + svc['icon']"/>
+                                    </div>
+                                    <div>
+                                        <h3 t-out="svc['title']"/>
+                                        <p t-out="svc['description']"/>
+                                    </div>
+                                </div>
+                                <!-- Feature list -->
+                                <div class="service-detail-body">
+                                    <p class="mb-3" style="font-size:0.875rem; font-weight:600;
+                                       text-transform:uppercase; letter-spacing:0.06em; color:#64748b;">
+                                        What's Included
+                                    </p>
+                                    <ul class="feature-list">
+                                        <t t-foreach="svc['features']" t-as="feat">
+                                            <li t-out="feat"/>
+                                        </t>
+                                    </ul>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </section>
+
+                <!-- ═══════════════════════════════════════
+                     CTA
+                ════════════════════════════════════════ -->
+                <section class="cta-section">
+                    <div class="container position-relative">
+                        <div class="row align-items-center g-4">
+                            <div class="col-lg-8">
+                                <h2>Not sure which service you need?</h2>
+                                <p>
+                                    Drop us a message and we'll recommend the right approach
+                                    for your business — completely free.
+                                </p>
+                            </div>
+                            <div class="col-lg-4 text-lg-end">
+                                <a href="/contact-us" class="btn-cta-white">
+                                    Talk to a Consultant
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </t>
+    </template>
+
+</odoo>

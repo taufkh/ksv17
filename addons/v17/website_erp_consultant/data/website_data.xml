@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        Navigation menu items only.
+        Pages are served directly by the controller (controllers/main.py).
+        We do NOT create website.page records here because in Odoo 17 they
+        interfere with the view key lookup when the controller calls
+        request.render() with a website context.
+    -->
+
+    <record id="menu_services" model="website.menu">
+        <field name="name">Services</field>
+        <field name="url">/services</field>
+        <field name="sequence">10</field>
+        <field name="website_id">1</field>
+    </record>
+
+    <record id="menu_about" model="website.menu">
+        <field name="name">About Us</field>
+        <field name="url">/about</field>
+        <field name="sequence">20</field>
+        <field name="website_id">1</field>
+    </record>
+
+    <record id="menu_contact" model="website.menu">
+        <field name="name">Contact</field>
+        <field name="url">/contact-us</field>
+        <field name="sequence">30</field>
+        <field name="website_id">1</field>
+    </record>
+
+</odoo>
