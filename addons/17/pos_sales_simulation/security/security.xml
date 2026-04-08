@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="rule_pos_sales_simulation_company" model="ir.rule">
+        <field name="name">POS sales simulation multi-company</field>
+        <field name="model_id" ref="model_pos_sales_simulation"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('point_of_sale.group_pos_user')), (4, ref('point_of_sale.group_pos_manager'))]"/>
+    </record>
+
+    <record id="rule_pos_sales_simulation_transaction_company" model="ir.rule">
+        <field name="name">POS sales simulation transaction multi-company</field>
+        <field name="model_id" ref="model_pos_sales_simulation_transaction"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('point_of_sale.group_pos_user')), (4, ref('point_of_sale.group_pos_manager'))]"/>
+    </record>
+
+    <record id="rule_pos_sales_simulation_transaction_line_company" model="ir.rule">
+        <field name="name">POS sales simulation line multi-company</field>
+        <field name="model_id" ref="model_pos_sales_simulation_transaction_line"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('point_of_sale.group_pos_user')), (4, ref('point_of_sale.group_pos_manager'))]"/>
+    </record>
+
+    <record id="rule_pos_sales_simulation_payment_company" model="ir.rule">
+        <field name="name">POS sales simulation payment multi-company</field>
+        <field name="model_id" ref="model_pos_sales_simulation_payment"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('point_of_sale.group_pos_user')), (4, ref('point_of_sale.group_pos_manager'))]"/>
+    </record>
+</odoo>

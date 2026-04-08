@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pos_session_form_inherit_auto_scrap" model="ir.ui.view">
+        <field name="name">pos.session.form.auto.scrap</field>
+        <field name="model">pos.session</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_session_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <field name="auto_scrap_requires_approval" invisible="1"/>
+            </xpath>
+            <xpath expr="//header" position="inside">
+                <button
+                    name="action_open_auto_scrap_preview"
+                    type="object"
+                    string="Preview Auto Scrap"
+                    invisible="state in ['opening_control', 'closed'] or not config_id.auto_scrap_unsold_products"
+                />
+                <button
+                    name="action_open_auto_scrap_approval_wizard"
+                    type="object"
+                    string="Approve Auto Scrap"
+                    class="btn-secondary"
+                    groups="point_of_sale.group_pos_manager"
+                    invisible="state in ['opening_control', 'closed'] or not auto_scrap_requires_approval or auto_scrap_approval_state == 'approved'"
+                />
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button
+                    name="action_view_auto_scraps"
+                    class="oe_stat_button"
+                    icon="fa-trash"
+                    type="object"
+                    invisible="auto_scrap_count == 0"
+                >
+                    <field name="auto_scrap_count" widget="statinfo" string="Auto Scraps"/>
+                </button>
+            </xpath>
+            <xpath expr="//field[@name='cash_register_balance_end_real']/.." position="after">
+                <group string="Auto Scrap" invisible="not config_id.auto_scrap_unsold_products">
+                    <field name="auto_scrap_projected_qty_total" readonly="1" invisible="state == 'closed'"/>
+                    <field
+                        name="auto_scrap_projected_value_total"
+                        readonly="1"
+                        invisible="state == 'closed'"
+                        widget="monetary"
+                        options="{'currency_field': 'auto_scrap_currency_id'}"
+                    />
+                    <field name="auto_scrap_qty_total" readonly="1" invisible="auto_scrap_count == 0"/>
+                    <field
+                        name="auto_scrap_value_total"
+                        readonly="1"
+                        invisible="auto_scrap_count == 0"
+                        widget="monetary"
+                        options="{'currency_field': 'auto_scrap_currency_id'}"
+                    />
+                </group>
+                <group
+                    string="Auto Scrap Approval"
+                    invisible="not config_id.auto_scrap_unsold_products or auto_scrap_approval_state == 'not_required'"
+                >
+                    <field name="auto_scrap_approval_state" widget="badge" readonly="1"/>
+                    <field name="auto_scrap_approval_estimated_value" readonly="1" widget="monetary" options="{'currency_field': 'auto_scrap_currency_id'}"/>
+                    <field name="auto_scrap_approved_by_id" readonly="1"/>
+                    <field name="auto_scrap_approved_at" readonly="1"/>
+                    <field name="auto_scrap_approval_reason" readonly="1" nolabel="1" placeholder="Approval reason"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

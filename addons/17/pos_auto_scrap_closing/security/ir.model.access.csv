@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_pos_auto_scrap_daily_report_manager,pos.auto.scrap.daily.report manager,model_pos_auto_scrap_daily_report,point_of_sale.group_pos_manager,1,0,0,0
+access_pos_auto_scrap_approval_wizard_manager,pos.auto.scrap.approval.wizard manager,model_pos_auto_scrap_approval_wizard,point_of_sale.group_pos_manager,1,1,1,1
+access_pos_auto_scrap_preview_wizard_manager,pos.auto.scrap.preview.wizard manager,model_pos_auto_scrap_preview_wizard,point_of_sale.group_pos_manager,1,1,1,1
+access_pos_auto_scrap_preview_wizard_line_manager,pos.auto.scrap.preview.wizard.line manager,model_pos_auto_scrap_preview_wizard_line,point_of_sale.group_pos_manager,1,1,1,1

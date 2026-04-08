@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="seq_pos_sales_simulation" model="ir.sequence">
+        <field name="name">POS Sales Simulation</field>
+        <field name="code">pos.sales.simulation</field>
+        <field name="prefix">SIM/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_pos_sales_simulation_transaction" model="ir.sequence">
+        <field name="name">POS Sales Simulation Transaction</field>
+        <field name="code">pos.sales.simulation.transaction</field>
+        <field name="prefix">TRX/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_pos_sales_simulation_payment" model="ir.sequence">
+        <field name="name">POS Sales Simulation Payment</field>
+        <field name="code">pos.sales.simulation.payment</field>
+        <field name="prefix">PAY/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

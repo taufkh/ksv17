@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="pos_config_view_form_inherit_sales_simulation" model="ir.ui.view">
+        <field name="name">pos.config.form.sales.simulation</field>
+        <field name="model">pos.config</field>
+        <field name="inherit_id" ref="point_of_sale.pos_config_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/div[hasclass('o_settings_container')][last()]" position="after">
+                <div class="row mt16 o_settings_container" invisible="context.get('pos_config_create_mode', False)">
+                    <setting string="Simulation Opening Hour" help="Default opening hour used by POS sales simulation batches.">
+                        <field name="simulation_opening_hour" widget="float_time"/>
+                    </setting>
+                    <setting string="Simulation Closing Hour" help="Default closing hour used by POS sales simulation batches.">
+                        <field name="simulation_closing_hour" widget="float_time"/>
+                    </setting>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

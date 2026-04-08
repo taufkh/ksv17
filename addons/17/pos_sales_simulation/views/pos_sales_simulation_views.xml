@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pos_sales_simulation_tree" model="ir.ui.view">
+        <field name="name">pos.sales.simulation.tree</field>
+        <field name="model">pos.sales.simulation</field>
+        <field name="arch" type="xml">
+            <tree string="Transactions" duplicate="0">
+                <field name="name" string="Reference" decoration-bf="1"/>
+                <field name="pos_config_id"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="target_revenue" widget="monetary"/>
+                <field name="total_revenue_actual" widget="monetary"/>
+                <field name="transaction_count_generated"/>
+                <field name="generated_at"/>
+                <field name="currency_id" column_invisible="True"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-success="state == 'done'"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_pos_sales_simulation_form" model="ir.ui.view">
+        <field name="name">pos.sales.simulation.form</field>
+        <field name="model">pos.sales.simulation</field>
+        <field name="arch" type="xml">
+            <form string="Transaction">
+                <header>
+                    <button name="action_generate_transactions" string="Generate Transactions" type="object" class="btn-primary"/>
+                    <button name="action_view_transactions" string="Reporting" type="object" invisible="transaction_count_generated == 0"/>
+                    <button name="action_print_pdf" string="Print PDF" type="object" invisible="transaction_count_generated == 0"/>
+                    <button name="action_download_excel" string="Download Excel" type="object" invisible="transaction_count_generated == 0"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
+                </header>
+                <sheet>
+                    <field name="company_id" invisible="1"/>
+                    <field name="currency_id" invisible="1"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_transactions" type="object" class="oe_stat_button" icon="fa-exchange">
+                            <field name="transaction_count_generated" widget="statinfo" string="Transactions"/>
+                        </button>
+                    </div>
+
+                    <group col="4">
+                        <group>
+                            <field name="name" string="Reference" readonly="1"/>
+                            <field name="pos_config_id"/>
+                            <field name="pricelist_id"/>
+                            <field name="user_id"/>
+                            <field name="generated_at" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                            <field name="opening_hour" widget="float_time"/>
+                            <field name="closing_hour" widget="float_time"/>
+                        </group>
+                    </group>
+
+                    <group col="4">
+                        <group>
+                            <field name="target_revenue" widget="monetary"/>
+                            <field name="total_revenue_actual" widget="monetary" readonly="1"/>
+                            <field name="revenue_gap" widget="monetary" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="transaction_count"/>
+                            <field name="min_transaction_amount" widget="monetary"/>
+                            <field name="max_transaction_amount" widget="monetary"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Sources">
+                            <group>
+                                <field name="customer_ids" widget="many2many_tags"/>
+                                <field name="product_ids" widget="many2many_tags"/>
+                                <field name="payment_method_ids" widget="many2many_tags"/>
+                            </group>
+                        </page>
+                        <page string="Transactions">
+                            <field name="transaction_ids" readonly="1" nolabel="1">
+                                <tree create="0" delete="0" edit="0">
+                                    <field name="name"/>
+                                    <field name="date_order"/>
+                                    <field name="partner_id"/>
+                                    <field name="user_id" widget="many2one_avatar_user"/>
+                                    <field name="payment_method_summary"/>
+                                    <field name="amount_total" widget="monetary"/>
+                                    <field name="currency_id" column_invisible="True"/>
+                                    <field name="state" widget="badge"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_pos_sales_simulation_search" model="ir.ui.view">
+        <field name="name">pos.sales.simulation.search</field>
+        <field name="model">pos.sales.simulation</field>
+        <field name="arch" type="xml">
+            <search string="Transactions">
+                <field name="name"/>
+                <field name="pos_config_id"/>
+                <field name="user_id"/>
+                <filter string="Generated" name="done" domain="[('state', '=', 'done')]"/>
+                <filter string="Period" name="period" date="date_from"/>
+                <group expand="0" string="Group By">
+                    <filter string="Point of Sale" name="group_config" domain="[]" context="{'group_by': 'pos_config_id'}"/>
+                    <filter string="Salesperson" name="group_user" domain="[]" context="{'group_by': 'user_id'}"/>
+                    <filter string="Status" name="group_state" domain="[]" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_pos_sales_simulation" model="ir.actions.act_window">
+        <field name="name">Transaction</field>
+        <field name="res_model">pos.sales.simulation</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_pos_sales_simulation_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a POS transaction batch.
+            </p>
+            <p>
+                Each batch generates standalone done transactions for a specific period without affecting real POS orders.
+            </p>
+        </field>
+    </record>
+
+    <record id="view_pos_sales_simulation_transaction_tree" model="ir.ui.view">
+        <field name="name">pos.sales.simulation.transaction.tree</field>
+        <field name="model">pos.sales.simulation.transaction</field>
+        <field name="arch" type="xml">
+            <tree string="Transactions" create="0" delete="0" edit="0" duplicate="0">
+                <field name="name" decoration-bf="1"/>
+                <field name="date_order"/>
+                <field name="batch_id"/>
+                <field name="config_id"/>
+                <field name="partner_id"/>
+                <field name="user_id" widget="many2one_avatar_user"/>
+                <field name="payment_method_summary"/>
+                <field name="amount_total" widget="monetary" sum="Total"/>
+                <field name="currency_id" column_invisible="True"/>
+                <field name="state" widget="badge" decoration-success="state == 'done'"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_pos_sales_simulation_transaction_form" model="ir.ui.view">
+        <field name="name">pos.sales.simulation.transaction.form</field>
+        <field name="model">pos.sales.simulation.transaction</field>
+        <field name="arch" type="xml">
+            <form string="Transaction" create="0" delete="0" edit="0">
+                <sheet>
+                    <field name="company_id" invisible="1"/>
+                    <field name="currency_id" invisible="1"/>
+                    <group col="4">
+                        <group>
+                            <field name="name"/>
+                            <field name="batch_id"/>
+                            <field name="date_order"/>
+                            <field name="state"/>
+                        </group>
+                        <group>
+                            <field name="config_id"/>
+                            <field name="pricelist_id"/>
+                            <field name="partner_id"/>
+                            <field name="user_id"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Products">
+                            <field name="line_ids" readonly="1" nolabel="1">
+                                <tree create="0" delete="0" edit="0">
+                                    <field name="full_product_name"/>
+                                    <field name="qty"/>
+                                    <field name="price_unit" widget="monetary"/>
+                                    <field name="discount"/>
+                                    <field name="tax_ids_after_fiscal_position" widget="many2many_tags"/>
+                                    <field name="price_subtotal" widget="monetary"/>
+                                    <field name="price_subtotal_incl" widget="monetary"/>
+                                    <field name="currency_id" column_invisible="True"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Payments">
+                            <field name="payment_ids" readonly="1" nolabel="1">
+                                <tree create="0" delete="0" edit="0">
+                                    <field name="payment_date"/>
+                                    <field name="payment_method_id"/>
+                                    <field name="amount" widget="monetary"/>
+                                    <field name="currency_id" column_invisible="True"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+
+                    <group class="oe_subtotal_footer oe_right" colspan="2">
+                        <field name="amount_untaxed" widget="monetary"/>
+                        <field name="amount_tax" widget="monetary"/>
+                        <field name="amount_total" widget="monetary"/>
+                        <field name="payment_total" widget="monetary"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_pos_sales_simulation_transaction_search" model="ir.ui.view">
+        <field name="name">pos.sales.simulation.transaction.search</field>
+        <field name="model">pos.sales.simulation.transaction</field>
+        <field name="arch" type="xml">
+            <search string="Transactions">
+                <field name="name"/>
+                <field name="batch_id"/>
+                <field name="config_id"/>
+                <field name="partner_id"/>
+                <field name="user_id"/>
+                    <filter string="Transaction Date" name="date_order" date="date_order"/>
+                <group expand="0" string="Group By">
+                    <filter string="Batch" name="group_batch" domain="[]" context="{'group_by': 'batch_id'}"/>
+                    <filter string="Point of Sale" name="group_config" domain="[]" context="{'group_by': 'config_id'}"/>
+                    <filter string="Customer" name="group_partner" domain="[]" context="{'group_by': 'partner_id'}"/>
+                    <filter string="Salesperson" name="group_user" domain="[]" context="{'group_by': 'user_id'}"/>
+                    <filter string="Transaction Date" name="group_date" domain="[]" context="{'group_by': 'date_order'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_pos_sales_simulation_transaction_pivot" model="ir.ui.view">
+        <field name="name">pos.sales.simulation.transaction.pivot</field>
+        <field name="model">pos.sales.simulation.transaction</field>
+        <field name="arch" type="xml">
+            <pivot string="Transactions">
+                <field name="date_order" type="row"/>
+                <field name="config_id" type="col"/>
+                <field name="amount_total" type="measure"/>
+                <field name="amount_untaxed" type="measure"/>
+                <field name="amount_tax" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_pos_sales_simulation_transaction_graph" model="ir.ui.view">
+        <field name="name">pos.sales.simulation.transaction.graph</field>
+        <field name="model">pos.sales.simulation.transaction</field>
+        <field name="arch" type="xml">
+            <graph string="Transactions" type="bar">
+                <field name="date_order" interval="day"/>
+                <field name="amount_total" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_pos_sales_simulation_transaction" model="ir.actions.act_window">
+        <field name="name">Transactions</field>
+        <field name="res_model">pos.sales.simulation.transaction</field>
+        <field name="view_mode">tree,form,pivot,graph</field>
+        <field name="search_view_id" ref="view_pos_sales_simulation_transaction_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_empty_folder">
+                No transactions found.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_pos_sales_simulation_reporting" model="ir.actions.act_window">
+        <field name="name">Transaction Recap</field>
+        <field name="res_model">pos.sales.simulation.transaction</field>
+        <field name="view_mode">graph,pivot,tree,form</field>
+        <field name="search_view_id" ref="view_pos_sales_simulation_transaction_search"/>
+        <field name="context">{'search_default_group_date': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_empty_folder">
+                No transactions found.
+            </p>
+            <p>
+                Generate a batch from Orders > Transaction to analyze its transactions here.
+            </p>
+        </field>
+    </record>
+
+    <menuitem
+        id="menu_pos_sales_simulation"
+        name="Transaction"
+        parent="point_of_sale.menu_point_of_sale"
+        action="action_pos_sales_simulation"
+        sequence="2"
+        groups="point_of_sale.group_pos_manager,point_of_sale.group_pos_user"
+    />
+
+    <menuitem
+        id="menu_pos_sales_simulation_reporting"
+        name="Transaction Recap"
+        parent="point_of_sale.menu_point_rep"
+        action="action_pos_sales_simulation_reporting"
+        sequence="20"
+        groups="point_of_sale.group_pos_manager,point_of_sale.group_pos_user"
+    />
+</odoo>

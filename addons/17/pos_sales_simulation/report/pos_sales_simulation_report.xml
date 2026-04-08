@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_pos_sales_simulation" model="ir.actions.report">
+        <field name="name">Transactions</field>
+        <field name="model">pos.sales.simulation</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">pos_sales_simulation.report_pos_sales_simulation</field>
+        <field name="report_file">pos_sales_simulation.report_pos_sales_simulation</field>
+        <field name="binding_model_id" ref="model_pos_sales_simulation"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_pos_sales_simulation">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>
+                            Transaction Report
+                            <span t-field="o.name"/>
+                        </h2>
+
+                        <div class="row mt16 mb16">
+                            <div class="col-4">
+                                <strong>Point of Sale</strong><br/>
+                                <span t-field="o.pos_config_id"/>
+                            </div>
+                            <div class="col-4">
+                                <strong>Period</strong><br/>
+                                <span t-field="o.date_from"/>
+                                <span> - </span>
+                                <span t-field="o.date_to"/>
+                            </div>
+                            <div class="col-4">
+                                <strong>Salesperson</strong><br/>
+                                <span t-field="o.user_id"/>
+                            </div>
+                        </div>
+
+                        <div class="row mb16">
+                            <div class="col-3">
+                                <strong>Opening Hour</strong><br/>
+                                <span t-out="'%.2f' % o.opening_hour"/>
+                            </div>
+                            <div class="col-3">
+                                <strong>Closing Hour</strong><br/>
+                                <span t-out="'%.2f' % o.closing_hour"/>
+                            </div>
+                            <div class="col-3">
+                                <strong>Target Revenue</strong><br/>
+                                <span t-field="o.target_revenue"/>
+                            </div>
+                            <div class="col-3">
+                                <strong>Actual Revenue</strong><br/>
+                                <span t-field="o.total_revenue_actual"/>
+                            </div>
+                        </div>
+
+                        <table class="table table-sm table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Reference</th>
+                                    <th>Date</th>
+                                    <th>Customer</th>
+                                    <th>Salesperson</th>
+                                    <th>Payment</th>
+                                    <th class="text-end">Untaxed</th>
+                                    <th class="text-end">Tax</th>
+                                    <th class="text-end">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="o.transaction_ids.sorted('date_order')" t-as="transaction">
+                                    <td>
+                                        <span t-field="transaction.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="transaction.date_order"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="transaction.partner_id"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="transaction.user_id"/>
+                                    </td>
+                                    <td>
+                                        <span t-out="transaction.payment_method_summary"/>
+                                    </td>
+                                    <td class="text-end">
+                                        <span t-field="transaction.amount_untaxed"/>
+                                    </td>
+                                    <td class="text-end">
+                                        <span t-field="transaction.amount_tax"/>
+                                    </td>
+                                    <td class="text-end">
+                                        <span t-field="transaction.amount_total"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

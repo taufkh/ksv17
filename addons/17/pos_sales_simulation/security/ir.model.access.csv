@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_pos_sales_simulation_user,pos.sales.simulation.user,model_pos_sales_simulation,point_of_sale.group_pos_user,1,1,1,1
+access_pos_sales_simulation_manager,pos.sales.simulation.manager,model_pos_sales_simulation,point_of_sale.group_pos_manager,1,1,1,1
+access_pos_sales_simulation_transaction_user,pos.sales.simulation.transaction.user,model_pos_sales_simulation_transaction,point_of_sale.group_pos_user,1,1,1,1
+access_pos_sales_simulation_transaction_manager,pos.sales.simulation.transaction.manager,model_pos_sales_simulation_transaction,point_of_sale.group_pos_manager,1,1,1,1
+access_pos_sales_simulation_transaction_line_user,pos.sales.simulation.transaction.line.user,model_pos_sales_simulation_transaction_line,point_of_sale.group_pos_user,1,1,1,1
+access_pos_sales_simulation_transaction_line_manager,pos.sales.simulation.transaction.line.manager,model_pos_sales_simulation_transaction_line,point_of_sale.group_pos_manager,1,1,1,1
+access_pos_sales_simulation_payment_user,pos.sales.simulation.payment.user,model_pos_sales_simulation_payment,point_of_sale.group_pos_user,1,1,1,1
+access_pos_sales_simulation_payment_manager,pos.sales.simulation.payment.manager,model_pos_sales_simulation_payment,point_of_sale.group_pos_manager,1,1,1,1

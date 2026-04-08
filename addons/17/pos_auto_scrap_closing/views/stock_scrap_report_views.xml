@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_stock_scrap_form_inherit_pos_auto_scrap" model="ir.ui.view">
+        <field name="name">stock.scrap.form.pos.auto.scrap</field>
+        <field name="model">stock.scrap</field>
+        <field name="inherit_id" ref="stock.stock_scrap_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name="pos_config_id" invisible="not pos_session_id"/>
+                <field name="pos_session_id" invisible="not pos_session_id"/>
+                <field
+                    name="loss_value"
+                    widget="monetary"
+                    options="{'currency_field': 'currency_id'}"
+                    invisible="state != 'done'"
+                />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_stock_scrap_search_pos_auto_scrap" model="ir.ui.view">
+        <field name="name">stock.scrap.search.pos.auto.scrap</field>
+        <field name="model">stock.scrap</field>
+        <field name="arch" type="xml">
+            <search string="POS Auto Scrap">
+                <field name="name" string="Reference"/>
+                <field name="product_id"/>
+                <field name="pos_config_id"/>
+                <field name="pos_session_id"/>
+                <field name="date_done"/>
+                <filter
+                    name="pos_auto_scrap"
+                    string="POS Auto Scrap"
+                    domain="[('pos_session_id', '!=', False)]"
+                />
+                <group expand="0" string="Group By">
+                    <filter
+                        name="group_by_day"
+                        string="Day"
+                        domain="[]"
+                        context="{'group_by': 'date_done:day'}"
+                    />
+                    <filter
+                        name="group_by_pos"
+                        string="Point of Sale"
+                        domain="[]"
+                        context="{'group_by': 'pos_config_id'}"
+                    />
+                    <filter
+                        name="group_by_session"
+                        string="Session"
+                        domain="[]"
+                        context="{'group_by': 'pos_session_id'}"
+                    />
+                    <filter
+                        name="group_by_product"
+                        string="Product"
+                        domain="[]"
+                        context="{'group_by': 'product_id'}"
+                    />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_stock_scrap_tree_pos_auto_scrap" model="ir.ui.view">
+        <field name="name">stock.scrap.tree.pos.auto.scrap</field>
+        <field name="model">stock.scrap</field>
+        <field name="arch" type="xml">
+            <tree create="0" delete="0" edit="0">
+                <field name="date_done"/>
+                <field name="name" decoration-bf="1"/>
+                <field name="pos_config_id"/>
+                <field name="pos_session_id"/>
+                <field name="product_id"/>
+                <field name="scrap_qty"/>
+                <field name="product_uom_id"/>
+                <field name="currency_id" column_invisible="True"/>
+                <field name="loss_value" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="location_id" optional="hide"/>
+                <field name="state" widget="badge" decoration-success="state == 'done'"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_stock_scrap_pivot_pos_auto_scrap" model="ir.ui.view">
+        <field name="name">stock.scrap.pivot.pos.auto.scrap</field>
+        <field name="model">stock.scrap</field>
+        <field name="arch" type="xml">
+            <pivot string="POS Auto Scrap Analysis">
+                <field name="date_done" type="col" interval="day"/>
+                <field name="pos_config_id" type="row"/>
+                <field name="product_id" type="row"/>
+                <field name="scrap_qty" type="measure"/>
+                <field name="loss_value" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_stock_scrap_graph_pos_auto_scrap" model="ir.ui.view">
+        <field name="name">stock.scrap.graph.pos.auto.scrap</field>
+        <field name="model">stock.scrap</field>
+        <field name="arch" type="xml">
+            <graph string="POS Auto Scrap Analysis" type="bar">
+                <field name="date_done" type="row" interval="day"/>
+                <field name="pos_config_id" type="col"/>
+                <field name="loss_value" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_pos_auto_scrap_report" model="ir.actions.act_window">
+        <field name="name">Auto Scrap Loss</field>
+        <field name="res_model">stock.scrap</field>
+        <field name="view_mode">pivot,graph,tree,form</field>
+        <field name="domain">[('pos_session_id', '!=', False)]</field>
+        <field name="search_view_id" ref="view_stock_scrap_search_pos_auto_scrap"/>
+        <field name="context">{'search_default_pos_auto_scrap': 1, 'search_default_group_by_day': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Track daily POS auto scrap losses
+            </p>
+            <p>
+                Review scrapped quantities and loss value by session, product, and outlet.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_pos_auto_scrap_report_view_pivot" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">pivot</field>
+        <field name="view_id" ref="view_stock_scrap_pivot_pos_auto_scrap"/>
+        <field name="act_window_id" ref="action_pos_auto_scrap_report"/>
+    </record>
+
+    <record id="action_pos_auto_scrap_report_view_graph" model="ir.actions.act_window.view">
+        <field name="sequence" eval="2"/>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="view_stock_scrap_graph_pos_auto_scrap"/>
+        <field name="act_window_id" ref="action_pos_auto_scrap_report"/>
+    </record>
+
+    <record id="action_pos_auto_scrap_report_view_tree" model="ir.actions.act_window.view">
+        <field name="sequence" eval="3"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_stock_scrap_tree_pos_auto_scrap"/>
+        <field name="act_window_id" ref="action_pos_auto_scrap_report"/>
+    </record>
+
+    <menuitem
+        id="menu_pos_auto_scrap_report"
+        name="Auto Scrap Loss"
+        parent="point_of_sale.menu_point_rep"
+        action="action_pos_auto_scrap_report"
+        groups="point_of_sale.group_pos_manager"
+        sequence="20"
+    />
+</odoo>

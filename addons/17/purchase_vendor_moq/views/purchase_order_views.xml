@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="purchase_order_form" model="ir.ui.view">
+        <field name="name">purchase.order.form.vendor.moq</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form" />
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field
+                    name="vendor_moq_qty"
+                    readonly="1"
+                    invisible="not vendor_moq_qty"
+                />
+                <div
+                    class="text-muted"
+                    colspan="2"
+                    invisible="not vendor_moq_qty"
+                >
+                    Dibaca dalam Purchase UoM produk yang dipilih.
+                </div>
+                <field
+                    name="vendor_moq_note"
+                    readonly="1"
+                    invisible="not vendor_moq_note"
+                    placeholder="Vendor MOQ notes"
+                />
+            </field>
+        </field>
+    </record>
+</odoo>

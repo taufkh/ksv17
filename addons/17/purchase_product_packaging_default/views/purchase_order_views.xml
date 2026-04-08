@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="purchase_order_form_purchase_packaging_default" model="ir.ui.view">
+        <field name="name">purchase.order.form.purchase.packaging.default</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='order_line']/tree/field[@name='product_packaging_qty']" position="replace">
+                <field
+                    name="product_packaging_qty"
+                    string="Pack Qty"
+                    invisible="not product_id or not product_packaging_id"
+                    optional="show"
+                />
+            </xpath>
+            <xpath expr="//field[@name='order_line']/tree/field[@name='product_packaging_id']" position="replace">
+                <field
+                    name="product_packaging_id"
+                    string="Pack"
+                    invisible="not product_id"
+                    context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}"
+                    optional="show"
+                />
+            </xpath>
+            <xpath expr="//field[@name='order_line']/form//field[@name='product_packaging_qty']" position="replace">
+                <field
+                    name="product_packaging_qty"
+                    string="Pack Qty"
+                    invisible="not product_id or not product_packaging_id"
+                />
+            </xpath>
+            <xpath expr="//field[@name='order_line']/form//field[@name='product_packaging_id']" position="replace">
+                <field
+                    name="product_packaging_id"
+                    string="Pack"
+                    invisible="not product_id"
+                    context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}"
+                />
+            </xpath>
+        </field>
+    </record>
+</odoo>
