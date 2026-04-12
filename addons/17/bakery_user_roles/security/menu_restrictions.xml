@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="base.menu_administration" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [ref('base.group_system')])]"/>
+    </record>
+
+    <record id="base.menu_management" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [ref('base.group_system')])]"/>
+    </record>
+
+    <record id="base.menu_apps" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [ref('base.group_system')])]"/>
+    </record>
+
+    <record id="base.menu_module_tree" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [ref('base.group_system')])]"/>
+    </record>
+
+    <record id="base.menu_third_party" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [ref('base.group_system')])]"/>
+    </record>
+
+    <record id="base.menu_view_base_module_update" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [ref('base.group_system')])]"/>
+    </record>
+
+    <record id="base.menu_tests" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [ref('base.group_system')])]"/>
+    </record>
+
+    <record id="utm.menu_link_tracker_root" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [ref('base.group_system')])]"/>
+    </record>
+
+    <record id="mail.menu_root_discuss" model="ir.ui.menu">
+        <field
+            name="groups_id"
+            eval="[
+                (6, 0, [
+                    ref('base.group_system'),
+                    ref('bakery_user_roles.group_bakery_purchase_user'),
+                    ref('bakery_user_roles.group_bakery_purchase_manager'),
+                    ref('bakery_user_roles.group_bakery_warehouse_user'),
+                    ref('bakery_user_roles.group_bakery_warehouse_admin'),
+                    ref('bakery_user_roles.group_bakery_baker_user'),
+                    ref('bakery_user_roles.group_bakery_baker_supervisor'),
+                    ref('bakery_user_roles.group_bakery_cashier'),
+                    ref('bakery_user_roles.group_bakery_cashier_supervisor'),
+                    ref('bakery_user_roles.group_bakery_finance'),
+                    ref('bakery_user_roles.group_bakery_owner')
+                ])
+            ]"
+        />
+    </record>
+
+    <record id="account.menu_finance" model="ir.ui.menu">
+        <field
+            name="groups_id"
+            eval="[
+                (6, 0, [
+                    ref('base.group_system'),
+                    ref('bakery_user_roles.group_bakery_finance'),
+                    ref('bakery_user_roles.group_bakery_owner')
+                ])
+            ]"
+        />
+    </record>
+
+    <record id="account_accountant.menu_accounting" model="ir.ui.menu">
+        <field
+            name="groups_id"
+            eval="[
+                (6, 0, [
+                    ref('base.group_system'),
+                    ref('bakery_user_roles.group_bakery_finance'),
+                    ref('bakery_user_roles.group_bakery_owner')
+                ])
+            ]"
+        />
+    </record>
+
+    <record id="spreadsheet_dashboard.spreadsheet_dashboard_menu_root" model="ir.ui.menu">
+        <field
+            name="groups_id"
+            eval="[
+                (6, 0, [
+                    ref('base.group_system'),
+                    ref('bakery_user_roles.group_bakery_finance'),
+                    ref('bakery_user_roles.group_bakery_owner')
+                ])
+            ]"
+        />
+    </record>
+
+    <record id="stock.menu_stock_root" model="ir.ui.menu">
+        <field
+            name="groups_id"
+            eval="[
+                (6, 0, [
+                    ref('base.group_system'),
+                    ref('bakery_user_roles.group_bakery_warehouse_user'),
+                    ref('bakery_user_roles.group_bakery_warehouse_admin'),
+                    ref('bakery_user_roles.group_bakery_baker_user'),
+                    ref('bakery_user_roles.group_bakery_baker_supervisor'),
+                    ref('bakery_user_roles.group_bakery_owner')
+                ])
+            ]"
+        />
+    </record>
+
+    <record id="purchase.menu_purchase_root" model="ir.ui.menu">
+        <field
+            name="groups_id"
+            eval="[
+                (6, 0, [
+                    ref('base.group_system'),
+                    ref('bakery_user_roles.group_bakery_purchase_user'),
+                    ref('bakery_user_roles.group_bakery_purchase_manager'),
+                    ref('bakery_user_roles.group_bakery_owner')
+                ])
+            ]"
+        />
+    </record>
+
+    <record id="purchase_request.parent_menu_purchase_request" model="ir.ui.menu">
+        <field
+            name="groups_id"
+            eval="[
+                (6, 0, [
+                    ref('base.group_system'),
+                    ref('bakery_user_roles.group_bakery_purchase_user'),
+                    ref('bakery_user_roles.group_bakery_purchase_manager'),
+                    ref('bakery_user_roles.group_bakery_owner')
+                ])
+            ]"
+        />
+    </record>
+
+    <record id="contacts.menu_contacts" model="ir.ui.menu">
+        <field
+            name="groups_id"
+            eval="[
+                (6, 0, [
+                    ref('base.group_system'),
+                    ref('bakery_user_roles.group_bakery_purchase_user'),
+                    ref('bakery_user_roles.group_bakery_purchase_manager'),
+                    ref('bakery_user_roles.group_bakery_warehouse_user'),
+                    ref('bakery_user_roles.group_bakery_warehouse_admin'),
+                    ref('bakery_user_roles.group_bakery_baker_user'),
+                    ref('bakery_user_roles.group_bakery_baker_supervisor'),
+                    ref('bakery_user_roles.group_bakery_cashier'),
+                    ref('bakery_user_roles.group_bakery_cashier_supervisor'),
+                    ref('bakery_user_roles.group_bakery_finance'),
+                    ref('bakery_user_roles.group_bakery_owner')
+                ])
+            ]"
+        />
+    </record>
+
+    <record id="hr.menu_hr_root" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [ref('base.group_system')])]"/>
+    </record>
+
+    <record id="mrp.menu_mrp_root" model="ir.ui.menu">
+        <field
+            name="groups_id"
+            eval="[
+                (6, 0, [
+                    ref('base.group_system'),
+                    ref('bakery_user_roles.group_bakery_baker_user'),
+                    ref('bakery_user_roles.group_bakery_baker_supervisor'),
+                    ref('bakery_user_roles.group_bakery_owner')
+                ])
+            ]"
+        />
+    </record>
+
+    <record id="mrp_workorder.menu_mrp_workorder_root" model="ir.ui.menu">
+        <field
+            name="groups_id"
+            eval="[
+                (6, 0, [
+                    ref('base.group_system'),
+                    ref('bakery_user_roles.group_bakery_baker_user'),
+                    ref('bakery_user_roles.group_bakery_baker_supervisor'),
+                    ref('bakery_user_roles.group_bakery_owner')
+                ])
+            ]"
+        />
+    </record>
+
+    <record id="point_of_sale.menu_point_root" model="ir.ui.menu">
+        <field
+            name="groups_id"
+            eval="[
+                (6, 0, [
+                    ref('base.group_system'),
+                    ref('bakery_user_roles.group_bakery_cashier'),
+                    ref('bakery_user_roles.group_bakery_cashier_supervisor'),
+                    ref('bakery_user_roles.group_bakery_owner')
+                ])
+            ]"
+        />
+    </record>
+
+    <record id="pos_preparation_display.menu_point_kitchen_display_root" model="ir.ui.menu">
+        <field
+            name="groups_id"
+            eval="[
+                (6, 0, [
+                    ref('base.group_system'),
+                    ref('bakery_user_roles.group_bakery_cashier'),
+                    ref('bakery_user_roles.group_bakery_cashier_supervisor'),
+                    ref('bakery_user_roles.group_bakery_owner')
+                ])
+            ]"
+        />
+    </record>
+
+    <record id="sale.sale_menu_root" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [ref('base.group_system')])]"/>
+    </record>
+
+    <record id="hr_work_entry_contract_enterprise.menu_hr_payroll_root" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [ref('base.group_system')])]"/>
+    </record>
+
+    <record id="membership.menu_association" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [ref('base.group_system')])]"/>
+    </record>
+
+</odoo>
