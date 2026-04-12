@@ -5,6 +5,41 @@
         <field name="model">purchase.order</field>
         <field name="inherit_id" ref="purchase.purchase_order_form" />
         <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button
+                    name="action_open_request_signature_wizard"
+                    type="object"
+                    string="Sign &amp; Request Approval"
+                    class="oe_highlight"
+                    invisible="state not in ('draft', 'sent')"
+                />
+                <button
+                    name="action_open_approval_signature_wizard"
+                    type="object"
+                    string="Confirm Order"
+                    class="oe_highlight"
+                    groups="purchase.group_purchase_manager"
+                    invisible="state != 'to approve'"
+                />
+            </xpath>
+            <xpath expr="//button[@name='button_confirm']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//button[@name='button_approve']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']" position="before">
+                <field name="approval_signature_state" invisible="1" />
+                <field name="approval_snapshot_hash" invisible="1" />
+                <field name="requested_by_id" invisible="1" />
+                <field name="requested_by_name" invisible="1" />
+                <field name="requested_at" invisible="1" />
+                <field name="requested_signature" invisible="1" />
+                <field name="approved_by_id" invisible="1" />
+                <field name="approved_by_name" invisible="1" />
+                <field name="approved_at" invisible="1" />
+                <field name="approved_signature" invisible="1" />
+            </xpath>
             <xpath expr="//field[@name='order_line']/tree/field[@name='product_packaging_qty']" position="replace">
                 <field
                     name="product_packaging_qty"
@@ -22,6 +57,13 @@
                     optional="show"
                 />
             </xpath>
+            <xpath expr="//field[@name='order_line']/tree/field[@name='price_unit']" position="replace">
+                <field
+                    name="pack_price"
+                    string="Pack Price"
+                    optional="show"
+                />
+            </xpath>
             <xpath expr="//field[@name='order_line']/form//field[@name='product_packaging_qty']" position="replace">
                 <field
                     name="product_packaging_qty"
@@ -35,6 +77,27 @@
                     string="Pack"
                     invisible="not product_id"
                     context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}"
+                />
+            </xpath>
+            <xpath expr="//field[@name='order_line']/form//field[@name='price_unit']" position="replace">
+                <field
+                    name="pack_price"
+                    string="Pack Price"
+                />
+            </xpath>
+            <xpath expr="//field[@name='user_id']" position="after">
+                <field name="approval_signature_state" readonly="1" />
+                <field name="requested_by_id" readonly="1" invisible="approval_signature_state == 'draft'" />
+                <field name="requested_at" readonly="1" invisible="approval_signature_state == 'draft'" />
+                <field
+                    name="approved_by_id"
+                    readonly="1"
+                    invisible="approval_signature_state != 'approved'"
+                />
+                <field
+                    name="approved_at"
+                    readonly="1"
+                    invisible="approval_signature_state != 'approved'"
                 />
             </xpath>
         </field>

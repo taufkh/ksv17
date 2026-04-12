@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_purchase_order_signature_wizard_form" model="ir.ui.view">
+        <field name="name">purchase.order.signature.wizard.form</field>
+        <field name="model">purchase.order.signature.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Purchase Order Signature">
+                <group>
+                    <field name="purchase_order_id" invisible="1" />
+                    <field name="action_type" invisible="1" />
+                    <field name="signer_name" readonly="1" />
+                    <field
+                        name="signature"
+                        widget="signature"
+                        options="{'full_name': 'signer_name', 'size': ['', 180]}"
+                    />
+                </group>
+                <footer>
+                    <button name="action_confirm_signature" type="object" string="Confirm" class="btn-primary" />
+                    <button string="Cancel" special="cancel" class="btn-secondary" />
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

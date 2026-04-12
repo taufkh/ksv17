@@ -1,5 +1,24 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
+    <record id="product_supplierinfo_tree_view_purchase_packaging_price" model="ir.ui.view">
+        <field name="name">product.supplierinfo.tree.view.purchase.packaging.price</field>
+        <field name="model">product.supplierinfo</field>
+        <field name="inherit_id" ref="purchase.product_supplierinfo_tree_view2" />
+        <field name="arch" type="xml">
+            <field name="min_qty" position="after">
+                <field
+                    name="product_packaging_id"
+                    optional="show"
+                    options="{'no_create': True, 'no_open': True}"
+                />
+                <field name="pack_price" optional="show" />
+            </field>
+            <field name="price" position="attributes">
+                <attribute name="optional">hide</attribute>
+            </field>
+        </field>
+    </record>
+
     <record id="product_template_only_form_view_purchase_packaging" model="ir.ui.view">
         <field name="name">product.template.only.form.purchase.packaging</field>
         <field name="model">product.template</field>

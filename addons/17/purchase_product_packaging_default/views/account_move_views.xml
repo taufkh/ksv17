@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_move_form_purchase_packaging_price" model="ir.ui.view">
+        <field name="name">account.move.form.purchase.packaging.price</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="purchase.view_move_form_inherit_purchase" />
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button
+                    name="action_request_pack_price_approval"
+                    type="object"
+                    string="Request Pack Price Approval"
+                    class="oe_highlight"
+                    invisible="state != 'draft' or move_type != 'in_invoice' or can_manage_pack_price or pack_price_requestable_count == 0"
+                />
+                <button
+                    name="action_approve_pack_price_changes"
+                    type="object"
+                    string="Approve Pack Price"
+                    class="oe_highlight"
+                    groups="purchase.group_purchase_manager,account.group_account_manager"
+                    invisible="state != 'draft' or move_type != 'in_invoice' or not can_manage_pack_price or pack_price_pending_count == 0"
+                />
+                <button
+                    name="action_reject_pack_price_changes"
+                    type="object"
+                    string="Reject Pack Price"
+                    groups="purchase.group_purchase_manager,account.group_account_manager"
+                    invisible="state != 'draft' or move_type != 'in_invoice' or not can_manage_pack_price or pack_price_pending_count == 0"
+                />
+            </xpath>
+
+            <xpath expr="//field[@name='invoice_line_ids']" position="before">
+                <field name="can_manage_pack_price" invisible="1" />
+                <field name="pack_price_pending_count" invisible="1" />
+                <field name="pack_price_requestable_count" invisible="1" />
+            </xpath>
+
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='quantity']" position="after">
+                <field
+                    name="product_packaging_qty"
+                    string="Pack Qty"
+                    optional="show"
+                    column_invisible="parent.move_type not in ('in_invoice', 'in_refund', 'in_receipt')"
+                    invisible="display_type != 'product' or not product_packaging_id"
+                />
+                <field
+                    name="product_packaging_id"
+                    string="Pack"
+                    optional="show"
+                    column_invisible="parent.move_type not in ('in_invoice', 'in_refund', 'in_receipt')"
+                    invisible="display_type != 'product'"
+                    options="{'no_create': True, 'no_open': True}"
+                />
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='price_unit']" position="replace">
+                <field
+                    name="pack_price"
+                    string="Pack Price"
+                    column_invisible="parent.move_type not in ('in_invoice', 'in_refund', 'in_receipt')"
+                    readonly="parent.move_type in ('in_invoice', 'in_refund', 'in_receipt') and not parent.can_manage_pack_price"
+                />
+                <field
+                    name="price_unit"
+                    string="Price"
+                    column_invisible="parent.move_type in ('in_invoice', 'in_refund', 'in_receipt')"
+                />
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='discount']" position="before">
+                <field
+                    name="requested_pack_price"
+                    optional="hide"
+                    column_invisible="parent.move_type not in ('in_invoice', 'in_refund', 'in_receipt') or parent.can_manage_pack_price"
+                    invisible="display_type != 'product'"
+                />
+                <field
+                    name="pack_price_approval_state"
+                    optional="hide"
+                    column_invisible="parent.move_type not in ('in_invoice', 'in_refund', 'in_receipt')"
+                    invisible="display_type != 'product'"
+                />
+            </xpath>
+
+            <xpath expr="//field[@name='invoice_line_ids']/form//field[@name='quantity']" position="after">
+                <field
+                    name="product_packaging_qty"
+                    string="Pack Qty"
+                    invisible="parent.move_type not in ('in_invoice', 'in_refund', 'in_receipt') or not product_packaging_id"
+                />
+                <field
+                    name="product_packaging_id"
+                    string="Pack"
+                    invisible="parent.move_type not in ('in_invoice', 'in_refund', 'in_receipt')"
+                    options="{'no_create': True, 'no_open': True}"
+                />
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']/form//field[@name='price_unit']" position="replace">
+                <field
+                    name="pack_price"
+                    string="Pack Price"
+                    invisible="parent.move_type not in ('in_invoice', 'in_refund', 'in_receipt')"
+                    readonly="parent.move_type in ('in_invoice', 'in_refund', 'in_receipt') and not parent.can_manage_pack_price"
+                />
+                <field
+                    name="price_unit"
+                    invisible="parent.move_type in ('in_invoice', 'in_refund', 'in_receipt')"
+                />
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']/form//group[1]" position="after">
+                <group invisible="parent.move_type not in ('in_invoice', 'in_refund', 'in_receipt')">
+                    <field
+                        name="requested_pack_price"
+                        invisible="parent.can_manage_pack_price"
+                    />
+                    <field
+                        name="pack_price_request_reason"
+                        placeholder="Reason for requesting a pack price change"
+                        invisible="parent.can_manage_pack_price"
+                    />
+                    <field name="pack_price_approval_state" readonly="1" />
+                    <field name="pack_price_requested_by_id" readonly="1" invisible="pack_price_approval_state == 'none'" />
+                    <field name="pack_price_requested_at" readonly="1" invisible="pack_price_approval_state == 'none'" />
+                    <field name="pack_price_approved_by_id" readonly="1" invisible="pack_price_approval_state not in ('approved', 'rejected')" />
+                    <field name="pack_price_approved_at" readonly="1" invisible="pack_price_approval_state not in ('approved', 'rejected')" />
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>
