@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-inherit="point_of_sale.ReceiptScreen" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('buttons')]" position="inside">
+            <t t-if="pos.config.bluetooth_printer_enabled">
+                <button class="button btn btn-lg btn-light w-100 py-2 mt-2" t-on-click="connectBluetoothPrinter">
+                    <i class="fa fa-bluetooth-b me-2"/>
+                    Connect Bluetooth Printer
+                </button>
+                <div class="small text-muted mt-2">
+                    <t t-esc="orderUiState.bluetoothPrinterStatus or 'Printer Bluetooth belum tersambung.'"/>
+                </div>
+            </t>
+        </xpath>
+    </t>
+</templates>

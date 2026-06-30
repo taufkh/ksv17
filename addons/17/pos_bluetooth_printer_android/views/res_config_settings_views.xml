@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_pos_bluetooth_printer_android" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.pos.bluetooth.printer.android</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="point_of_sale.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@id='pos_bills_and_receipts_section']" position="inside">
+                <setting id="bluetooth_printer_enabled" help="Print POS receipts directly to a paired Bluetooth thermal printer from Android Chrome.">
+                    <field name="bluetooth_printer_enabled"/>
+                    <div class="content-group mt16" invisible="not bluetooth_printer_enabled">
+                        <div class="row mt16">
+                            <label for="bluetooth_printer_auto_print" class="col-lg-3 o_light_label"/>
+                            <div class="col-lg-9">
+                                <field name="bluetooth_printer_auto_print"/>
+                            </div>
+                        </div>
+                        <div class="row mt16">
+                            <label for="bluetooth_printer_paper_width" class="col-lg-3 o_light_label"/>
+                            <div class="col-lg-9">
+                                <field name="bluetooth_printer_paper_width"/>
+                            </div>
+                        </div>
+                        <div class="row mt16">
+                            <label for="bluetooth_printer_baud_rate" class="col-lg-3 o_light_label"/>
+                            <div class="col-lg-9">
+                                <field name="bluetooth_printer_baud_rate"/>
+                            </div>
+                        </div>
+                        <div class="text-muted mt16">
+                            Pair printer Panda PRJ-R58B-II dulu di Android Settings, lalu buka POS lewat Chrome. Saat print pertama, user harus tap tombol connect untuk memberi izin serial ke browser.
+                        </div>
+                    </div>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+</odoo>

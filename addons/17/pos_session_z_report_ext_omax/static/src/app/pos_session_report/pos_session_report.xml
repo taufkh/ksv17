@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="pos_session_z_report_ext_omax.SessionReportButton">
+        <div class="control-button btn rounded-0 fw-bolder text-truncate btn-light" t-on-click="onClick">
+            <i class="fa fa-calculator me-1" role="img" aria-label="Session Report" title="Session Report"/>
+            Session Report
+        </div>
+    </t>
+
+    <t t-name="pos_session_z_report_ext_omax.ClosePosPopupSessionReport"
+       t-inherit="point_of_sale.ClosePosPopup"
+       t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('modal-footer-right')]/button[.//i[contains(@class, 'fa-download')]]" position="before">
+            <button t-if="pos.config.omax_session_z_report"
+                class="button icon btn btn-lg btn-secondary"
+                t-on-click="onClickSessionReport"
+                title="Open Session Z Report preview">
+                Session Report
+                <i class="fa fa-print" role="img"/>
+            </button>
+        </xpath>
+    </t>
+</templates>

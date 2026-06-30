@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <t t-name="pos_session_z_report_ext_omax.SessionReportPreviewScreen">
+        <div class="session-report-preview-screen screen h-100 bg-100">
+            <div class="screen-content d-flex flex-column h-100">
+                <div class="default-view d-flex flex-lg-row flex-column overflow-hidden flex-grow-1">
+                    <div class="actions d-flex flex-column justify-content-between border-end" style="width: 50%; min-width: 400px; flex-shrink: 0;">
+                        <div class="o_session_report_preview d-flex flex-column w-100 p-3 pt-xxl-5 mx-auto">
+                            <div class="d-flex flex-column align-items-center p-1 p-lg-3 border border-info rounded-3 bg-info-subtle text-info fs-3">
+                                <i t-if="!ui.isSmall" class="fa fa-fw fa-2x fa-file-text-o"/>
+                                <span class="fs-3 fw-bolder">Session Z Report Preview</span>
+                                <div class="fs-4 fw-bold d-flex justify-content-center align-items-center gap-2">
+                                    <span t-esc="state.sessionData?.name || 'Loading...'" />
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="report-options d-flex flex-column gap-2">
+                                <t t-if="pos.config.bluetooth_printer_enabled">
+                                    <div class="d-flex gap-1">
+                                        <button class="button bluetooth btn btn-lg btn-light w-100 py-3" t-on-click="connectBluetoothPrinter">
+                                            <i class="fa fa-bluetooth-b me-1" />Connect Bluetooth Printer
+                                        </button>
+                                    </div>
+                                    <div class="small text-muted text-center">
+                                        <t t-esc="state.bluetoothPrinterStatus or 'Printer Bluetooth belum tersambung.'"/>
+                                    </div>
+                                </t>
+                                <div class="d-flex gap-1">
+                                    <button class="button print btn btn-lg btn-primary w-100 py-3" t-on-click="() => doPrint.call()" t-att-disabled="!state.sessionData or doPrint.status === 'loading'">
+                                        <i t-attf-class="fa {{doPrint.status === 'loading' ? 'fa-fw fa-spin fa-circle-o-notch' : 'fa-print'}} me-1" />Print Session Report
+                                    </button>
+                                </div>
+                                <div class="d-flex gap-1">
+                                    <button class="button pdf btn btn-lg btn-outline-secondary w-100 py-3" t-on-click="() => doDownloadPdf.call()" t-att-disabled="!state.sessionData or doDownloadPdf.status === 'loading'">
+                                        <i t-attf-class="fa {{doDownloadPdf.status === 'loading' ? 'fa-fw fa-spin fa-circle-o-notch' : 'fa-download'}} me-1" />Download PDF
+                                    </button>
+                                </div>
+                                <div class="d-flex gap-1">
+                                    <button class="button refresh btn btn-lg btn-secondary w-100 py-3" t-on-click="_loadSessionData" t-att-disabled="state.loading">
+                                        <i t-attf-class="fa {{state.loading ? 'fa-fw fa-spin fa-circle-o-notch' : 'fa-refresh'}} me-1" />Refresh Data
+                                    </button>
+                                </div>
+                                <div class="notice text-center">
+                                    <div t-if="state.loading" class="text-info">Loading session data...</div>
+                                    <div t-if="state.error" class="text-danger">Error: <t t-esc="state.error"/></div>
+                                    <div t-if="doPrint.status === 'loading'" class="text-info">Printing in progress...</div>
+                                    <div t-if="doPrint.status === 'success'" class="text-success">Print successful!</div>
+                                    <div t-if="doPrint.status === 'error'" class="text-danger">Print failed. Please try again</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="action_btn_desktop" t-if="!ui.isSmall" class="validation-buttons d-flex w-100 gap-2 p-2 sticky-bottom">
+                            <button class="button back validation btn btn-secondary btn-lg w-100 py-4 lh-lg" t-on-click="goBack" name="back">
+                                Back to POS
+                            </button>
+                        </div>
+                    </div>
+                    <div class="session-report-container d-flex user-select-none justify-content-center bg-200 text-center overflow-hidden" style="width: 50%; flex-grow: 1;">
+                        <div class="d-inline-block m-2 m-lg-3 p-3 border rounded bg-view text-start overflow-y-auto" t-att-style="ui.isSmall ? 'max-height: 75vh; min-height: 50vh; width: 300px;' : 'max-height: 85vh; min-height: 60vh; width: 400px;'">
+                            <div t-if="state.loading" class="text-center p-5">
+                                <i class="fa fa-fw fa-spin fa-circle-o-notch fa-2x text-muted"></i>
+                                <div class="mt-3 text-muted">Loading session data...</div>
+                            </div>
+                            <div t-elif="state.error" class="text-center p-5">
+                                <i class="fa fa-fw fa-exclamation-triangle fa-2x text-danger"></i>
+                                <div class="mt-3 text-danger">Error loading data</div>
+                                <div class="text-muted"><t t-esc="state.error"/></div>
+                            </div>
+                            <div t-elif="state.canvasDataUrl" class="text-center">
+                                <div class="canvas-wrapper" style="position: relative;">
+                                    <img t-att-src="state.canvasDataUrl" class="img-fluid" style="max-width: 400px; width: 380px; height: auto; min-height: 200px; display: block;" alt="Session Report Preview"/>
+                                    <div class="scroll-indicator" style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.7); color: white; padding: 5px 10px; border-radius: 15px; font-size: 12px; z-index: 10;">
+                                        <i class="fa fa-arrows-v me-1"></i>Scroll to view
+                                    </div>
+                                </div>
+                            </div>
+                            <div t-else="" class="text-center p-5">
+                                <i class="fa fa-fw fa-file-text-o fa-2x text-muted"></i>
+                                <div class="mt-3 text-muted">No preview available</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="action_btn_mobile" t-if="ui.isSmall" class="switchpane d-flex gap-2 p-2">
+                    <div class="btn-switchpane validation-button btn btn-secondary btn-lg py-3 flex-fill lh-lg" t-on-click="goBack" name="back">
+                        Back to POS
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+</templates>
