@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pos_order_form_inherit_sale_channel" model="ir.ui.view">
+        <field name="name">pos.order.form.sale.channel</field>
+        <field name="model">pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='order_fields']/field[@name='partner_id']" position="after">
+                <field name="sale_channel_id"/>
+                <field name="online_check_required"/>
+                <field name="online_check_status"/>
+                <field name="online_check_progress_display" readonly="1"/>
+            </xpath>
+            <xpath expr="//page[@name='products']//field[@name='lines']/tree/field[@name='qty']" position="after">
+                <field name="sale_channel_id" optional="show"/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page name="online_checker" string="Online Checker">
+                    <group>
+                        <group>
+                            <field name="online_check_required" readonly="1"/>
+                            <field name="online_check_status" readonly="1"/>
+                            <field name="online_check_progress_display" readonly="1"/>
+                            <field name="online_check_note"/>
+                        </group>
+                        <group>
+                            <field name="online_check_completed_at" readonly="1"/>
+                            <field name="online_check_completed_by_id" readonly="1"/>
+                            <field name="online_check_override_at" readonly="1"/>
+                            <field name="online_check_override_by_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="online_check_override_reason"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_pos_order_tree_inherit_sale_channel" model="ir.ui.view">
+        <field name="name">pos.order.tree.sale.channel</field>
+        <field name="model">pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_order_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="sale_channel_id" optional="show"/>
+                <field name="online_check_status" optional="show"/>
+                <field name="online_check_progress_display" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_pos_order_filter_inherit_sale_channel" model="ir.ui.view">
+        <field name="name">pos.order.search.sale.channel</field>
+        <field name="model">pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_order_filter"/>
+        <field name="arch" type="xml">
+            <search position="inside">
+                <field name="sale_channel_id"/>
+                <field name="online_check_status"/>
+                <group expand="0" string="Group By">
+                    <filter string="Sales Channel" name="group_by_sale_channel" context="{'group_by': 'sale_channel_id'}"/>
+                    <filter string="Online Check Status" name="group_by_online_check_status" context="{'group_by': 'online_check_status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_report_pos_order_tree_inherit_sale_channel" model="ir.ui.view">
+        <field name="name">report.pos.order.tree.sale.channel</field>
+        <field name="model">report.pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.report_pos_order_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='config_id']" position="after">
+                <field name="sale_channel_id" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_report_pos_order_search_inherit_sale_channel" model="ir.ui.view">
+        <field name="name">report.pos.order.search.sale.channel</field>
+        <field name="model">report.pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_report_pos_order_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='config_id']" position="after">
+                <field name="sale_channel_id"/>
+            </xpath>
+            <xpath expr="//search/group" position="inside">
+                <filter string="Sales Channel" name="group_by_sale_channel" context="{'group_by': 'sale_channel_id'}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_report_pos_order_pivot_inherit_sale_channel" model="ir.ui.view">
+        <field name="name">report.pos.order.pivot.sale.channel</field>
+        <field name="model">report.pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_report_pos_order_pivot"/>
+        <field name="arch" type="xml">
+            <xpath expr="//pivot/field[@name='product_categ_id']" position="after">
+                <field name="sale_channel_id" type="row"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="loyalty_program_view_form_membership" model="ir.ui.view">
+        <field name="name">loyalty.program.view.form.membership</field>
+        <field name="model">loyalty.program</field>
+        <field name="inherit_id" ref="pos_loyalty.loyalty_program_view_form_inherit_pos_loyalty"/>
+        <field name="arch" type="xml">
+            <field name="pos_config_ids" position="after">
+                <field
+                    name="membership_only"
+                    invisible="not pos_ok or program_type in ('gift_card', 'ewallet')"
+                />
+            </field>
+        </field>
+    </record>
+
+    <record id="loyalty_program_view_tree_membership" model="ir.ui.view">
+        <field name="name">loyalty.program.view.tree.membership</field>
+        <field name="model">loyalty.program</field>
+        <field name="inherit_id" ref="pos_loyalty.loyalty_program_view_tree_inherit_pos_loyalty"/>
+        <field name="arch" type="xml">
+            <field name="company_id" position="before">
+                <field name="membership_only" optional="hide"/>
+            </field>
+        </field>
+    </record>
+</odoo>

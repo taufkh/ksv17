@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="pos_sale_channel.TicketScreenOnlineCheckerButton" t-inherit="point_of_sale.TicketScreen" t-inherit-mode="extension" owl="1">
+        <xpath expr="//InvoiceButton" position="after">
+            <button
+                t-if="selectedOrderCanUseOnlineChecker()"
+                class="btn btn-secondary"
+                t-on-click="openSelectedOrderOnlineChecker"
+            >
+                <t t-esc="getSelectedOrderOnlineCheckerLabel()"/>
+            </button>
+        </xpath>
+    </t>
+</templates>

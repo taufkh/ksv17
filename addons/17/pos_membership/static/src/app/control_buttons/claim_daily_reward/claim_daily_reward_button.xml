@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <button
+        t-name="pos_membership.ClaimDailyRewardButton"
+        class="control-button btn btn-light rounded-3"
+        t-on-click="onClick"
+    >
+        <i class="fa fa-gift me-2"/>
+        Claim Daily Reward
+    </button>
+</templates>

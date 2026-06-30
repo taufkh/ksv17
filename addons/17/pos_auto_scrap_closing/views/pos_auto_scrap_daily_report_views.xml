@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pos_auto_scrap_daily_report_search" model="ir.ui.view">
+        <field name="name">pos.auto.scrap.daily.report.search</field>
+        <field name="model">pos.auto.scrap.daily.report</field>
+        <field name="arch" type="xml">
+            <search string="Daily Wastage">
+                <field name="report_date"/>
+                <field name="pos_config_id"/>
+                <field name="pos_session_id"/>
+                <field name="product_id"/>
+                <group expand="0" string="Group By">
+                    <filter
+                        name="group_by_day"
+                        string="Day"
+                        domain="[]"
+                        context="{'group_by': 'report_date'}"
+                    />
+                    <filter
+                        name="group_by_pos"
+                        string="Point of Sale"
+                        domain="[]"
+                        context="{'group_by': 'pos_config_id'}"
+                    />
+                    <filter
+                        name="group_by_session"
+                        string="Session"
+                        domain="[]"
+                        context="{'group_by': 'pos_session_id'}"
+                    />
+                    <filter
+                        name="group_by_product"
+                        string="Product"
+                        domain="[]"
+                        context="{'group_by': 'product_id'}"
+                    />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_pos_auto_scrap_daily_report_tree" model="ir.ui.view">
+        <field name="name">pos.auto.scrap.daily.report.tree</field>
+        <field name="model">pos.auto.scrap.daily.report</field>
+        <field name="arch" type="xml">
+            <tree create="0" delete="0" edit="0">
+                <field name="report_date"/>
+                <field name="pos_config_id"/>
+                <field name="pos_session_id"/>
+                <field name="product_id"/>
+                <field name="sold_qty"/>
+                <field name="scrapped_qty"/>
+                <field name="prepared_qty"/>
+                <field name="currency_id" column_invisible="True"/>
+                <field name="loss_value" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="waste_rate"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_pos_auto_scrap_daily_report_pivot" model="ir.ui.view">
+        <field name="name">pos.auto.scrap.daily.report.pivot</field>
+        <field name="model">pos.auto.scrap.daily.report</field>
+        <field name="arch" type="xml">
+            <pivot string="Daily Wastage Analysis">
+                <field name="report_date" type="col" interval="day"/>
+                <field name="pos_config_id" type="row"/>
+                <field name="product_id" type="row"/>
+                <field name="sold_qty" type="measure"/>
+                <field name="scrapped_qty" type="measure"/>
+                <field name="prepared_qty" type="measure"/>
+                <field name="loss_value" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_pos_auto_scrap_daily_report_graph" model="ir.ui.view">
+        <field name="name">pos.auto.scrap.daily.report.graph</field>
+        <field name="model">pos.auto.scrap.daily.report</field>
+        <field name="arch" type="xml">
+            <graph string="Daily Wastage Analysis" type="bar">
+                <field name="report_date" type="row"/>
+                <field name="pos_config_id" type="col"/>
+                <field name="scrapped_qty" type="measure"/>
+                <field name="loss_value" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_pos_auto_scrap_daily_report" model="ir.actions.act_window">
+        <field name="name">Daily Wastage</field>
+        <field name="res_model">pos.auto.scrap.daily.report</field>
+        <field name="view_mode">pivot,graph,tree</field>
+        <field name="search_view_id" ref="view_pos_auto_scrap_daily_report_search"/>
+        <field name="context">{'search_default_group_by_day': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Analyze sold versus scrapped quantities per day
+            </p>
+            <p>
+                Use this report to review daily prepared quantity, scrapped quantity, waste rate, and loss value per outlet and product.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_pos_auto_scrap_daily_report_view_pivot" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">pivot</field>
+        <field name="view_id" ref="view_pos_auto_scrap_daily_report_pivot"/>
+        <field name="act_window_id" ref="action_pos_auto_scrap_daily_report"/>
+    </record>
+
+    <record id="action_pos_auto_scrap_daily_report_view_graph" model="ir.actions.act_window.view">
+        <field name="sequence" eval="2"/>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="view_pos_auto_scrap_daily_report_graph"/>
+        <field name="act_window_id" ref="action_pos_auto_scrap_daily_report"/>
+    </record>
+
+    <record id="action_pos_auto_scrap_daily_report_view_tree" model="ir.actions.act_window.view">
+        <field name="sequence" eval="3"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_pos_auto_scrap_daily_report_tree"/>
+        <field name="act_window_id" ref="action_pos_auto_scrap_daily_report"/>
+    </record>
+
+    <menuitem
+        id="menu_pos_auto_scrap_daily_report"
+        name="Daily Wastage"
+        parent="point_of_sale.menu_point_rep"
+        action="action_pos_auto_scrap_daily_report"
+        groups="point_of_sale.group_pos_manager"
+        sequence="21"
+    />
+</odoo>

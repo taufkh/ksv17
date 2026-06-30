@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="pos_membership.CustomerButton" t-inherit="point_of_sale.CustomerButton" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('customer-button')]" position="inside">
+            <t t-if="partner and this.membershipPartnerInfo.isMember">
+                <div class="o_pos_membership_inline mt-1">
+                    <span class="o_pos_membership_chip" t-esc="this.membershipPartnerInfo.badgeLabel"/>
+                    <span class="o_pos_membership_meta">
+                        Deposit: <t t-esc="env.utils.formatCurrency(this.membershipPartnerInfo.depositBalance)"/>
+                    </span>
+                    <span class="o_pos_membership_meta">
+                        Points: <t t-esc="this.membershipPartnerInfo.totalPoints"/>
+                    </span>
+                </div>
+            </t>
+        </xpath>
+    </t>
+</templates>

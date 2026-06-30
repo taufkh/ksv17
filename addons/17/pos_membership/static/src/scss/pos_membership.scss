@@ -1,0 +1,41 @@
+.o_pos_membership_inline,
+.o_pos_membership_panel,
+.o_pos_membership_badge {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.o_pos_membership_panel {
+    margin-top: 8px;
+}
+
+.o_pos_membership_chip {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 2px 8px;
+    background: #0f766e;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.o_pos_membership_meta {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    background: #f8fafc;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.2;
+    color: #1f2937;
+    white-space: nowrap;
+}
+
+.pos-receipt-membership {
+    font-size: 85%;
+}

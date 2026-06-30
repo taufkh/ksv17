@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="pos_membership.OrderReceipt" t-inherit="point_of_sale.OrderReceipt" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('after-footer')]" position="after">
+            <t t-if="props.data.membership and props.data.membership.is_member">
+                <div class="pos-receipt-membership">
+                    <br/>
+                    <div><strong>Member</strong></div>
+                    <div t-if="props.data.partner">
+                        <t t-esc="props.data.partner.name"/>
+                    </div>
+                    <div t-if="props.data.membership.barcode">
+                        Barcode: <t t-esc="props.data.membership.barcode"/>
+                    </div>
+                    <div>
+                        Type: <t t-esc="props.data.membership.badge_label"/>
+                    </div>
+                    <div>
+                        Deposit Used:
+                        <t t-esc="props.formatCurrency ? props.formatCurrency(props.data.membership.deposit_used) : props.data.membership.deposit_used"/>
+                    </div>
+                    <div>
+                        Top Up:
+                        <t t-esc="props.formatCurrency ? props.formatCurrency(props.data.membership.topup_amount) : props.data.membership.topup_amount"/>
+                    </div>
+                    <div>
+                        Deposit Balance:
+                        <t t-esc="props.formatCurrency ? props.formatCurrency(props.data.membership.deposit_balance) : props.data.membership.deposit_balance"/>
+                    </div>
+                    <div>
+                        Points Earned: <t t-esc="props.data.membership.points_earned"/>
+                    </div>
+                    <div>
+                        Total Points: <t t-esc="props.data.membership.total_points"/>
+                    </div>
+                    <div t-if="props.data.membership.claim_reward and props.data.membership.claim_product_name">
+                        Daily Reward: <t t-esc="props.data.membership.claim_product_name"/>
+                    </div>
+                </div>
+            </t>
+        </xpath>
+    </t>
+</templates>

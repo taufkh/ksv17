@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pos_sale_channel_tree" model="ir.ui.view">
+        <field name="name">pos.sale.channel.tree</field>
+        <field name="model">pos.sale.channel</field>
+        <field name="arch" type="xml">
+            <tree string="Sales Channels" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="channel_type"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_pos_sale_channel_form" model="ir.ui.view">
+        <field name="name">pos.sale.channel.form</field>
+        <field name="model">pos.sale.channel</field>
+        <field name="arch" type="xml">
+            <form string="Sales Channel">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="sequence"/>
+                        <field name="channel_type"/>
+                        <field name="company_id" groups="base.group_multi_company"/>
+                        <field name="active"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_pos_sale_channel_search" model="ir.ui.view">
+        <field name="name">pos.sale.channel.search</field>
+        <field name="model">pos.sale.channel</field>
+        <field name="arch" type="xml">
+            <search string="Sales Channels">
+                <field name="name"/>
+                <field name="channel_type"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_pos_sale_channel" model="ir.actions.act_window">
+        <field name="name">Sales Channels</field>
+        <field name="res_model">pos.sale.channel</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_pos_sale_channel_search"/>
+    </record>
+
+    <menuitem
+        id="menu_pos_sale_channel"
+        name="Sales Channels"
+        parent="point_of_sale.menu_point_config_product"
+        action="action_pos_sale_channel"
+        sequence="25"
+        groups="point_of_sale.group_pos_manager"
+    />
+</odoo>

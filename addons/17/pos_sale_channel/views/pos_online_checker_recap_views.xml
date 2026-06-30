@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pos_online_checker_recap_wizard_form" model="ir.ui.view">
+        <field name="name">pos.online.checker.recap.wizard.form</field>
+        <field name="model">pos.online.checker.recap.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Online Checker Recap">
+                <group>
+                    <group>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                        <field name="online_check_status"/>
+                    </group>
+                    <group>
+                        <field name="config_ids" widget="many2many_tags"/>
+                        <field name="sale_channel_ids" widget="many2many_tags"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_open_report" string="Open Report" type="object" class="btn-primary"/>
+                    <button name="action_export_xlsx" string="Export XLSX" type="object" class="btn-secondary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_pos_online_checker_recap_wizard" model="ir.actions.act_window">
+        <field name="name">Online Checker Recap</field>
+        <field name="res_model">pos.online.checker.recap.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_pos_online_checker_recap_wizard_form"/>
+    </record>
+
+    <record id="action_pos_online_checker_recap_orders" model="ir.actions.act_window">
+        <field name="name">Online Checker Orders</field>
+        <field name="res_model">pos.order</field>
+        <field name="view_mode">tree,form,pivot</field>
+        <field name="search_view_id" ref="point_of_sale.view_pos_order_filter"/>
+        <field name="domain">[('online_check_required', '=', True)]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <menuitem
+        id="menu_pos_online_checker_recap"
+        name="Online Checker Recap"
+        parent="point_of_sale.menu_point_rep"
+        action="action_pos_online_checker_recap_wizard"
+        sequence="30"
+        groups="point_of_sale.group_pos_user"
+    />
+</odoo>

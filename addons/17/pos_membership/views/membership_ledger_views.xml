@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_membership_deposit_ledger_tree" model="ir.ui.view">
+        <field name="name">membership.deposit.ledger.tree</field>
+        <field name="model">membership.deposit.ledger</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="date"/>
+                <field name="partner_id"/>
+                <field name="direction"/>
+                <field name="source"/>
+                <field name="amount"/>
+                <field name="reference"/>
+                <field name="pos_order_id"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_membership_deposit_ledger_form" model="ir.ui.view">
+        <field name="name">membership.deposit.ledger.form</field>
+        <field name="model">membership.deposit.ledger</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="company_id"/>
+                            <field name="date"/>
+                            <field name="amount"/>
+                        </group>
+                        <group>
+                            <field name="direction"/>
+                            <field name="source"/>
+                            <field name="reference"/>
+                            <field name="state"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="pos_order_id"/>
+                        <field name="pos_payment_id"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_membership_deposit_ledger" model="ir.actions.act_window">
+        <field name="name">Deposit Ledger</field>
+        <field name="res_model">membership.deposit.ledger</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="view_membership_point_ledger_tree" model="ir.ui.view">
+        <field name="name">membership.point.ledger.tree</field>
+        <field name="model">membership.point.ledger</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="date"/>
+                <field name="partner_id"/>
+                <field name="direction"/>
+                <field name="source"/>
+                <field name="points"/>
+                <field name="reference"/>
+                <field name="pos_order_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_membership_point_ledger_form" model="ir.ui.view">
+        <field name="name">membership.point.ledger.form</field>
+        <field name="model">membership.point.ledger</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="company_id"/>
+                            <field name="date"/>
+                            <field name="points"/>
+                        </group>
+                        <group>
+                            <field name="direction"/>
+                            <field name="source"/>
+                            <field name="reference"/>
+                            <field name="pos_order_id"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_membership_point_ledger" model="ir.actions.act_window">
+        <field name="name">Point Ledger</field>
+        <field name="res_model">membership.point.ledger</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem
+        id="menu_pos_membership_root"
+        name="Membership"
+        parent="point_of_sale.menu_point_root"
+        sequence="90"
+    />
+    <menuitem
+        id="menu_membership_deposit_ledger"
+        name="Deposit Ledger"
+        parent="menu_pos_membership_root"
+        action="action_membership_deposit_ledger"
+        sequence="10"
+    />
+    <menuitem
+        id="menu_membership_point_ledger"
+        name="Point Ledger"
+        parent="menu_pos_membership_root"
+        action="action_membership_point_ledger"
+        sequence="20"
+    />
+</odoo>

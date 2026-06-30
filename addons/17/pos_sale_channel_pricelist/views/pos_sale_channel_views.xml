@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pos_sale_channel_tree_inherit_pricelist" model="ir.ui.view">
+        <field name="name">pos.sale.channel.tree.pricelist</field>
+        <field name="model">pos.sale.channel</field>
+        <field name="inherit_id" ref="pos_sale_channel.view_pos_sale_channel_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='channel_type']" position="after">
+                <field
+                    name="pricelist_id"
+                    options="{'no_create_edit': True}"
+                />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_pos_sale_channel_form_inherit_pricelist" model="ir.ui.view">
+        <field name="name">pos.sale.channel.form.pricelist</field>
+        <field name="model">pos.sale.channel</field>
+        <field name="inherit_id" ref="pos_sale_channel.view_pos_sale_channel_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='channel_type']" position="after">
+                <field
+                    name="pricelist_id"
+                    options="{'no_create_edit': True}"
+                />
+            </xpath>
+        </field>
+    </record>
+</odoo>

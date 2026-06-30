@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_sale_order_attachment_image_user,sale.order.attachment.image user,model_sale_order_attachment_image,base.group_user,1,1,1,1
+access_account_move_attachment_image_user,account.move.attachment.image user,model_account_move_attachment_image,base.group_user,1,1,1,1

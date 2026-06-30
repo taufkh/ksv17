@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="member_login" name="Member Login">
+        <html>
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <title>Member Login</title>
+                <t t-call-assets="web.assets_frontend"/>
+            </head>
+            <body class="o_member_portal_body">
+                <main class="o_member_login_page">
+                    <section class="o_member_login_card">
+                        <div class="o_member_login_header">
+                            <p class="o_member_login_eyebrow">POS Membership</p>
+                            <h1>Member Portal</h1>
+                            <p>Gunakan akun portal Odoo Anda untuk melihat saldo deposit, poin, dan barcode member.</p>
+                        </div>
+                        <form action="/web/login" method="post" class="o_member_login_form">
+                            <input type="hidden" name="csrf_token" t-att-value="csrf_token"/>
+                            <input type="hidden" name="redirect" t-att-value="redirect_url"/>
+                            <div class="mb-3">
+                                <label for="login">Email</label>
+                                <input id="login" type="text" name="login" t-att-value="login" required="required"/>
+                            </div>
+                            <div class="mb-3">
+                                <label for="password">Password</label>
+                                <input id="password" type="password" name="password" required="required"/>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Masuk ke Dashboard</button>
+                        </form>
+                    </section>
+                </main>
+            </body>
+        </html>
+    </template>
+
+    <template id="member_dashboard" name="Member Dashboard">
+        <html>
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <title>Member Dashboard</title>
+                <t t-call-assets="web.assets_frontend"/>
+            </head>
+            <body class="o_member_portal_body">
+                <main class="o_member_dashboard_page">
+                    <section class="o_member_dashboard_hero">
+                        <div>
+                            <p class="o_member_login_eyebrow">Membership Dashboard</p>
+                            <h1><t t-esc="partner.display_name"/></h1>
+                            <p>Type: <strong><t t-esc="dict(partner._fields['custom_member_type'].selection).get(partner.custom_member_type)"/></strong></p>
+                        </div>
+                        <a href="/web/session/logout?redirect=/member/login" class="btn btn-light">Logout</a>
+                    </section>
+
+                    <section class="o_member_dashboard_grid">
+                        <article class="o_member_metric_card">
+                            <span class="o_metric_label">Deposit Balance</span>
+                            <strong class="o_metric_value"><t t-esc="partner.currency_id.symbol"/> <t t-esc="'%.2f' % partner.total_deposit_balance"/></strong>
+                        </article>
+                        <article class="o_member_metric_card">
+                            <span class="o_metric_label">Total Points</span>
+                            <strong class="o_metric_value"><t t-esc="partner.total_points"/></strong>
+                        </article>
+                        <article class="o_member_metric_card">
+                            <span class="o_metric_label">Portal Access</span>
+                            <strong class="o_metric_value"><t t-esc="'Enabled' if partner.membership_portal_enabled else 'Pending Invite'"/></strong>
+                        </article>
+                        <article class="o_member_metric_card">
+                            <span class="o_metric_label">Last Check In</span>
+                            <strong class="o_metric_value"><t t-esc="partner.membership_last_checkin_date or '-'"/></strong>
+                        </article>
+                    </section>
+
+                    <section class="o_member_dashboard_main">
+                        <article class="o_member_panel">
+                            <div class="o_member_panel_header">
+                                <h2>Member Barcode</h2>
+                                <span class="o_member_barcode_text" t-esc="partner.custom_member_barcode"/>
+                            </div>
+                            <div
+                                class="o_member_barcode_canvas"
+                                id="member_barcode_canvas"
+                                t-att-data-barcode="partner.custom_member_barcode"
+                            />
+                        </article>
+
+                        <article class="o_member_panel">
+                            <div class="o_member_panel_header">
+                                <h2>Upcoming Rewards</h2>
+                                <span><t t-esc="len(reward_configs)"/> active</span>
+                            </div>
+                            <t t-if="reward_configs">
+                                <ul class="o_member_list">
+                                    <t t-foreach="reward_configs" t-as="reward" t-key="reward.id">
+                                        <li>
+                                            <strong><t t-esc="reward.reward_product_names"/></strong>
+                                            <span t-if="reward.date_mode == 'date_range'">
+                                                <t t-esc="reward.date_start"/> - <t t-esc="reward.date_end"/>
+                                            </span>
+                                            <span t-else="" t-esc="reward.date"/>
+                                        </li>
+                                    </t>
+                                </ul>
+                            </t>
+                            <p t-else="" class="text-muted">Belum ada reward aktif.</p>
+                        </article>
+
+                        <article class="o_member_panel">
+                            <div class="o_member_panel_header">
+                                <h2>Deposit History</h2>
+                            </div>
+                            <t t-if="deposit_logs">
+                                <ul class="o_member_list">
+                                    <t t-foreach="deposit_logs" t-as="log" t-key="log.id">
+                                        <li>
+                                            <div>
+                                                <strong><t t-esc="log.reference or log.source"/></strong>
+                                                <span><t t-esc="log.date"/></span>
+                                            </div>
+                                            <span t-att-class="'text-success' if log.direction == 'in' else 'text-danger'">
+                                                <t t-esc="'+' if log.direction == 'in' else '-'"/>
+                                                <t t-esc="'%.2f' % log.amount"/>
+                                            </span>
+                                        </li>
+                                    </t>
+                                </ul>
+                            </t>
+                            <p t-else="" class="text-muted">Belum ada mutasi deposit.</p>
+                        </article>
+
+                        <article class="o_member_panel">
+                            <div class="o_member_panel_header">
+                                <h2>Point History</h2>
+                            </div>
+                            <t t-if="point_logs">
+                                <ul class="o_member_list">
+                                    <t t-foreach="point_logs" t-as="log" t-key="log.id">
+                                        <li>
+                                            <div>
+                                                <strong><t t-esc="log.reference or log.source"/></strong>
+                                                <span><t t-esc="log.date"/></span>
+                                            </div>
+                                            <span t-att-class="'text-success' if log.direction == 'earned' else 'text-danger'">
+                                                <t t-esc="'+' if log.direction == 'earned' else '-'"/>
+                                                <t t-esc="log.points"/>
+                                            </span>
+                                        </li>
+                                    </t>
+                                </ul>
+                            </t>
+                            <p t-else="" class="text-muted">Belum ada mutasi poin.</p>
+                        </article>
+                    </section>
+                </main>
+            </body>
+        </html>
+    </template>
+</odoo>

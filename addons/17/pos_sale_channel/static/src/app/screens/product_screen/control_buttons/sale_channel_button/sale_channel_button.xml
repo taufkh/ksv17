@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="pos_sale_channel.SaleChannelButton">
+        <div class="control-button btn rounded-0 fw-bolder text-truncate btn-light" t-on-click="onClick">
+            <i class="fa fa-tags me-1" role="img" aria-label="Sales Channel" title="Sales Channel"/>
+            <t t-esc="this.currentChannelLabel"/>
+        </div>
+    </t>
+</templates>

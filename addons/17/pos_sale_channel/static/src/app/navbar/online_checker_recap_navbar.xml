@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="pos_sale_channel.NavbarOnlineCheckerRecap" t-inherit="point_of_sale.Navbar" t-inherit-mode="extension" owl="1">
+        <xpath expr="//li[contains(@class, 'ticket-button')]" position="after">
+            <li t-if="shouldShowOnlineCheckerRecap()" class="menu-item navbar-button" t-on-click="onOnlineCheckerRecapClick">
+                <a class="dropdown-item py-2">
+                    Checker Recap
+                </a>
+            </li>
+        </xpath>
+    </t>
+</templates>

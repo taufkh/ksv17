@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t
+        t-name="pos_line_discount_type.ProductScreen"
+        t-inherit="point_of_sale.ProductScreen"
+        t-inherit-mode="extension"
+        owl="1"
+    >
+        <xpath expr="//Numpad" position="attributes">
+            <attribute name="onClick.bind">onLineDiscountTypeNumpadClick</attribute>
+        </xpath>
+    </t>
+    <t
+        t-name="pos_line_discount_type.Orderline"
+        t-inherit="point_of_sale.Orderline"
+        t-inherit-mode="extension"
+        owl="1"
+    >
+        <xpath expr="//li[contains(@t-if, 'line.price !== 0 and line.discount')]" position="replace">
+            <li t-if="line.price !== 0 and line.discount and line.discount !== '0'">
+                <t t-if="line.discountType === 'amount'">
+                    <t t-esc="line.discountLabel"/>
+                </t>
+                <t t-else="">
+                    <t t-esc="line.price_without_discount"/> With a <em><t t-esc="line.discount"/>% </em> discount
+                </t>
+            </li>
+        </xpath>
+    </t>
+</templates>

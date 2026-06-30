@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_pos_membership" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.pos.membership</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="point_of_sale.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@id='pos_connected_devices_section']" position="after">
+                <block title="Membership" id="pos_membership_section">
+                    <setting
+                        id="membership_settings"
+                        string="POS Membership"
+                        help="Configure membership barcode prefix, point conversion, top up product, and deposit payment method."
+                    >
+                        <div class="content-group">
+                            <div class="mt8">
+                                <label for="membership_barcode_prefix" string="Barcode Prefix"/>
+                                <field name="membership_barcode_prefix"/>
+                            </div>
+                            <div class="mt8">
+                                <label for="membership_point_spend_amount" string="Point Conversion"/>
+                                <div class="o_row">
+                                    <field name="membership_point_spend_amount" class="oe_inline"/>
+                                    <span class="mx-2 text-muted">=</span>
+                                    <field name="membership_point_value" class="oe_inline"/>
+                                    <span class="ms-2 text-muted">points</span>
+                                </div>
+                            </div>
+                            <div class="mt8">
+                                <field name="membership_topup_product_id"/>
+                            </div>
+                            <div class="mt8">
+                                <field name="membership_deposit_payment_method_id"/>
+                            </div>
+                            <div class="mt8">
+                                <field name="membership_auto_load_members"/>
+                            </div>
+                        </div>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>

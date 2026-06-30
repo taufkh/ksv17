@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="pos_config_view_form_inherit_sales_simulation" model="ir.ui.view">
+        <field name="name">pos.config.form.sales.simulation</field>
+        <field name="model">pos.config</field>
+        <field name="inherit_id" ref="point_of_sale.pos_config_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/div[hasclass('o_settings_container')][last()]" position="after">
+                <field name="company_id" invisible="1"/>
+                <field name="currency_id" invisible="1"/>
+                <separator string="Simulation Template" invisible="context.get('pos_config_create_mode', False)"/>
+                <group col="4" invisible="context.get('pos_config_create_mode', False)">
+                    <group string="Source Defaults">
+                        <field name="simulation_customer_mode"/>
+                        <field name="simulation_pos_category_ids" widget="many2many_tags"/>
+                    </group>
+                    <group string="Time &amp; Basket">
+                        <field name="simulation_opening_hour" widget="float_time"/>
+                        <field name="simulation_closing_hour" widget="float_time"/>
+                        <field name="simulation_peak_start_hour" widget="float_time"/>
+                        <field name="simulation_peak_end_hour" widget="float_time"/>
+                        <field name="simulation_peak_ratio"/>
+                        <field name="simulation_min_transaction_amount"/>
+                        <field name="simulation_max_transaction_amount"/>
+                        <field name="simulation_target_tolerance_pct"/>
+                        <field name="simulation_min_lines_per_order"/>
+                        <field name="simulation_max_lines_per_order"/>
+                    </group>
+                </group>
+                <group string="Simulation Product Rules" col="1" invisible="context.get('pos_config_create_mode', False)">
+                    <field name="simulation_product_rule_ids" nolabel="1">
+                        <tree editable="bottom">
+                            <field name="sequence" widget="handle"/>
+                            <field name="company_id" column_invisible="True"/>
+                            <field name="active"/>
+                            <field name="pos_category_id"/>
+                            <field name="product_id"/>
+                            <field name="weight"/>
+                            <field name="min_qty"/>
+                            <field name="max_qty"/>
+                        </tree>
+                    </field>
+                </group>
+                <group string="Simulation Payment Rules" col="1" invisible="context.get('pos_config_create_mode', False)">
+                    <field name="simulation_payment_rule_ids" nolabel="1">
+                        <tree editable="bottom">
+                            <field name="sequence" widget="handle"/>
+                            <field name="company_id" column_invisible="True"/>
+                            <field name="active"/>
+                            <field name="payment_method_id"/>
+                            <field name="weight"/>
+                        </tree>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

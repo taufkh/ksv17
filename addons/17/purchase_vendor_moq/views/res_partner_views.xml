@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_partner_form" model="ir.ui.view">
+        <field name="name">res.partner.form.purchase.vendor.moq</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='purchase']" position="inside">
+                <field
+                    name="purchase_moq_qty"
+                    invisible="not is_company and parent_id"
+                />
+                <div
+                    colspan="2"
+                    class="text-muted"
+                    invisible="not is_company and parent_id"
+                >
+                    Qty fallback ini dibaca dalam Purchase UoM masing-masing produk.
+                    Jika MOQ berbeda per produk atau per satuan, gunakan Min Qty di tab Vendors pada produk.
+                </div>
+                <field
+                    name="purchase_moq_note"
+                    invisible="not is_company and parent_id"
+                    placeholder="Contoh: 1 Carton / No minimum order / Free ongkir di atas 1jt"
+                />
+                <div
+                    name="purchase_moq_note_disabled"
+                    colspan="2"
+                    invisible="is_company or not parent_id"
+                >
+                    <p>MOQ vendor dikelola di <button
+                            name="open_commercial_entity"
+                            type="object"
+                            string="perusahaan induk"
+                            class="oe_link"
+                        />.</p>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

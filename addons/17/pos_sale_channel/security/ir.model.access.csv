@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_pos_sale_channel_user,pos.sale.channel user,model_pos_sale_channel,point_of_sale.group_pos_user,1,0,0,0
+access_pos_sale_channel_manager,pos.sale.channel manager,model_pos_sale_channel,point_of_sale.group_pos_manager,1,1,1,1
+access_pos_online_checker_recap_wizard_user,pos.online.checker.recap.wizard user,model_pos_online_checker_recap_wizard,point_of_sale.group_pos_user,1,1,1,1

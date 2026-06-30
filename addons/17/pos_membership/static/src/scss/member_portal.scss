@@ -1,0 +1,135 @@
+.o_member_portal_body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at top left, rgba(15, 118, 110, 0.16), transparent 38%),
+        radial-gradient(circle at bottom right, rgba(245, 158, 11, 0.18), transparent 34%),
+        #f5f1e8;
+    color: #1f2937;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.o_member_login_page,
+.o_member_dashboard_page {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 40px 20px 56px;
+}
+
+.o_member_login_card,
+.o_member_panel,
+.o_member_metric_card {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(17, 24, 39, 0.08);
+    border-radius: 24px;
+    box-shadow: 0 18px 60px rgba(15, 23, 42, 0.08);
+}
+
+.o_member_login_card {
+    max-width: 520px;
+    padding: 32px;
+}
+
+.o_member_login_eyebrow {
+    margin-bottom: 12px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: #0f766e;
+    font-weight: 700;
+}
+
+.o_member_login_form label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+.o_member_login_form input {
+    width: 100%;
+    border: 1px solid rgba(17, 24, 39, 0.12);
+    border-radius: 14px;
+    padding: 12px 14px;
+}
+
+.o_member_dashboard_hero {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: flex-start;
+    margin-bottom: 24px;
+}
+
+.o_member_dashboard_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.o_member_metric_card,
+.o_member_panel {
+    padding: 24px;
+}
+
+.o_metric_label {
+    display: block;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: #6b7280;
+    margin-bottom: 10px;
+}
+
+.o_metric_value {
+    font-size: 28px;
+    line-height: 1.1;
+}
+
+.o_member_dashboard_main {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+.o_member_panel_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.o_member_barcode_canvas {
+    min-height: 140px;
+}
+
+.o_member_barcode_text {
+    color: #0f766e;
+    font-weight: 700;
+}
+
+.o_member_list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.o_member_list li {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(17, 24, 39, 0.08);
+}
+
+.o_member_list li:last-child {
+    border-bottom: none;
+}
+
+@media (max-width: 767px) {
+    .o_member_dashboard_hero {
+        flex-direction: column;
+    }
+}

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="pos_config_view_form_inherit_auto_scrap" model="ir.ui.view">
+        <field name="name">pos.config.form.auto.scrap.closing</field>
+        <field name="model">pos.config</field>
+        <field name="inherit_id" ref="point_of_sale.pos_config_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//setting[@id='other_devices']" position="after">
+                <setting
+                    id="auto_scrap_unsold_products"
+                    string="Auto Scrap Unsold Daily Products"
+                    help="Automatically scrap flagged POS products left in the POS source location when the session closes. With automated inventory valuation, the loss is posted to accounting."
+                >
+                    <field name="auto_scrap_unsold_products"/>
+                    <div class="content-group" invisible="not auto_scrap_unsold_products">
+                        <div class="mt8">
+                            <field name="auto_scrap_require_manager_approval"/>
+                        </div>
+                        <div class="mt8" invisible="not auto_scrap_require_manager_approval">
+                            <label for="auto_scrap_loss_limit" string="Approval Threshold"/>
+                            <div class="o_row">
+                                <field name="auto_scrap_loss_limit" class="oe_inline"/>
+                                <span class="text-muted ms-2">
+                                    Batasi closing jika estimasi loss auto scrap melebihi nominal ini.
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+</odoo>

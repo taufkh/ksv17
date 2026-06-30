@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template
+        id="report_invoice_document_signature_block"
+        inherit_id="account.report_invoice_document"
+    >
+        <xpath expr="//div[@id='payment_term']" position="after">
+            <div
+                class="row mt-5"
+                style="page-break-inside: avoid; clear: both;"
+            >
+                <div class="col-6 text-center">
+                    <p><strong>Disetujui Oleh,</strong></p>
+                    <p t-field="o.partner_id.name"/>
+                    <div style="height: 120px;"/>
+                    <p>_________________________</p>
+                    <p>Nama &amp; Tanggal</p>
+                </div>
+
+                <div class="col-6 text-center">
+                    <p><strong>Hormat Kami,</strong></p>
+                    <p t-field="o.company_id.name"/>
+                    <div
+                        style="height: 100px; display: flex; justify-content: center; align-items: center;"
+                    >
+                        <div
+                            style="width: 80px; height: 80px; border: 1px dashed #ccc; margin-right: 10px; display: flex; justify-content: center; align-items: center; text-align: center;"
+                        >
+                            <span style="font-size: 10px; color: #ccc;">Space E-Materai</span>
+                        </div>
+                        <div style="width: 100px;"/>
+                    </div>
+                    <p><strong>Taufik Hidayat</strong></p>
+                </div>
+            </div>
+        </xpath>
+    </template>
+</odoo>

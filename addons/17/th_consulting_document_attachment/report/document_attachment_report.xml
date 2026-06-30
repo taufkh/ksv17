@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_document_attachment_block">
+        <t t-if="attachment_sections">
+            <div class="mt-4" style="page-break-before: always;">
+                <h3 style="margin-bottom: 16px;">Lampiran</h3>
+                <t t-foreach="attachment_sections" t-as="section">
+                    <div style="margin: 0 0 18px 0;">
+                        <div
+                            style="font-size: 14px; font-weight: 700; border-bottom: 1px solid #d9d9d9; padding-bottom: 6px; margin-bottom: 12px;"
+                        >
+                            <span t-out="section['title']"/>
+                        </div>
+                        <div style="font-size: 0;">
+                            <t t-foreach="section['attachments']" t-as="attachment">
+                                <div
+                                    t-att-style="
+                                        'display: block; width: 100%; margin: 0 0 14px 0; page-break-inside: avoid;'
+                                        if attachment.report_layout == 'full'
+                                        else 'display: inline-block; vertical-align: top; width: 48%; margin: 0 2% 14px 0; page-break-inside: avoid;'
+                                    "
+                                >
+                                    <div style="border: 1px solid #d9d9d9; padding: 8px; min-height: 100px;">
+                                        <div style="text-align: center; margin-bottom: 8px;">
+                                            <img
+                                                t-att-src="image_data_uri(attachment.image)"
+                                                alt="Attachment Image"
+                                                t-att-style="
+                                                    'max-width: 100%; max-height: 360px;'
+                                                    if attachment.report_layout == 'full'
+                                                    else 'max-width: 100%; max-height: 240px;'
+                                                "
+                                            />
+                                        </div>
+                                        <div style="font-size: 11px; line-height: 1.4;">
+                                            <div t-if="attachment.item_reference" style="font-weight: 700; color: #222;">
+                                                <span t-field="attachment.item_reference"/>
+                                            </div>
+                                            <div t-if="attachment.description" style="color: #555;">
+                                                <span
+                                                    t-field="attachment.description"
+                                                    t-options="{'widget': 'text'}"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <template
+        id="report_saleorder_document_attachment"
+        inherit_id="sale.report_saleorder_document"
+        priority="90"
+    >
+        <xpath expr="//div[@name='so_total_summary']" position="attributes">
+            <attribute name="style">page-break-inside: avoid;</attribute>
+        </xpath>
+        <xpath expr="//span[@name='order_note']/.." position="replace">
+            <div
+                t-if="
+                    not is_html_empty(doc.note)
+                    or not is_html_empty(doc.payment_term_id.note)
+                    or (doc.fiscal_position_id and not is_html_empty(doc.fiscal_position_id.sudo().note))
+                "
+                name="quotation_closing_block"
+                style="page-break-before: always;"
+            >
+                <h3 style="margin: 0 0 14px 0;">Syarat dan Pembayaran</h3>
+                <div
+                    t-if="not is_html_empty(doc.note)"
+                    t-field="doc.note"
+                    t-attf-style="#{'text-align:justify;text-justify:inter-word;' if doc.company_id.terms_type != 'html' else ''}"
+                />
+                <div
+                    t-if="not is_html_empty(doc.payment_term_id.note)"
+                    style="margin-top: 14px; padding: 12px 14px; border: 1px solid #d9d9d9; page-break-inside: avoid;"
+                >
+                    <strong style="display: block; margin-bottom: 8px;">Informasi Pembayaran</strong>
+                    <span t-field="doc.payment_term_id.note"/>
+                </div>
+                <p
+                    t-if="doc.fiscal_position_id and not is_html_empty(doc.fiscal_position_id.sudo().note)"
+                    id="fiscal_position_remark_compact"
+                    style="margin: 12px 0 0 0;"
+                >
+                    <strong>Fiscal Position Remark:</strong>
+                    <span t-field="doc.fiscal_position_id.sudo().note"/>
+                </p>
+            </div>
+            <t t-set="attachment_sections" t-value="doc._get_image_attachment_sections()"/>
+            <t t-call="th_consulting_document_attachment.report_document_attachment_block"/>
+        </xpath>
+    </template>
+
+    <template
+        id="report_invoice_document_attachment"
+        inherit_id="account.report_invoice_document"
+        priority="90"
+    >
+        <xpath expr="//div[@id='payment_term']" position="after">
+            <t t-set="attachment_sections" t-value="o._get_image_attachment_sections()"/>
+            <t t-call="th_consulting_document_attachment.report_document_attachment_block"/>
+        </xpath>
+    </template>
+</odoo>

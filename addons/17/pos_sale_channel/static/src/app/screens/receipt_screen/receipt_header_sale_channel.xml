@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t
+        t-name="pos_sale_channel.ReceiptHeaderSaleChannel"
+        t-inherit="point_of_sale.ReceiptHeader"
+        t-inherit-mode="extension"
+        owl="1"
+    >
+        <xpath expr="//t[@t-if='props.data.table']" position="replace">
+            <t t-if="props.data.sale_channel">
+                <div>
+                    <t t-esc="props.data.sale_channel"/>
+                </div>
+            </t>
+        </xpath>
+        <xpath expr="//t[@t-if='props.data.table and props.data.customer_count']" position="replace">
+            <t t-if="props.data.customer_count">
+                <div>Guests: <t t-esc="props.data.customer_count"/></div>
+            </t>
+        </xpath>
+    </t>
+</templates>

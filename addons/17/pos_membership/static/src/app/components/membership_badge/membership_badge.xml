@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <div t-name="pos_membership.MembershipBadge" class="o_pos_membership_badge">
+        <span class="o_pos_membership_chip" t-esc="props.badgeLabel"/>
+        <span class="o_pos_membership_meta">
+            Deposit: <t t-esc="props.depositBalance"/>
+        </span>
+        <span class="o_pos_membership_meta">
+            Points: <t t-esc="props.totalPoints"/>
+        </span>
+        <span class="o_pos_membership_meta" t-if="props.barcode">
+            <t t-esc="props.barcode"/>
+        </span>
+    </div>
+</templates>

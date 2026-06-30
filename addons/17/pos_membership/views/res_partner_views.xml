@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form_pos_membership" model="ir.ui.view">
+        <field name="name">res.partner.form.pos.membership</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/notebook" position="inside">
+                <page string="Membership" name="membership">
+                    <group>
+                        <group>
+                            <field name="is_custom_member"/>
+                            <field name="custom_member_type" invisible="not is_custom_member"/>
+                            <field name="custom_member_barcode" invisible="not is_custom_member"/>
+                            <field name="membership_portal_enabled" readonly="1" invisible="not is_custom_member"/>
+                            <field name="membership_last_checkin_date" invisible="not is_custom_member"/>
+                        </group>
+                        <group>
+                            <field name="total_deposit_balance" readonly="1" invisible="not is_custom_member"/>
+                            <field name="total_points" readonly="1" invisible="not is_custom_member"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

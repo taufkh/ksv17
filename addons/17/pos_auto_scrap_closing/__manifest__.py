@@ -1,0 +1,21 @@
+{
+    "name": "POS Auto Scrap at Closing",
+    "summary": "Automatically scrap unsold daily POS products when a session closes",
+    "version": "17.0.1.2.0",
+    "category": "Point of Sale",
+    "license": "LGPL-3",
+    "icon": "/pos_auto_scrap_closing/icon.png",
+    "depends": ["point_of_sale", "stock_account"],
+    "data": [
+        "security/ir.model.access.csv",
+        "views/pos_config_views.xml",
+        "views/pos_auto_scrap_daily_report_views.xml",
+        "views/pos_session_views.xml",
+        "views/product_template_views.xml",
+        "views/stock_scrap_report_views.xml",
+        "wizard/pos_auto_scrap_approval_wizard_views.xml",
+        "wizard/pos_auto_scrap_preview_wizard_views.xml",
+    ],
+    "installable": True,
+    "application": False,
+}

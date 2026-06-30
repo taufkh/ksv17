@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <template id="report_purchasequotation_document_pack_price" inherit_id="purchase.report_purchasequotation_document">
+        <xpath expr="//th[@name='th_quantity']" position="replace">
+            <th name="th_quantity" class="text-end"><strong>Qty</strong></th>
+            <th name="th_pack_price" class="text-end"><strong>Pack Price</strong></th>
+        </xpath>
+        <xpath expr="//td[@class='text-end'][span[@t-field='order_line.product_qty']]" position="replace">
+            <td class="text-end">
+                <t t-if="order_line.product_packaging_id">
+                    <span t-out="'%g %s' % (order_line.product_packaging_qty, order_line.product_packaging_id.display_name)" />
+                </t>
+                <t t-else="">
+                    <span t-field="order_line.product_qty" />
+                    <span t-field="order_line.product_uom" groups="uom.group_uom" />
+                </t>
+            </td>
+            <td class="text-end">
+                <span
+                    t-field="order_line.pack_price"
+                    t-options='{"widget": "monetary", "display_currency": o.currency_id}'
+                />
+            </td>
+        </xpath>
+    </template>
+
+    <template id="report_purchaseorder_document_pack_price" inherit_id="purchase.report_purchaseorder_document">
+        <xpath expr="//th[@name='th_quantity']" position="replace">
+            <th name="th_quantity" class="text-end"><strong>Qty</strong></th>
+        </xpath>
+        <xpath expr="//th[@name='th_price_unit']" position="replace">
+            <th name="th_pack_price" class="text-end"><strong>Pack Price</strong></th>
+        </xpath>
+        <xpath expr="//td[@class='text-end'][span[@t-field='line.product_qty']]" position="replace">
+            <td class="text-end">
+                <t t-if="line.product_packaging_id">
+                    <span t-out="'%g %s' % (line.product_packaging_qty, line.product_packaging_id.display_name)" />
+                </t>
+                <t t-else="">
+                    <span t-field="line.product_qty" />
+                    <span t-field="line.product_uom.name" groups="uom.group_uom" />
+                </t>
+            </td>
+        </xpath>
+        <xpath expr="//td[@class='text-end'][span[@t-field='line.price_unit']]" position="replace">
+            <td class="text-end">
+                <span
+                    t-field="line.pack_price"
+                    t-options='{"widget": "monetary", "display_currency": o.currency_id}'
+                />
+            </td>
+        </xpath>
+        <xpath expr="//div[@id='total']" position="after">
+            <div
+                t-if="o.state in ('to approve', 'purchase', 'done')"
+                class="mt-5"
+                style="page-break-inside: avoid; break-inside: avoid;"
+            >
+                <table class="table table-sm table-bordered mb-0" style="width: 100%; page-break-inside: avoid; break-inside: avoid;">
+                    <tr>
+                        <td style="width: 50%;"><strong>Requested by:</strong></td>
+                        <td style="width: 50%;"><strong>Approved by:</strong></td>
+                    </tr>
+                    <tr>
+                        <td style="height: 150px; vertical-align: middle; padding: 12px 16px;">
+                            <div style="height: 110px; line-height: 110px; text-align: center; overflow: hidden;">
+                                <img
+                                    t-if="o.requested_signature"
+                                    t-att-src="image_data_uri(o.requested_signature)"
+                                    style="display: inline-block; vertical-align: middle; max-height: 70px; max-width: 88%; width: auto;"
+                                    alt="Requester signature"
+                                />
+                            </div>
+                        </td>
+                        <td style="height: 150px; vertical-align: middle; padding: 12px 16px;">
+                            <div style="height: 110px; line-height: 110px; text-align: center; overflow: hidden;">
+                                <img
+                                    t-if="o.approved_signature"
+                                    t-att-src="image_data_uri(o.approved_signature)"
+                                    style="display: inline-block; vertical-align: middle; max-height: 70px; max-width: 88%; width: auto;"
+                                    alt="Approver signature"
+                                />
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span t-if="o.requested_at" t-field="o.requested_at" />
+                        </td>
+                        <td>
+                            <span t-if="o.approved_at" t-field="o.approved_at" />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </xpath>
+    </template>
+
+    <template id="report_invoice_document_pack_price" inherit_id="account.report_invoice_document">
+        <xpath expr="//th[@name='th_quantity']/span" position="replace">
+            <span t-if="o.move_type in ('in_invoice', 'in_refund')">Qty</span>
+            <span t-else="">Quantity</span>
+        </xpath>
+        <xpath expr="//th[@name='th_priceunit']/span" position="replace">
+            <span t-if="o.move_type in ('in_invoice', 'in_refund')">Pack Price</span>
+            <span t-else="">Unit Price</span>
+        </xpath>
+        <xpath expr="//td[@name='td_quantity']" position="replace">
+            <td name="td_quantity" class="text-end">
+                <t t-if="o.move_type in ('in_invoice', 'in_refund') and line.product_packaging_id">
+                    <span t-out="'%g %s' % (line.product_packaging_qty, line.product_packaging_id.display_name)" />
+                </t>
+                <t t-else="">
+                    <span t-field="line.quantity">3.00</span>
+                    <span t-field="line.product_uom_id" groups="uom.group_uom">units</span>
+                </t>
+            </td>
+        </xpath>
+        <xpath expr="//td[@name='td_price_unit']" position="replace">
+            <td name="td_price_unit" t-attf-class="text-end {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}">
+                <span
+                    class="text-nowrap"
+                    t-if="o.move_type in ('in_invoice', 'in_refund')"
+                    t-field="line.pack_price"
+                    t-options='{"widget": "monetary", "display_currency": o.currency_id}'
+                />
+                <span class="text-nowrap" t-else="" t-field="line.price_unit">9.00</span>
+            </td>
+        </xpath>
+    </template>
+</odoo>
