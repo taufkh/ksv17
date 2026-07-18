@@ -797,10 +797,10 @@ class BrownielabOwnerDashboard(models.Model):
         safe_url = html.escape(bill_url, quote=True)
         safe_label = html.escape(label)
         return (
-            f'<a href="{safe_url}" '
+            f'<button type="button" '
             f'class="o_brownie_bill_link" '
-            f'target="_self" '
-            f'onclick="window.location.href=\'{safe_url}\'; return false;">'
+            f'data-href="{safe_url}" '
+            f'title="{safe_label}">'
             f"{safe_label}"
-            f"</a>"
+            f"</button>"
         )

@@ -17,6 +17,7 @@
     "assets": {
         "web.assets_backend": [
             "brownielab_owner_dashboard/static/src/scss/brownielab_owner_dashboard.scss",
+            "brownielab_owner_dashboard/static/src/js/brownielab_owner_dashboard.js",
         ],
     },
     "installable": True,
