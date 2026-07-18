@@ -241,6 +241,21 @@ class BrownielabOwnerDashboard(models.Model):
     def _get_revenue_amount(self, date_start, date_end):
         return self._get_pos_revenue_amount(date_start, date_end) + self._get_invoice_revenue_amount(date_start, date_end)
 
+    @api.model
+    def _read_group_sum(self, grouped_data, preferred_keys):
+        if not grouped_data:
+            return 0.0
+        row = grouped_data[0]
+        for key in preferred_keys:
+            if key in row and row[key] is not None:
+                return row[key]
+        for key, value in row.items():
+            if key == "__count":
+                continue
+            if key.endswith("_sum") and value is not None:
+                return value
+        return 0.0
+
     def _get_pos_revenue_amount(self, date_start, date_end):
         pos_data = self.env["pos.order"].read_group(
             [
@@ -252,7 +267,7 @@ class BrownielabOwnerDashboard(models.Model):
             ["amount_total:sum"],
             [],
         )
-        return pos_data[0]["amount_total_sum"] if pos_data else 0.0
+        return self._read_group_sum(pos_data, ["amount_total", "amount_total_sum"])
 
     def _get_invoice_revenue_amount(self, date_start, date_end):
         move_data = self.env["account.move"].read_group(
@@ -269,7 +284,7 @@ class BrownielabOwnerDashboard(models.Model):
             ["amount_total_signed:sum"],
             [],
         )
-        return move_data[0]["amount_total_signed_sum"] if move_data else 0.0
+        return self._read_group_sum(move_data, ["amount_total_signed", "amount_total_signed_sum"])
 
     def _get_cash_out_amount(self, date_start, date_end):
         payment_data = self.env["account.payment"].read_group(
@@ -283,7 +298,7 @@ class BrownielabOwnerDashboard(models.Model):
             ["amount:sum"],
             [],
         )
-        return payment_data[0]["amount_sum"] if payment_data else 0.0
+        return self._read_group_sum(payment_data, ["amount", "amount_sum"])
 
     def _get_due_vendor_bills(self, date_start, date_end):
         return self.env["account.move"].search(
@@ -336,7 +351,7 @@ class BrownielabOwnerDashboard(models.Model):
             ["balance:sum"],
             [],
         )
-        return aml_data[0]["balance_sum"] if aml_data else 0.0
+        return self._read_group_sum(aml_data, ["balance", "balance_sum"])
 
     def _build_chart_html(self, date_start, date_end):
         labels, omzet_series, cash_out_series = self._get_chart_series(date_start, date_end)
