@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_pos_payment_reminder_brownielab" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.pos.payment.reminder.brownielab</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="point_of_sale.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@id='pos_connected_devices_section']" position="after">
+                <block title="Cashier Reminder" id="pos_cashier_reminder_section">
+                    <setting
+                        id="brownielab_payment_reminder_enabled"
+                        string="Payment Validation Reminder"
+                        help="Show a reminder popup after the cashier validates a POS payment."
+                    >
+                        <field name="brownielab_payment_reminder_enabled"/>
+                        <div class="content-group mt16" invisible="not brownielab_payment_reminder_enabled">
+                            <div class="mt8">
+                                <label for="brownielab_payment_reminder_preset" string="Preset Template"/>
+                                <field name="brownielab_payment_reminder_preset"/>
+                                <div class="text-muted mt4">
+                                    Pilih preset untuk isi default style, lalu ubah manual setiap komponen jika perlu.
+                                </div>
+                            </div>
+                            <div class="mt8">
+                                <label for="brownielab_payment_reminder_message" string="Popup Message"/>
+                                <field
+                                    name="brownielab_payment_reminder_message"
+                                    placeholder="• Sudah upselling?&#10;• Jangan lupa senyum dan ucapkan terimakasih"
+                                    widget="text"
+                                />
+                            </div>
+                            <div class="mt8">
+                                <label for="brownielab_payment_reminder_font_size" string="Font Size (px)"/>
+                                <field name="brownielab_payment_reminder_font_size"/>
+                            </div>
+                            <div class="mt8">
+                                <label for="brownielab_payment_reminder_title_font_size" string="Title Font Size (px)"/>
+                                <field name="brownielab_payment_reminder_title_font_size"/>
+                            </div>
+                            <div class="mt8">
+                                <label for="brownielab_payment_reminder_button_font_size" string="Button Font Size (px)"/>
+                                <field name="brownielab_payment_reminder_button_font_size"/>
+                            </div>
+                            <div class="mt8">
+                                <label for="brownielab_payment_reminder_font_family" string="Font Family"/>
+                                <field name="brownielab_payment_reminder_font_family" placeholder="inherit"/>
+                            </div>
+                            <div class="row mt16">
+                                <div class="col-lg-4">
+                                    <field name="brownielab_payment_reminder_title_bold"/>
+                                    <field name="brownielab_payment_reminder_title_italic"/>
+                                    <field name="brownielab_payment_reminder_title_underline"/>
+                                </div>
+                                <div class="col-lg-4">
+                                    <field name="brownielab_payment_reminder_body_bold"/>
+                                    <field name="brownielab_payment_reminder_body_italic"/>
+                                    <field name="brownielab_payment_reminder_body_underline"/>
+                                </div>
+                                <div class="col-lg-4">
+                                    <field name="brownielab_payment_reminder_button_bold"/>
+                                    <field name="brownielab_payment_reminder_button_italic"/>
+                                    <field name="brownielab_payment_reminder_button_underline"/>
+                                </div>
+                            </div>
+                            <div class="row mt16">
+                                <div class="col-lg-6">
+                                    <label for="brownielab_payment_reminder_title_align" string="Title Alignment"/>
+                                    <field name="brownielab_payment_reminder_title_align"/>
+                                </div>
+                                <div class="col-lg-6">
+                                    <label for="brownielab_payment_reminder_body_align" string="Body Alignment"/>
+                                    <field name="brownielab_payment_reminder_body_align"/>
+                                </div>
+                            </div>
+                            <div class="row mt16">
+                                <div class="col-lg-4">
+                                    <label for="brownielab_payment_reminder_text_color" string="Text Color"/>
+                                    <field name="brownielab_payment_reminder_text_color" placeholder="#1f2937"/>
+                                </div>
+                                <div class="col-lg-4">
+                                    <label for="brownielab_payment_reminder_button_background" string="Button Background"/>
+                                    <field name="brownielab_payment_reminder_button_background" placeholder="#7a4d72"/>
+                                </div>
+                                <div class="col-lg-4">
+                                    <label for="brownielab_payment_reminder_button_text_color" string="Button Text Color"/>
+                                    <field name="brownielab_payment_reminder_button_text_color" placeholder="#ffffff"/>
+                                </div>
+                            </div>
+                        </div>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>

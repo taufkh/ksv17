@@ -1,0 +1,40 @@
+.o_brownielab_payment_reminder_popup {
+    width: min(760px, 92vw) !important;
+    border-radius: 24px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
+
+    .modal-header {
+        justify-content: center;
+        border-bottom: 1px solid #e5e7eb;
+        padding: 28px 32px 20px;
+    }
+
+    .title {
+        margin: 0;
+    }
+
+    .modal-body {
+        padding: 30px 40px 18px;
+    }
+
+    .o_brownielab_payment_reminder_line {
+        line-height: 1.4;
+        margin-bottom: 14px;
+    }
+
+    .o_brownielab_payment_reminder_line:last-child {
+        margin-bottom: 0;
+    }
+
+    .modal-footer {
+        border-top: 0;
+        padding: 10px 32px 34px;
+    }
+
+    .confirm.btn {
+        min-width: 220px;
+        min-height: 68px;
+        border-radius: 16px;
+        padding: 16px 28px;
+    }
+}

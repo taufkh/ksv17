@@ -1,5 +1,9 @@
+import logging
+
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
+
+_logger = logging.getLogger(__name__)
 
 
 class PosOrder(models.Model):
@@ -80,6 +84,16 @@ class PosOrder(models.Model):
         readonly=True,
     )
 
+    @api.model
+    def create_from_ui(self, orders, draft=False):
+        normalized_orders = [self._normalize_ui_order_payment_payload(order) for order in orders]
+        results = super().create_from_ui(normalized_orders, draft=draft)
+        if draft or not results:
+            return results
+        created_orders = self.browse([result["id"] for result in results if result.get("id")])
+        created_orders._merge_duplicate_payment_lines()
+        return results
+
     @api.depends("revision_change_log_ids")
     def _compute_revision_change_count(self):
         for order in self:
@@ -94,6 +108,161 @@ class PosOrder(models.Model):
     def _compute_sale_channel_change_count(self):
         for order in self:
             order.sale_channel_change_count = len(order.sale_channel_change_log_ids)
+
+    @api.model
+    def _payment_merge_value_fields(self):
+        return [
+            "name",
+            "payment_date",
+            "card_type",
+            "cardholder_name",
+            "transaction_id",
+            "payment_status",
+            "ticket",
+        ]
+
+    @api.model
+    def _payment_merge_key_fields(self):
+        return [
+            "payment_method_id",
+            "card_type",
+            "cardholder_name",
+            "transaction_id",
+            "payment_status",
+            "ticket",
+        ]
+
+    @api.model
+    def _build_payment_merge_key(self, values):
+        payment_method_id = values.get("payment_method_id")
+        if not payment_method_id:
+            return False
+        key = [payment_method_id]
+        for field_name in self._payment_merge_key_fields()[1:]:
+            key.append(values.get(field_name) or False)
+        return tuple(key)
+
+    @api.model
+    def _normalize_ui_payment_commands(self, commands):
+        if not isinstance(commands, list):
+            return commands
+
+        normalized_commands = []
+        indexed_commands = {}
+        merged_count = 0
+
+        for command in commands:
+            if not (
+                isinstance(command, (list, tuple))
+                and len(command) >= 3
+                and command[0] == 0
+                and isinstance(command[2], dict)
+            ):
+                normalized_commands.append(command)
+                continue
+
+            payment_values = dict(command[2])
+            merge_key = self._build_payment_merge_key(payment_values)
+            if not merge_key:
+                normalized_commands.append([command[0], command[1], payment_values])
+                continue
+
+            existing_index = indexed_commands.get(merge_key)
+            if existing_index is None:
+                normalized_commands.append([command[0], command[1], payment_values])
+                indexed_commands[merge_key] = len(normalized_commands) - 1
+                continue
+
+            existing_values = normalized_commands[existing_index][2]
+            existing_values["amount"] = (existing_values.get("amount") or 0.0) + (
+                payment_values.get("amount") or 0.0
+            )
+            for field_name in self._payment_merge_value_fields():
+                if payment_values.get(field_name):
+                    existing_values[field_name] = payment_values[field_name]
+            merged_count += 1
+
+        if merged_count:
+            _logger.warning(
+                "Collapsed %s duplicate POS payment command(s) in incoming UI payload.",
+                merged_count,
+            )
+            return normalized_commands
+        return commands
+
+    @api.model
+    def _normalize_ui_order_payment_payload(self, ui_order):
+        if not isinstance(ui_order, dict):
+            return ui_order
+
+        normalized_order = dict(ui_order)
+        data = normalized_order.get("data")
+        if isinstance(data, dict):
+            payload = dict(data)
+            payload_fields = payload
+        else:
+            payload = normalized_order
+            payload_fields = normalized_order
+
+        changed = False
+        for field_name in ("statement_ids", "payment_ids"):
+            if field_name not in payload_fields:
+                continue
+            normalized_commands = self._normalize_ui_payment_commands(payload_fields[field_name])
+            if normalized_commands is not payload_fields[field_name]:
+                payload[field_name] = normalized_commands
+                changed = True
+
+        if changed and isinstance(data, dict):
+            normalized_order["data"] = payload
+        return normalized_order
+
+    def _merge_duplicate_payment_lines(self):
+        merge_fields = self._payment_merge_value_fields()
+        for order in self:
+            grouped_lines = {}
+            for payment in order.payment_ids.sorted(key=lambda line: line.id):
+                merge_key = order._build_payment_merge_key(
+                    {
+                        "payment_method_id": payment.payment_method_id.id,
+                        "card_type": getattr(payment, "card_type", False),
+                        "cardholder_name": getattr(payment, "cardholder_name", False),
+                        "transaction_id": getattr(payment, "transaction_id", False),
+                        "payment_status": getattr(payment, "payment_status", False),
+                        "ticket": getattr(payment, "ticket", False),
+                    }
+                )
+                if not merge_key:
+                    continue
+                grouped_lines.setdefault(merge_key, []).append(payment)
+
+            for merge_key, payment_lines in grouped_lines.items():
+                if len(payment_lines) <= 1:
+                    continue
+
+                keeper = payment_lines[0]
+                duplicates = payment_lines[1:]
+                payment_line_list = list(payment_lines)
+                update_values = {
+                    "amount": sum(payment_lines.mapped("amount")),
+                }
+                for field_name in merge_fields:
+                    if field_name not in keeper._fields:
+                        continue
+                    latest_value = next(
+                        (getattr(line, field_name) for line in reversed(payment_line_list) if getattr(line, field_name)),
+                        False,
+                    )
+                    if latest_value:
+                        update_values[field_name] = latest_value
+                keeper.write(update_values)
+                duplicates.unlink()
+                _logger.warning(
+                    "Collapsed %s duplicate payment line(s) on POS order %s for payment method %s.",
+                    len(duplicates),
+                    order.pos_reference or order.name or order.id,
+                    keeper.payment_method_id.display_name,
+                )
 
     def _get_non_zero_payment_lines(self):
         self.ensure_one()
