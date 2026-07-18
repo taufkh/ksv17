@@ -391,6 +391,7 @@ class BrownielabOwnerDashboard(models.Model):
                 ("state", "=", "posted"),
                 ("move_type", "=", "in_invoice"),
                 ("payment_state", "in", ["not_paid", "partial", "in_payment"]),
+                ("amount_residual", ">", 0),
                 ("invoice_date_due", ">=", date_start),
                 ("invoice_date_due", "<=", date_end),
             ],
@@ -404,6 +405,7 @@ class BrownielabOwnerDashboard(models.Model):
                 ("state", "=", "posted"),
                 ("move_type", "=", "in_invoice"),
                 ("payment_state", "in", ["not_paid", "partial", "in_payment"]),
+                ("amount_residual", ">", 0),
                 ("invoice_date", "<=", cutoff_date),
             ]
         )
@@ -553,9 +555,13 @@ class BrownielabOwnerDashboard(models.Model):
     def _build_vendor_bills_html(self, bills):
         rows = []
         for bill in bills[:10]:
-            is_overdue = bool(bill.invoice_date_due and bill.invoice_date_due < fields.Date.context_today(self))
-            status = _("Overdue") if is_overdue else _("Open")
-            status_class = "overdue" if is_overdue else "open"
+            if bill.payment_state == "in_payment":
+                status = _("In Payment")
+                status_class = "in_payment"
+            else:
+                is_overdue = bool(bill.invoice_date_due and bill.invoice_date_due < fields.Date.context_today(self))
+                status = _("Overdue") if is_overdue else _("Open")
+                status_class = "overdue" if is_overdue else "open"
             rows.append(
                 f"""
                 <tr>
