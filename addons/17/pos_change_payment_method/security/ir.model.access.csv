@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_pos_supervisor_pin_cashier_supervisor,pos.supervisor.pin cashier supervisor,model_pos_supervisor_pin,bakery_user_roles.group_bakery_cashier_supervisor,1,1,1,0
+access_pos_supervisor_pin_finance,pos.supervisor.pin finance,model_pos_supervisor_pin,bakery_user_roles.group_bakery_finance,1,1,1,0
+access_pos_payment_method_change_log_cashier_supervisor,pos.payment.method.change.log cashier supervisor,model_pos_payment_method_change_log,bakery_user_roles.group_bakery_cashier_supervisor,1,0,0,0
+access_pos_payment_method_change_log_finance,pos.payment.method.change.log finance,model_pos_payment_method_change_log,bakery_user_roles.group_bakery_finance,1,0,0,0
+access_pos_sale_channel_change_log_cashier_supervisor,pos.sale.channel.change.log cashier supervisor,model_pos_sale_channel_change_log,bakery_user_roles.group_bakery_cashier_supervisor,1,0,0,0
+access_pos_sale_channel_change_log_finance,pos.sale.channel.change.log finance,model_pos_sale_channel_change_log,bakery_user_roles.group_bakery_finance,1,0,0,0

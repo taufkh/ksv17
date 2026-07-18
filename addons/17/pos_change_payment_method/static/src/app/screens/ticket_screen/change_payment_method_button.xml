@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t
+        t-name="pos_change_payment_method.TicketScreenChangePaymentMethodButton"
+        t-inherit="point_of_sale.TicketScreen"
+        t-inherit-mode="extension"
+        owl="1"
+    >
+        <xpath expr="//InvoiceButton" position="after">
+            <div
+                t-if="getSelectedOrder()"
+                class="text-muted small d-flex align-items-center"
+            >
+                <span class="fw-bold me-1">Payment:</span>
+                <span t-esc="getSelectedOrderPaymentMethodLabel()"/>
+            </div>
+            <div
+                t-if="getSelectedOrder()"
+                class="text-muted small d-flex align-items-center"
+            >
+                <span class="fw-bold me-1">Sales Channel:</span>
+                <span t-esc="getSelectedOrderSaleChannelLabel()"/>
+            </div>
+            <button
+                t-if="selectedOrderCanChangePaymentMethod()"
+                class="btn btn-secondary"
+                t-on-click="changeSelectedOrderPaymentMethod"
+            >
+                Change Payment Method
+            </button>
+            <button
+                t-if="selectedOrderCanChangeSaleChannel()"
+                class="btn btn-secondary"
+                t-on-click="changeSelectedOrderSaleChannel"
+            >
+                Change Sales Channel
+            </button>
+        </xpath>
+    </t>
+</templates>

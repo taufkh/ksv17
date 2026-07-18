@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t
+        t-name="pos_payment_order_recap_brownielab.PaymentScreen"
+        t-inherit="point_of_sale.PaymentScreen"
+        t-inherit-mode="extension"
+    >
+        <xpath expr="//div[hasclass('right-content')]" position="inside">
+            <section class="o_brownielab_payment_recap">
+                <div class="o_brownielab_payment_recap_header">
+                    <h3 t-esc="this.brownielabOrderRecapSummary.title"/>
+                    <span
+                        class="o_brownielab_payment_recap_count"
+                        t-esc="this.brownielabOrderRecapSummary.totalItemsLabel"
+                    />
+                </div>
+
+                <div class="o_brownielab_payment_recap_table">
+                    <div class="o_brownielab_payment_recap_table_head">
+                        <span>Item</span>
+                        <span>Qty</span>
+                        <span>Harga</span>
+                    </div>
+
+                    <div
+                        class="o_brownielab_payment_recap_empty"
+                        t-if="!this.brownielabOrderRecapLines.length"
+                        t-esc="this.brownielabOrderRecapSummary.emptyLabel"
+                    />
+
+                    <div
+                        class="o_brownielab_payment_recap_lines"
+                        t-if="this.brownielabOrderRecapLines.length"
+                    >
+                        <div
+                            class="o_brownielab_payment_recap_line"
+                            t-att-class="{
+                                'is-discount': line.isDiscountLine,
+                                'is-negative': line.isNegative,
+                            }"
+                            t-foreach="this.brownielabOrderRecapLines"
+                            t-as="line"
+                            t-key="line.id"
+                        >
+                            <div class="o_brownielab_payment_recap_name_wrap">
+                                <span class="o_brownielab_payment_recap_name" t-esc="line.name"/>
+                                <span
+                                    class="o_brownielab_payment_recap_note"
+                                    t-if="line.note"
+                                    t-esc="line.note"
+                                />
+                            </div>
+                            <span class="o_brownielab_payment_recap_qty">
+                                x<t t-esc="line.qty"/>
+                            </span>
+                            <span class="o_brownielab_payment_recap_price" t-esc="line.price"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="o_brownielab_payment_recap_footer">
+                    <div class="o_brownielab_payment_recap_total_row">
+                        <span t-esc="this.brownielabOrderRecapSummary.subtotalLabel"/>
+                        <span t-esc="this.brownielabOrderRecapSummary.subtotalValue"/>
+                    </div>
+                    <div class="o_brownielab_payment_recap_total_row is-grand-total">
+                        <span t-esc="this.brownielabOrderRecapSummary.totalLabel"/>
+                        <span t-esc="this.brownielabOrderRecapSummary.totalValue"/>
+                    </div>
+                </div>
+            </section>
+        </xpath>
+    </t>
+</templates>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="rule_brownielab_owner_dashboard_user" model="ir.rule">
+        <field name="name">Owner dashboard per user</field>
+        <field name="model_id" ref="model_brownielab_owner_dashboard"/>
+        <field name="groups" eval="[(4, ref('bakery_user_roles.group_bakery_owner'))]"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+</odoo>

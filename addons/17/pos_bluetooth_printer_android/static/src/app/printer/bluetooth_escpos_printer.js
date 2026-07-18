@@ -31,7 +31,14 @@ export class BluetoothEscPosPrinter extends BasePrinter {
         return Boolean(navigator.serial);
     }
 
+    isNativeBridgeSupported() {
+        return Boolean(window.AndroidPosBridge?.isAvailable?.());
+    }
+
     getStatusLabel() {
+        if (this.isNativeBridgeSupported()) {
+            return window.AndroidPosBridge.getPrinterStatus();
+        }
         if (!this.isSupported()) {
             return _t("Browser ini belum mendukung Web Serial.");
         }
@@ -42,6 +49,9 @@ export class BluetoothEscPosPrinter extends BasePrinter {
     }
 
     async hasAuthorizedPort() {
+        if (this.isNativeBridgeSupported()) {
+            return Boolean(window.AndroidPosBridge.hasConfiguredPrinter());
+        }
         if (!this.isSupported()) {
             return false;
         }
@@ -53,11 +63,36 @@ export class BluetoothEscPosPrinter extends BasePrinter {
     }
 
     async connectInteractive() {
+        if (this.isNativeBridgeSupported()) {
+            const connected = window.AndroidPosBridge.ensurePrinterConfigured();
+            if (!connected) {
+                throw {
+                    title: _t("Printer belum dipilih"),
+                    body: _t("Pilih printer Panda di dialog aplikasi Android, lalu ulangi print sekali lagi."),
+                };
+            }
+            return true;
+        }
         await this.ensureConnection({ interactive: true });
         return true;
     }
 
     async ensureConnection({ interactive = false } = {}) {
+        if (this.isNativeBridgeSupported()) {
+            if (window.AndroidPosBridge.connectSavedPrinter()) {
+                return true;
+            }
+            if (interactive) {
+                const configured = window.AndroidPosBridge.ensurePrinterConfigured();
+                if (configured) {
+                    return true;
+                }
+            }
+            throw {
+                title: _t("Printer Bluetooth belum tersambung"),
+                body: _t("Buka menu printer di aplikasi Android, pilih Panda PRJ-R58B-II, lalu coba lagi."),
+            };
+        }
         if (!this.isSupported()) {
             throw {
                 title: _t("Web Serial tidak tersedia"),
@@ -114,6 +149,10 @@ export class BluetoothEscPosPrinter extends BasePrinter {
     }
 
     async disconnect() {
+        if (this.isNativeBridgeSupported()) {
+            window.AndroidPosBridge.disconnectPrinter();
+            return;
+        }
         if (this.writer) {
             try {
                 this.writer.releaseLock();
@@ -140,8 +179,18 @@ export class BluetoothEscPosPrinter extends BasePrinter {
     }
 
     async printReceipt(receipt) {
-        await this.ensureConnection({ interactive: true });
+        await this.ensureConnection({ interactive: !(await this.hasAuthorizedPort()) });
         return super.printReceipt(receipt);
+    }
+
+    async printStructuredReceipt(receiptElement, receiptData) {
+        await this.ensureConnection({ interactive: !(await this.hasAuthorizedPort()) });
+        const payload = await this._buildReceiptPayload(receiptElement, receiptData);
+        const result = await this.sendStructuredPrintingJob(payload);
+        if (result?.result) {
+            return { successful: true };
+        }
+        return this.getResultsError(result);
     }
 
     async printCanvas(canvas, { interactive = true } = {}) {
@@ -155,6 +204,22 @@ export class BluetoothEscPosPrinter extends BasePrinter {
     }
 
     async sendPrintingJob(payload) {
+        if (this.isNativeBridgeSupported()) {
+            try {
+                const printed = window.AndroidPosBridge.printEscPosBase64(
+                    this._uint8ArrayToBase64(payload)
+                );
+                if (!printed) {
+                    return { result: false, error: window.AndroidPosBridge.getLastError() };
+                }
+                return { result: true };
+            } catch (error) {
+                return {
+                    result: false,
+                    error,
+                };
+            }
+        }
         try {
             await this.ensureConnection();
             await this.writer.write(payload);
@@ -168,8 +233,72 @@ export class BluetoothEscPosPrinter extends BasePrinter {
         }
     }
 
+    async sendStructuredPrintingJob(payload) {
+        if (!this.isNativeBridgeSupported()) {
+            return { result: false, error: _t("Structured receipt hanya tersedia di aplikasi Android.") };
+        }
+        try {
+            const printed = window.AndroidPosBridge.printReceiptPayload(JSON.stringify(payload));
+            if (!printed) {
+                return { result: false, error: window.AndroidPosBridge.getLastError() };
+            }
+            return { result: true };
+        } catch (error) {
+            return {
+                result: false,
+                error,
+            };
+        }
+    }
+
     openCashbox() {
         return false;
+    }
+
+    async _buildReceiptPayload(receiptElement, receiptData = {}) {
+        const rawLogoSrc =
+            receiptElement?.querySelector?.(".pos-receipt-logo")?.getAttribute("src") ||
+            receiptElement?.querySelector?.("img.pos-receipt-logo")?.getAttribute("src") ||
+            receiptElement?.querySelector?.(".pos-receipt img")?.getAttribute("src") ||
+            receiptElement?.querySelector?.("img")?.getAttribute("src") ||
+            null;
+        const logoSrc = await this._normalizeLogoSrc(rawLogoSrc);
+        return {
+            paperWidth: this.config.paperWidth,
+            receipt: {
+                ...receiptData,
+                headerData: receiptData.headerData || {},
+                orderlines: receiptData.orderlines || [],
+                paymentlines: receiptData.paymentlines || [],
+                tax_details: receiptData.tax_details || [],
+            },
+            logoSrc,
+        };
+    }
+
+    async _normalizeLogoSrc(src) {
+        if (!src) {
+            return null;
+        }
+        if (src.startsWith("data:image")) {
+            return src;
+        }
+        try {
+            const absoluteUrl = new URL(src, window.location.origin).toString();
+            const response = await fetch(absoluteUrl, { credentials: "include" });
+            if (!response.ok) {
+                return null;
+            }
+            const blob = await response.blob();
+            return await new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result);
+                reader.onerror = () => resolve(null);
+                reader.readAsDataURL(blob);
+            });
+        } catch {
+            return null;
+        }
     }
 
     processCanvas(canvas) {
@@ -259,5 +388,15 @@ export class BluetoothEscPosPrinter extends BasePrinter {
             offset += chunk.length;
         }
         return result;
+    }
+
+    _uint8ArrayToBase64(data) {
+        let binary = "";
+        const chunkSize = 0x8000;
+        for (let i = 0; i < data.length; i += chunkSize) {
+            const slice = data.subarray(i, i + chunkSize);
+            binary += String.fromCharCode(...slice);
+        }
+        return btoa(binary);
     }
 }

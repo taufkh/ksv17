@@ -1,0 +1,141 @@
+.payment-screen .right-content {
+    .o_brownielab_payment_recap {
+        display: flex;
+        flex: 1 1 auto;
+        min-height: 0;
+        flex-direction: column;
+        margin: 12px;
+        padding: 14px;
+        border: 1px solid rgba(15, 23, 42, 0.08);
+        border-radius: 12px;
+        background: #f8fafc;
+        gap: 12px;
+        overflow: hidden;
+    }
+
+    .o_brownielab_payment_recap_header {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 700;
+            color: #1f2937;
+        }
+    }
+
+    .o_brownielab_payment_recap_count {
+        font-size: 12px;
+        font-weight: 600;
+        color: #64748b;
+    }
+
+    .o_brownielab_payment_recap_table {
+        display: flex;
+        min-height: 0;
+        flex: 1 1 auto;
+        flex-direction: column;
+        border: 1px solid rgba(15, 23, 42, 0.08);
+        border-radius: 10px;
+        background: #fff;
+        overflow: hidden;
+    }
+
+    .o_brownielab_payment_recap_table_head,
+    .o_brownielab_payment_recap_line,
+    .o_brownielab_payment_recap_total_row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 64px 96px;
+        gap: 10px;
+        align-items: start;
+    }
+
+    .o_brownielab_payment_recap_table_head {
+        padding: 10px 12px;
+        border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+        background: #f8fafc;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        color: #64748b;
+    }
+
+    .o_brownielab_payment_recap_lines {
+        min-height: 0;
+        overflow: auto;
+    }
+
+    .o_brownielab_payment_recap_line {
+        padding: 12px;
+        border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+        font-size: 13px;
+        color: #1f2937;
+
+        &:last-child {
+            border-bottom: 0;
+        }
+
+        &.is-discount {
+            background: #fff7ed;
+        }
+
+        &.is-negative {
+            color: #9a3412;
+        }
+    }
+
+    .o_brownielab_payment_recap_name_wrap {
+        display: flex;
+        min-width: 0;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .o_brownielab_payment_recap_name {
+        font-weight: 700;
+        line-height: 1.35;
+        word-break: break-word;
+    }
+
+    .o_brownielab_payment_recap_note {
+        font-size: 11px;
+        color: #64748b;
+        word-break: break-word;
+    }
+
+    .o_brownielab_payment_recap_qty,
+    .o_brownielab_payment_recap_price {
+        font-weight: 600;
+        text-align: right;
+        white-space: nowrap;
+    }
+
+    .o_brownielab_payment_recap_empty {
+        padding: 16px 12px;
+        font-size: 13px;
+        color: #64748b;
+    }
+
+    .o_brownielab_payment_recap_footer {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding-top: 4px;
+        border-top: 1px solid rgba(15, 23, 42, 0.08);
+    }
+
+    .o_brownielab_payment_recap_total_row {
+        font-size: 13px;
+        font-weight: 600;
+        color: #334155;
+    }
+
+    .o_brownielab_payment_recap_total_row.is-grand-total {
+        font-size: 16px;
+        font-weight: 800;
+        color: #111827;
+    }
+}

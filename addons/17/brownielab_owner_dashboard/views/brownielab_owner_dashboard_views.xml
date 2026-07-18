@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_brownielab_owner_dashboard_form" model="ir.ui.view">
+        <field name="name">brownielab.owner.dashboard.form</field>
+        <field name="model">brownielab.owner.dashboard</field>
+        <field name="arch" type="xml">
+            <form string="Owner Dashboard" create="0" delete="0">
+                <header>
+                    <button name="action_apply_filter" type="object" string="Apply Filter" class="btn-primary"/>
+                    <button name="action_reset_filter" type="object" string="Reset" class="btn-secondary"/>
+                </header>
+                <sheet class="o_brownielab_owner_dashboard">
+                    <div class="o_brownie_topbar">
+                        <div class="o_brownie_title_block">
+                            <h1>Owner Dashboard</h1>
+                            <div class="o_brownie_badges">
+                                <span class="o_brownie_badge">Owner Only</span>
+                                <span class="o_brownie_note"><field name="filter_note" readonly="1"/></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="o_brownie_filter_bar">
+                        <group col="6">
+                            <field name="filter_mode" widget="radio" options="{'horizontal': true}"/>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                            <field name="selected_day"/>
+                            <field name="selected_week"/>
+                            <field name="selected_month"/>
+                            <field name="selected_year"/>
+                        </group>
+                    </div>
+
+                    <div class="o_brownie_kpi_grid">
+                        <div class="o_brownie_kpi_card is-omzet">
+                            <span>Omset Harian</span>
+                            <field name="omzet_daily" widget="monetary" options="{'currency_field': 'currency_id'}" readonly="1"/>
+                        </div>
+                        <div class="o_brownie_kpi_card is-omzet">
+                            <span>Omset Mingguan</span>
+                            <field name="omzet_weekly" widget="monetary" options="{'currency_field': 'currency_id'}" readonly="1"/>
+                        </div>
+                        <div class="o_brownie_kpi_card is-omzet">
+                            <span>Omset Bulanan</span>
+                            <field name="omzet_monthly" widget="monetary" options="{'currency_field': 'currency_id'}" readonly="1"/>
+                        </div>
+                        <div class="o_brownie_kpi_card is-omzet">
+                            <span>Omset Tahunan</span>
+                            <field name="omzet_yearly" widget="monetary" options="{'currency_field': 'currency_id'}" readonly="1"/>
+                        </div>
+                    </div>
+
+                    <div class="o_brownie_chart_split">
+                        <field name="chart_html" widget="html" nolabel="1" readonly="1"/>
+                        <div class="o_brownie_side_card">
+                            <div class="o_brownie_section_head">
+                                <div>
+                                    <h3>Vendor Bills Snapshot</h3>
+                                    <span>Based on selected period and cutoff</span>
+                                </div>
+                            </div>
+                            <div class="o_brownie_snapshot_grid">
+                                <div>
+                                    <span>Due in Selected Period</span>
+                                    <strong><field name="vendor_bills_due_amount" widget="monetary" options="{'currency_field': 'currency_id'}" readonly="1"/></strong>
+                                    <small><field name="vendor_bills_due_count" readonly="1"/> bills</small>
+                                </div>
+                                <div>
+                                    <span>Outstanding per Cutoff</span>
+                                    <strong><field name="vendor_bills_outstanding_amount" widget="monetary" options="{'currency_field': 'currency_id'}" readonly="1"/></strong>
+                                    <small><field name="vendor_bills_outstanding_count" readonly="1"/> bills</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="o_brownie_kpi_grid">
+                        <div class="o_brownie_kpi_card is-cashout">
+                            <span>Cash Out Harian</span>
+                            <field name="cash_out_daily" widget="monetary" options="{'currency_field': 'currency_id'}" readonly="1"/>
+                        </div>
+                        <div class="o_brownie_kpi_card is-cashout">
+                            <span>Cash Out Mingguan</span>
+                            <field name="cash_out_weekly" widget="monetary" options="{'currency_field': 'currency_id'}" readonly="1"/>
+                        </div>
+                        <div class="o_brownie_kpi_card is-cashout">
+                            <span>Cash Out Bulanan</span>
+                            <field name="cash_out_monthly" widget="monetary" options="{'currency_field': 'currency_id'}" readonly="1"/>
+                        </div>
+                        <div class="o_brownie_kpi_card is-cashout">
+                            <span>Cash Out Tahunan</span>
+                            <field name="cash_out_yearly" widget="monetary" options="{'currency_field': 'currency_id'}" readonly="1"/>
+                        </div>
+                    </div>
+
+                    <div class="o_brownie_bank_grid">
+                        <field name="ocbc_card_html" widget="html" nolabel="1" readonly="1"/>
+                        <field name="bca_card_html" widget="html" nolabel="1" readonly="1"/>
+                    </div>
+
+                    <div class="o_brownie_bottom_grid">
+                        <field name="vendor_bills_html" widget="html" nolabel="1" readonly="1"/>
+                        <field name="filter_summary_html" widget="html" nolabel="1" readonly="1"/>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_brownielab_owner_dashboard_server" model="ir.actions.server">
+        <field name="name">Owner Dashboard</field>
+        <field name="model_id" ref="model_brownielab_owner_dashboard"/>
+        <field name="state">code</field>
+        <field name="groups_id" eval="[(4, ref('bakery_user_roles.group_bakery_owner'))]"/>
+        <field name="code">action = env['brownielab.owner.dashboard'].action_open_dashboard()</field>
+    </record>
+
+    <menuitem
+        id="menu_brownielab_owner_dashboard"
+        name="Owner Dashboard"
+        parent="account_accountant.menu_accounting"
+        action="action_brownielab_owner_dashboard_server"
+        sequence="1"
+        groups="bakery_user_roles.group_bakery_owner"
+    />
+</odoo>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pos_supervisor_pin_tree" model="ir.ui.view">
+        <field name="name">pos.supervisor.pin.tree</field>
+        <field name="model">pos.supervisor.pin</field>
+        <field name="arch" type="xml">
+            <tree create="0" delete="0">
+                <field name="company_id"/>
+                <field name="pin_code"/>
+                <field name="backend_revision_limit_mode"/>
+                <field name="backend_revision_limit_days" optional="hide"/>
+                <field name="allow_sunday_extension" optional="hide"/>
+                <field name="backend_revision_override_active"/>
+                <field name="backend_revision_override_until" optional="hide"/>
+                <field name="last_generated_at"/>
+                <field name="last_used_at"/>
+                <field name="last_used_by_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_pos_supervisor_pin_form" model="ir.ui.view">
+        <field name="name">pos.supervisor.pin.form</field>
+        <field name="model">pos.supervisor.pin</field>
+        <field name="arch" type="xml">
+            <form create="0" delete="0">
+                <header>
+                    <button
+                        name="action_regenerate_pin"
+                        type="object"
+                        string="Regenerate PIN"
+                        class="btn-primary"
+                    />
+                    <button
+                        name="action_enable_backend_revision_override"
+                        type="object"
+                        string="Enable Override"
+                    />
+                    <button
+                        name="action_disable_backend_revision_override"
+                        type="object"
+                        string="Disable Override"
+                    />
+                </header>
+                <sheet>
+                    <group>
+                        <field name="company_id" readonly="1"/>
+                        <field name="pin_code" readonly="1"/>
+                    </group>
+                    <group string="Backend Revision Security">
+                        <field name="backend_revision_limit_mode"/>
+                        <field
+                            name="backend_revision_limit_days"
+                            invisible="backend_revision_limit_mode != 'rolling_days'"
+                        />
+                        <field name="allow_sunday_extension"/>
+                    </group>
+                    <group string="Emergency Override">
+                        <field name="backend_revision_override_enabled"/>
+                        <field name="backend_revision_override_active" readonly="1"/>
+                        <field
+                            name="backend_revision_override_until"
+                            invisible="not backend_revision_override_enabled"
+                        />
+                    </group>
+                    <group string="Audit">
+                        <field name="last_generated_at" readonly="1"/>
+                        <field name="last_used_at" readonly="1"/>
+                        <field name="last_used_by_id" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_pos_supervisor_pin" model="ir.actions.act_window">
+        <field name="name">Supervisor PIN</field>
+        <field name="res_model">pos.supervisor.pin</field>
+        <field name="view_mode">tree,form</field>
+        <field
+            name="groups_id"
+            eval="[
+                (4, ref('bakery_user_roles.group_bakery_cashier_supervisor')),
+                (4, ref('bakery_user_roles.group_bakery_finance'))
+            ]"
+        />
+    </record>
+
+    <record id="action_pos_supervisor_pin_open_company" model="ir.actions.server">
+        <field name="name">Open Supervisor PIN</field>
+        <field name="model_id" ref="model_pos_supervisor_pin"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_company_pin()</field>
+        <field
+            name="groups_id"
+            eval="[
+                (4, ref('bakery_user_roles.group_bakery_cashier_supervisor')),
+                (4, ref('bakery_user_roles.group_bakery_finance'))
+            ]"
+        />
+    </record>
+
+    <menuitem
+        id="menu_pos_supervisor_pin"
+        name="Supervisor PIN"
+        parent="point_of_sale.menu_point_root"
+        action="action_pos_supervisor_pin_open_company"
+        sequence="95"
+        groups="bakery_user_roles.group_bakery_cashier_supervisor,bakery_user_roles.group_bakery_finance"
+    />
+</odoo>

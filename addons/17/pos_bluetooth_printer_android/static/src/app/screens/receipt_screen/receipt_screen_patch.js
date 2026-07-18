@@ -12,12 +12,20 @@ patch(ReceiptScreen.prototype, {
         this.popup = useService("popup");
         this.notification = useService("notification");
 
-        if (this.pos.config?.bluetooth_printer_enabled) {
+        if (this.isAndroidBluetoothMode()) {
             this.orderUiState.bluetoothPrinterStatus = this.printer.getBluetoothPrinterStatus?.();
-            onMounted(async () => {
-                await this._autoPrintToBluetoothPrinter();
-            });
         }
+        onMounted(async () => {
+            await this._autoHandleReceiptOutput();
+        });
+    },
+
+    isAndroidBluetoothMode() {
+        return Boolean(this.printer.isAndroidBluetoothRuntime?.());
+    },
+
+    isDesktopPdfMode() {
+        return Boolean(this.printer.isDesktopReceiptFallbackMode?.());
     },
 
     async connectBluetoothPrinter() {
@@ -36,16 +44,26 @@ patch(ReceiptScreen.prototype, {
         }
     },
 
-    async _autoPrintToBluetoothPrinter() {
+    async _autoHandleReceiptOutput() {
         if (
             !this.pos.config?.bluetooth_printer_enabled ||
             !this.pos.config?.bluetooth_printer_auto_print ||
-            this.currentOrder._printed ||
-            this.currentOrder._bluetoothAutoPrintAttempted
+            this.currentOrder._receiptOutputAutoHandled
         ) {
             return;
         }
-        this.currentOrder._bluetoothAutoPrintAttempted = true;
+        this.currentOrder._receiptOutputAutoHandled = true;
+
+        if (this.isAndroidBluetoothMode()) {
+            return this._autoPrintToBluetoothPrinter();
+        }
+
+        if (this.isDesktopPdfMode()) {
+            return this._autoPrintToDesktopPdf();
+        }
+    },
+
+    async _autoPrintToBluetoothPrinter() {
         try {
             const connected = await this.printer.tryAutoConnectBluetoothPrinter?.();
             this.orderUiState.bluetoothPrinterStatus = this.printer.getBluetoothPrinterStatus?.();
@@ -54,6 +72,23 @@ patch(ReceiptScreen.prototype, {
             }
         } catch {
             this.orderUiState.bluetoothPrinterStatus = this.printer.getBluetoothPrinterStatus?.();
+        }
+    },
+
+    async _autoPrintToDesktopPdf() {
+        if (this.pos.config?.iface_print_auto) {
+            return;
+        }
+        try {
+            await this.printReceipt();
+        } catch (error) {
+            this.popup.add(ErrorPopup, {
+                title: error?.title || "Receipt print error",
+                body:
+                    error?.body ||
+                    error?.message ||
+                    "Tidak bisa membuka print dialog browser untuk simpan PDF receipt.",
+            });
         }
     },
 });

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pos_backend_payment_revision_wizard_form" model="ir.ui.view">
+        <field name="name">pos.backend.payment.revision.wizard.form</field>
+        <field name="model">pos.backend.payment.revision.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Revise Payment">
+                <sheet>
+                    <group>
+                        <field name="order_id"/>
+                        <field name="company_id"/>
+                        <field name="currency_id" invisible="1"/>
+                        <field name="target_amount"/>
+                    </group>
+                    <group>
+                        <field name="reason" placeholder="Explain why this payment correction is needed..." required="1"/>
+                    </group>
+                    <field name="line_ids">
+                        <tree editable="bottom" create="1" delete="1">
+                            <field name="sequence" widget="handle"/>
+                            <field name="payment_id" readonly="1" optional="hide"/>
+                            <field name="available_payment_method_ids" invisible="1"/>
+                            <field name="payment_method_id" required="1"/>
+                            <field name="amount" required="1"/>
+                        </tree>
+                    </field>
+                </sheet>
+                <footer>
+                    <button name="action_apply_revision" string="Apply Revision" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_pos_order_form_inherit_payment_revision" model="ir.ui.view">
+        <field name="name">pos.order.form.payment.revision</field>
+        <field name="model">pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button
+                    name="action_open_backend_payment_revision_wizard"
+                    string="Revise Payment"
+                    type="object"
+                    groups="bakery_user_roles.group_bakery_finance"
+                    invisible="state not in ('paid', 'done', 'invoiced')"
+                />
+            </xpath>
+        </field>
+    </record>
+</odoo>

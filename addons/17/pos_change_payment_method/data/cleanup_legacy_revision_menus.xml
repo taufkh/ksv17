@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <delete id="action_pos_sale_channel_change_log" model="ir.actions.act_window"/>
+    <delete id="menu_pos_sale_channel_change_log" model="ir.ui.menu"/>
+    <delete id="menu_pos_revision_logs_root" model="ir.ui.menu"/>
+    <delete id="action_pos_revision_change_log" model="ir.actions.act_window"/>
+    <delete id="menu_pos_revision_change_log" model="ir.ui.menu"/>
+    <delete
+        model="ir.ui.menu"
+        search="[('name', 'in', ['Payment Method Revisions', 'Sales Channel Revisions', 'POS Sales Channel Revision Logs', 'POS Revision Logs'])]"
+    />
+    <delete
+        model="ir.actions.act_window"
+        search="[('res_model', 'in', ['pos.payment.method.change.log', 'pos.sale.channel.change.log'])]"
+    />
+    <function model="pos.revision.change.log" name="cleanup_legacy_revision_menu_entries"/>
+</odoo>

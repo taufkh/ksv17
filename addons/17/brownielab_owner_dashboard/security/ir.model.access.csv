@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_brownielab_owner_dashboard_owner,brownielab.owner.dashboard owner,model_brownielab_owner_dashboard,bakery_user_roles.group_bakery_owner,1,1,1,1

@@ -4,7 +4,7 @@ from odoo import api, fields, models
 class PurchaseOrderLine(models.Model):
     _inherit = "purchase.order.line"
 
-    price_unit = fields.Float(digits=(16, 8))
+    price_unit = fields.Float(digits="Product Price")
 
     pack_price = fields.Monetary(
         string="Pack Price",

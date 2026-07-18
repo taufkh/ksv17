@@ -82,7 +82,7 @@
         <field name="inherit_id" ref="point_of_sale.view_pos_session_form"></field>
         <field name="arch" type="xml">
         	<xpath expr="//header/button[@name='action_pos_session_closing_control']" position='after'>
-                <button name="action_hello" type="object" string="Laporan Closing Harian" class="oe_highlight"/>
+                <button name="action_session_z_report" type="object" string="Laporan Closing Harian" class="oe_highlight"/>
             </xpath>
         </field>
     </record>

@@ -68,7 +68,11 @@ class PosSession(models.Model):
         return self.env.ref('pos_session_z_report_ext_omax.action_report_session_z').report_action(self)
     
     def action_hello(self):
-        """Method untuk tombol Hello - mengembalikan JSON data laporan closing harian"""
+        """Backward-compatible alias for backend closing report button."""
+        return self.action_session_z_report()
+
+    def action_hello_json(self):
+        """Method legacy untuk mengembalikan JSON data laporan closing harian"""
         # Kumpulkan semua data yang sama dengan report PDF
         session_amount_data = self.get_session_amount_data()
         product_sales = dict(self.get_product_variant_wise_sale()) if self.config_id.show_product_wise_detail else {}

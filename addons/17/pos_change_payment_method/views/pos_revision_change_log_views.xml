@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pos_revision_change_log_tree" model="ir.ui.view">
+        <field name="name">pos.revision.change.log.tree</field>
+        <field name="model">pos.revision.change.log</field>
+        <field name="arch" type="xml">
+            <tree create="0" delete="0">
+                <field name="change_datetime"/>
+                <field name="change_type"/>
+                <field name="change_origin"/>
+                <field name="order_id"/>
+                <field name="original_cashier_id"/>
+                <field name="related_order_id" optional="hide"/>
+                <field name="session_id"/>
+                <field name="session_state" optional="show"/>
+                <field name="old_value_display"/>
+                <field name="new_value_display"/>
+                <field name="payment_amount"/>
+                <field name="policy_status" optional="show"/>
+                <field name="executed_by_id"/>
+                <field name="change_reason" optional="hide"/>
+                <field name="policy_note" optional="hide"/>
+                <field name="used_pin_masked"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_pos_revision_change_log_form" model="ir.ui.view">
+        <field name="name">pos.revision.change.log.form</field>
+        <field name="model">pos.revision.change.log</field>
+        <field name="arch" type="xml">
+            <form create="0" delete="0" edit="0">
+                <sheet>
+                    <group>
+                        <field name="change_type"/>
+                        <field name="order_id"/>
+                        <field name="original_cashier_id"/>
+                        <field name="related_order_id"/>
+                        <field name="session_id"/>
+                        <field name="session_state"/>
+                        <field name="company_id"/>
+                        <field name="change_origin"/>
+                        <field name="change_datetime"/>
+                        <field name="executed_by_id"/>
+                    </group>
+                    <group>
+                        <field name="old_value_display"/>
+                        <field name="new_value_display"/>
+                        <field name="payment_amount"/>
+                        <field name="currency_id" invisible="1"/>
+                        <field name="policy_status"/>
+                        <field name="used_pin_masked"/>
+                        <field name="change_reason"/>
+                        <field name="policy_note"/>
+                    </group>
+                    <group string="Snapshots" colspan="2">
+                        <field name="old_snapshot" widget="text"/>
+                        <field name="new_snapshot" widget="text"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_pos_revision_change_log_search" model="ir.ui.view">
+        <field name="name">pos.revision.change.log.search</field>
+        <field name="model">pos.revision.change.log</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="order_id"/>
+                <field name="original_cashier_id"/>
+                <field name="executed_by_id"/>
+                <field name="change_type"/>
+                <field name="session_id"/>
+                <filter string="Payment Method" name="filter_payment_method" domain="[('change_type', '=', 'payment_method')]"/>
+                <filter string="Sales Channel" name="filter_sales_channel" domain="[('change_type', '=', 'sale_channel')]"/>
+                <filter string="Order Void" name="filter_order_void" domain="[('change_type', '=', 'order_void')]"/>
+                <separator/>
+                <filter string="POS Frontend" name="filter_pos_frontend" domain="[('change_origin', '=', 'pos_frontend')]"/>
+                <filter string="Backend Finance" name="filter_backend_finance" domain="[('change_origin', '=', 'backend_finance')]"/>
+                <separator/>
+                <filter string="Group by Cashier" name="group_original_cashier" context="{'group_by': 'original_cashier_id'}"/>
+                <filter string="Group by Executor" name="group_executed_by" context="{'group_by': 'executed_by_id'}"/>
+                <filter string="Group by Type" name="group_change_type" context="{'group_by': 'change_type'}"/>
+                <filter string="Group by Session" name="group_session" context="{'group_by': 'session_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_pos_payment_method_change_log" model="ir.actions.act_window">
+        <field name="name">POS Revision Change Logs</field>
+        <field name="res_model">pos.revision.change.log</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_pos_revision_change_log_search"/>
+        <field
+            name="groups_id"
+            eval="[
+                (4, ref('bakery_user_roles.group_bakery_cashier_supervisor')),
+                (4, ref('bakery_user_roles.group_bakery_finance'))
+            ]"
+        />
+    </record>
+
+    <menuitem
+        id="menu_pos_payment_method_change_log"
+        name="POS Revision Change Logs"
+        parent="point_of_sale.menu_point_root"
+        action="action_pos_payment_method_change_log"
+        sequence="96"
+        groups="bakery_user_roles.group_bakery_cashier_supervisor,bakery_user_roles.group_bakery_finance"
+    />
+</odoo>

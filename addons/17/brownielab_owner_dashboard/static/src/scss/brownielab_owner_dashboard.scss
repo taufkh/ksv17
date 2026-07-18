@@ -1,0 +1,404 @@
+.o_form_view .o_brownielab_owner_dashboard {
+    background: #f8fafc;
+
+    .o_brownie_topbar {
+        margin-bottom: 16px;
+    }
+
+    .o_brownie_title_block {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+
+    .o_brownie_title_block h1 {
+        margin: 0;
+        font-size: 2rem;
+        font-weight: 700;
+        color: #111827;
+    }
+
+    .o_brownie_badges {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .o_brownie_badge {
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: #6d486b;
+        color: #fff;
+        font-size: 0.82rem;
+        font-weight: 700;
+    }
+
+    .o_brownie_note {
+        color: #4b5563;
+        font-size: 0.85rem;
+    }
+
+    .o_brownie_filter_bar,
+    .o_brownie_side_card,
+    .o_brownie_chart_card,
+    .o_brownie_table_card,
+    .o_brownie_summary_card,
+    .o_brownie_bank_card {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 18px;
+        box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+    }
+
+    .o_brownie_filter_bar {
+        padding: 16px 18px 6px;
+        margin-bottom: 18px;
+    }
+
+    .o_brownie_filter_bar .o_group .o_td_label {
+        width: 180px;
+    }
+
+    .o_brownie_filter_bar .o_field_radio {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .o_brownie_filter_bar .o_field_radio .form-check {
+        margin-right: 0;
+        padding: 8px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 12px;
+        background: #fff;
+    }
+
+    .o_brownie_kpi_grid,
+    .o_brownie_bank_grid,
+    .o_brownie_bottom_grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+        margin-bottom: 18px;
+    }
+
+    .o_brownie_kpi_grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .o_brownie_chart_split {
+        display: grid;
+        grid-template-columns: minmax(0, 1.6fr) minmax(320px, 0.9fr);
+        gap: 16px;
+        margin-bottom: 18px;
+        align-items: stretch;
+    }
+
+    .o_brownie_kpi_card {
+        padding: 18px;
+        border-radius: 18px;
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
+    }
+
+    .o_brownie_kpi_card span {
+        display: block;
+        font-size: 0.84rem;
+        color: #4b5563;
+        margin-bottom: 8px;
+        font-weight: 700;
+    }
+
+    .o_brownie_kpi_card .o_field_widget {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #0f172a;
+    }
+
+    .o_brownie_kpi_card.is-omzet {
+        border-top: 4px solid #0f8b8d;
+    }
+
+    .o_brownie_kpi_card.is-cashout {
+        border-top: 4px solid #ef7d00;
+    }
+
+    .o_brownie_section_head {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 14px;
+    }
+
+    .o_brownie_section_head h3 {
+        margin: 0 0 4px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #111827;
+    }
+
+    .o_brownie_section_head span {
+        color: #6b7280;
+        font-size: 0.84rem;
+    }
+
+    .o_brownie_chart_card,
+    .o_brownie_side_card,
+    .o_brownie_table_card,
+    .o_brownie_summary_card,
+    .o_brownie_bank_card {
+        padding: 18px;
+    }
+
+    .o_brownie_legend {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        font-size: 0.82rem;
+        font-weight: 700;
+    }
+
+    .o_brownie_legend span::before {
+        content: "";
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        margin-right: 6px;
+    }
+
+    .o_brownie_legend .is-omzet::before {
+        background: #0f8b8d;
+    }
+
+    .o_brownie_legend .is-cashout::before {
+        background: #7c3a74;
+    }
+
+    .o_brownie_chart_svg,
+    .o_brownie_bank_svg {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .o_grid_line {
+        stroke: #e5e7eb;
+        stroke-width: 1;
+    }
+
+    .o_line_omzet,
+    .o_line_cashout,
+    .o_bank_line {
+        fill: none;
+        stroke-width: 3;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .o_line_omzet {
+        stroke: #0f8b8d;
+    }
+
+    .o_line_cashout {
+        stroke: #7c3a74;
+    }
+
+    .o_bank_line {
+        stroke: #0f8b8d;
+    }
+
+    .o_point {
+        fill: #fff;
+    }
+
+    .o_axis_label {
+        font-size: 10px;
+        fill: #6b7280;
+    }
+
+    .o_brownie_snapshot_grid,
+    .o_summary_grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+    }
+
+    .o_brownie_snapshot_grid > div,
+    .o_summary_grid > div {
+        padding: 14px;
+        border-radius: 14px;
+        background: #f9fafb;
+        border: 1px solid #edf2f7;
+    }
+
+    .o_brownie_snapshot_grid span,
+    .o_summary_grid span {
+        display: block;
+        font-size: 0.8rem;
+        color: #6b7280;
+        margin-bottom: 6px;
+    }
+
+    .o_brownie_snapshot_grid strong,
+    .o_summary_grid strong {
+        display: block;
+        color: #111827;
+        font-size: 1.15rem;
+    }
+
+    .o_brownie_snapshot_grid small {
+        display: block;
+        color: #6b7280;
+        margin-top: 6px;
+    }
+
+    .o_brownie_table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .o_brownie_table th,
+    .o_brownie_table td {
+        padding: 10px 12px;
+        border-bottom: 1px solid #eef2f7;
+        font-size: 0.88rem;
+        color: #374151;
+    }
+
+    .o_brownie_table th {
+        text-align: left;
+        font-weight: 700;
+        color: #111827;
+        background: #f9fafb;
+    }
+
+    .o_brownie_table .is-amount {
+        text-align: right;
+        font-weight: 700;
+    }
+
+    .o_brownie_table .is-empty {
+        text-align: center;
+        color: #6b7280;
+        padding: 24px;
+    }
+
+    .o_status {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 0.76rem;
+        font-weight: 700;
+    }
+
+    .o_status.open {
+        color: #9a3412;
+        background: #ffedd5;
+    }
+
+    .o_status.overdue {
+        color: #991b1b;
+        background: #fee2e2;
+    }
+
+    .o_brownie_bank_head {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 14px;
+    }
+
+    .o_brownie_bank_head h3 {
+        margin: 0 0 4px;
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: #111827;
+    }
+
+    .o_brownie_bank_head span {
+        color: #6b7280;
+        font-size: 0.84rem;
+    }
+
+    .o_brownie_bank_balance {
+        text-align: right;
+    }
+
+    .o_brownie_bank_balance strong {
+        display: block;
+        font-size: 1.35rem;
+        color: #0f172a;
+    }
+
+    .o_brownie_bank_empty {
+        padding: 18px 0 6px;
+        color: #6b7280;
+        font-size: 0.88rem;
+    }
+
+    .o_summary_alerts {
+        margin-top: 16px;
+        display: grid;
+        gap: 12px;
+    }
+
+    .o_alert_row {
+        display: grid;
+        grid-template-columns: 32px minmax(0, 1fr);
+        gap: 12px;
+        align-items: start;
+        padding: 12px 14px;
+        border-radius: 14px;
+        background: #f9fafb;
+        border: 1px solid #edf2f7;
+    }
+
+    .o_alert_icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 999px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        color: #fff;
+    }
+
+    .o_alert_icon.is-danger {
+        background: #dc2626;
+    }
+
+    .o_alert_icon.is-warn {
+        background: #d97706;
+    }
+
+    .o_alert_row strong,
+    .o_alert_row p {
+        margin: 0;
+    }
+
+    .o_alert_row p {
+        margin-top: 4px;
+        color: #6b7280;
+        font-size: 0.84rem;
+    }
+
+    @media (max-width: 1400px) {
+        .o_brownie_kpi_grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .o_brownie_chart_split,
+        .o_brownie_bank_grid,
+        .o_brownie_bottom_grid {
+            grid-template-columns: minmax(0, 1fr);
+        }
+    }
+}

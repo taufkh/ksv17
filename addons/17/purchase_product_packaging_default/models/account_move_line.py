@@ -5,7 +5,7 @@ from odoo.exceptions import UserError
 class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
 
-    price_unit = fields.Float(digits=(16, 8))
+    price_unit = fields.Float(digits="Product Price")
 
     product_packaging_id = fields.Many2one(
         "product.packaging",
