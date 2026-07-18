@@ -578,11 +578,12 @@ class BrownielabOwnerDashboard(models.Model):
             is_overdue = bool(bill.invoice_date_due and bill.invoice_date_due < fields.Date.context_today(self))
             status = _("Overdue") if is_overdue else _("Open")
             status_class = "overdue" if is_overdue else "open"
+            bill_url = self._build_bill_form_url(bill)
             rows.append(
                 f"""
                 <tr>
                     <td>{html.escape(bill.partner_id.display_name or '-')}</td>
-                    <td>{html.escape(bill.name or bill.ref or '-')}</td>
+                    <td><a href="{html.escape(bill_url)}" class="o_brownie_bill_link">{html.escape(bill.name or bill.ref or '-')}</a></td>
                     <td>{html.escape(format_date(self.env, bill.invoice_date_due) if bill.invoice_date_due else '-')}</td>
                     <td class="is-amount">{html.escape(self._format_idr(abs(bill.amount_residual)))}</td>
                     <td><span class="o_status {status_class}">{html.escape(status)}</span></td>
@@ -625,11 +626,12 @@ class BrownielabOwnerDashboard(models.Model):
     def _build_unreconciled_bills_html(self, bills):
         rows = []
         for bill in bills[:10]:
+            bill_url = self._build_bill_form_url(bill)
             rows.append(
                 f"""
                 <tr>
                     <td>{html.escape(bill.partner_id.display_name or '-')}</td>
-                    <td>{html.escape(bill.name or bill.ref or '-')}</td>
+                    <td><a href="{html.escape(bill_url)}" class="o_brownie_bill_link">{html.escape(bill.name or bill.ref or '-')}</a></td>
                     <td>{html.escape(format_date(self.env, bill.invoice_date_due) if bill.invoice_date_due else '-')}</td>
                     <td class="is-amount">{html.escape(self._format_idr(abs(bill.amount_total)))}</td>
                     <td><span class="o_status in_payment">{html.escape(_('Belum Rekonsiliasi'))}</span></td>
@@ -784,3 +786,7 @@ class BrownielabOwnerDashboard(models.Model):
     def _format_idr(self, amount):
         rounded = f"{amount:,.0f}".replace(",", ".")
         return f"Rp {rounded}"
+
+    def _build_bill_form_url(self, bill):
+        self.ensure_one()
+        return f"/web#id={bill.id}&model=account.move&view_type=form"
