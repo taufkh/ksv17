@@ -297,12 +297,22 @@
         color: #0f766e;
         font-weight: 700;
         text-decoration: none;
+        pointer-events: auto !important;
+        position: relative;
+        z-index: 2;
+        cursor: pointer;
     }
 
     .o_brownie_bill_link:hover,
     .o_brownie_bill_link:focus {
         color: #115e59;
         text-decoration: underline;
+    }
+
+    .o_field_html,
+    .o_field_html .note-editable,
+    .o_field_html .o_readonly {
+        pointer-events: auto;
     }
 
     .o_status {
