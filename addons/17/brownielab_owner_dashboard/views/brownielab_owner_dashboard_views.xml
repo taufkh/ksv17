@@ -74,6 +74,11 @@
                                     <strong><field name="vendor_bills_outstanding_amount" widget="monetary" options="{'currency_field': 'currency_id'}" readonly="1"/></strong>
                                     <small><field name="vendor_bills_outstanding_count" readonly="1"/> bills</small>
                                 </div>
+                                <div>
+                                    <span>Belum Direkonsiliasi</span>
+                                    <strong><field name="unreconciled_bills_amount" widget="monetary" options="{'currency_field': 'currency_id'}" readonly="1"/></strong>
+                                    <small><field name="unreconciled_bills_count" readonly="1"/> bills</small>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -104,6 +109,10 @@
 
                     <div class="o_brownie_bottom_grid">
                         <field name="vendor_bills_html" widget="html" nolabel="1" readonly="1"/>
+                        <field name="unreconciled_bills_html" widget="html" nolabel="1" readonly="1"/>
+                    </div>
+
+                    <div class="o_brownie_summary_wrap">
                         <field name="filter_summary_html" widget="html" nolabel="1" readonly="1"/>
                     </div>
                 </sheet>

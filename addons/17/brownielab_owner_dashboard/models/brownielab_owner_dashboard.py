@@ -52,12 +52,15 @@ class BrownielabOwnerDashboard(models.Model):
     vendor_bills_due_count = fields.Integer(readonly=True)
     vendor_bills_outstanding_amount = fields.Monetary(readonly=True)
     vendor_bills_outstanding_count = fields.Integer(readonly=True)
+    unreconciled_bills_amount = fields.Monetary(readonly=True)
+    unreconciled_bills_count = fields.Integer(readonly=True)
 
     saldo_ocbc = fields.Monetary(readonly=True)
     saldo_bca = fields.Monetary(readonly=True)
 
     chart_html = fields.Html(readonly=True, sanitize=False)
     vendor_bills_html = fields.Html(readonly=True, sanitize=False)
+    unreconciled_bills_html = fields.Html(readonly=True, sanitize=False)
     filter_summary_html = fields.Html(readonly=True, sanitize=False)
     ocbc_card_html = fields.Html(readonly=True, sanitize=False)
     bca_card_html = fields.Html(readonly=True, sanitize=False)
@@ -238,14 +241,18 @@ class BrownielabOwnerDashboard(models.Model):
 
             due_bills = record._get_due_vendor_bills(date_start, date_end)
             outstanding_bills = record._get_outstanding_vendor_bills(date_end)
+            unreconciled_bills = record._get_unreconciled_vendor_bills(date_end)
             due_amount = sum(abs(bill.amount_residual) for bill in due_bills)
             outstanding_amount = sum(abs(bill.amount_residual) for bill in outstanding_bills)
+            unreconciled_amount = sum(abs(bill.amount_total) for bill in unreconciled_bills)
             values.update(
                 {
                     "vendor_bills_due_amount": due_amount,
                     "vendor_bills_due_count": len(due_bills),
                     "vendor_bills_outstanding_amount": outstanding_amount,
                     "vendor_bills_outstanding_count": len(outstanding_bills),
+                    "unreconciled_bills_amount": unreconciled_amount,
+                    "unreconciled_bills_count": len(unreconciled_bills),
                 }
             )
 
@@ -255,6 +262,7 @@ class BrownielabOwnerDashboard(models.Model):
             values["saldo_bca"] = record._get_journal_balance(bca_journal, date_end)
             values["chart_html"] = record._build_chart_html(date_start, date_end)
             values["vendor_bills_html"] = record._build_vendor_bills_html(due_bills)
+            values["unreconciled_bills_html"] = record._build_unreconciled_bills_html(unreconciled_bills)
             values["filter_summary_html"] = record._build_filter_summary_html(date_start, date_end, due_bills, due_amount)
             values["ocbc_card_html"] = record._build_bank_card_html(ocbc_journal, values["saldo_ocbc"], date_end)
             values["bca_card_html"] = record._build_bank_card_html(bca_journal, values["saldo_bca"], date_end)
@@ -410,6 +418,18 @@ class BrownielabOwnerDashboard(models.Model):
             ]
         )
 
+    def _get_unreconciled_vendor_bills(self, cutoff_date):
+        return self.env["account.move"].search(
+            [
+                ("company_id", "=", self.company_id.id),
+                ("state", "=", "posted"),
+                ("move_type", "=", "in_invoice"),
+                ("payment_state", "=", "in_payment"),
+                ("invoice_date", "<=", cutoff_date),
+            ],
+            order="invoice_date_due asc, name asc",
+        )
+
     def _find_bank_journal(self, keyword):
         return self.env["account.journal"].search(
             [
@@ -555,13 +575,9 @@ class BrownielabOwnerDashboard(models.Model):
     def _build_vendor_bills_html(self, bills):
         rows = []
         for bill in bills[:10]:
-            if bill.payment_state == "in_payment":
-                status = _("In Payment")
-                status_class = "in_payment"
-            else:
-                is_overdue = bool(bill.invoice_date_due and bill.invoice_date_due < fields.Date.context_today(self))
-                status = _("Overdue") if is_overdue else _("Open")
-                status_class = "overdue" if is_overdue else "open"
+            is_overdue = bool(bill.invoice_date_due and bill.invoice_date_due < fields.Date.context_today(self))
+            status = _("Overdue") if is_overdue else _("Open")
+            status_class = "overdue" if is_overdue else "open"
             rows.append(
                 f"""
                 <tr>
@@ -585,8 +601,55 @@ class BrownielabOwnerDashboard(models.Model):
             <div class="o_brownie_table_card">
                 <div class="o_brownie_section_head">
                     <div>
-                        <h3>Vendor Bills in Selected Period</h3>
-                        <span>Sorted by nearest due date</span>
+                        <h3>Vendor Bills Belum Dibayar</h3>
+                        <span>Only bills with remaining residual, sorted by nearest due date</span>
+                    </div>
+                </div>
+                <table class="o_brownie_table">
+                    <thead>
+                        <tr>
+                            <th>Vendor</th>
+                            <th>Bill Number</th>
+                            <th>Due Date</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {''.join(rows)}
+                    </tbody>
+                </table>
+            </div>
+        """
+
+    def _build_unreconciled_bills_html(self, bills):
+        rows = []
+        for bill in bills[:10]:
+            rows.append(
+                f"""
+                <tr>
+                    <td>{html.escape(bill.partner_id.display_name or '-')}</td>
+                    <td>{html.escape(bill.name or bill.ref or '-')}</td>
+                    <td>{html.escape(format_date(self.env, bill.invoice_date_due) if bill.invoice_date_due else '-')}</td>
+                    <td class="is-amount">{html.escape(self._format_idr(abs(bill.amount_total)))}</td>
+                    <td><span class="o_status in_payment">{html.escape(_('In Payment / Belum Rekonsiliasi'))}</span></td>
+                </tr>
+                """
+            )
+        if not rows:
+            rows.append(
+                """
+                <tr>
+                    <td colspan="5" class="is-empty">No vendor bills awaiting reconciliation at the cutoff date.</td>
+                </tr>
+                """
+            )
+        return f"""
+            <div class="o_brownie_table_card">
+                <div class="o_brownie_section_head">
+                    <div>
+                        <h3>Vendor Bills Belum Direkonsiliasi</h3>
+                        <span>Bills already in payment but not fully reconciled yet</span>
                     </div>
                 </div>
                 <table class="o_brownie_table">
