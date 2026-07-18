@@ -264,8 +264,8 @@ class BrownielabOwnerDashboard(models.Model):
             values["vendor_bills_html"] = record._build_vendor_bills_html(due_bills)
             values["unreconciled_bills_html"] = record._build_unreconciled_bills_html(unreconciled_bills)
             values["filter_summary_html"] = record._build_filter_summary_html(date_start, date_end, due_bills, due_amount)
-            values["ocbc_card_html"] = record._build_bank_card_html(ocbc_journal, values["saldo_ocbc"], date_end)
-            values["bca_card_html"] = record._build_bank_card_html(bca_journal, values["saldo_bca"], date_end)
+            values["ocbc_card_html"] = record._build_bank_card_html(ocbc_journal, values["saldo_ocbc"], date_start, date_end)
+            values["bca_card_html"] = record._build_bank_card_html(bca_journal, values["saldo_bca"], date_start, date_end)
             record.with_context(skip_dashboard_recompute=True).write(values)
 
     def _get_effective_range(self):
@@ -717,10 +717,12 @@ class BrownielabOwnerDashboard(models.Model):
             </div>
         """
 
-    def _build_bank_card_html(self, journal, balance, cutoff_date):
+    def _build_bank_card_html(self, journal, balance, date_start, cutoff_date):
         journal_name = journal.display_name if journal else _("Journal not found")
         account_number = journal.bank_acc_number if journal and journal.bank_acc_number else "-"
-        sparkline = self._build_bank_sparkline(journal, cutoff_date)
+        stats = self._get_bank_period_stats(journal, date_start, cutoff_date, balance)
+        trend_class = "is-up" if stats["net_change"] >= 0 else "is-down"
+        trend_label = _("Naik") if stats["net_change"] >= 0 else _("Turun")
         return f"""
             <div class="o_brownie_bank_card">
                 <div class="o_brownie_bank_head">
@@ -733,46 +735,65 @@ class BrownielabOwnerDashboard(models.Model):
                         <strong>{html.escape(self._format_idr(balance))}</strong>
                     </div>
                 </div>
-                {sparkline}
+                <div class="o_brownie_bank_period">
+                    <span>Periode {html.escape(self._describe_range(date_start, cutoff_date))}</span>
+                    <strong class="{trend_class}">{html.escape(trend_label)} {html.escape(self._format_idr(abs(stats["net_change"])))}</strong>
+                </div>
+                <div class="o_brownie_bank_metrics">
+                    <div>
+                        <span>Saldo Awal</span>
+                        <strong>{html.escape(self._format_idr(stats["opening_balance"]))}</strong>
+                    </div>
+                    <div>
+                        <span>Saldo Akhir</span>
+                        <strong>{html.escape(self._format_idr(balance))}</strong>
+                    </div>
+                    <div>
+                        <span>Uang Masuk</span>
+                        <strong class="is-up">{html.escape(self._format_idr(stats["inflow"]))}</strong>
+                    </div>
+                    <div>
+                        <span>Uang Keluar</span>
+                        <strong class="is-down">{html.escape(self._format_idr(stats["outflow"]))}</strong>
+                    </div>
+                </div>
+                <div class="o_brownie_bank_footer">
+                    <span>{stats["transaction_count"]} transaksi posted di periode ini</span>
+                    <span>Perubahan bersih: {html.escape(self._format_idr(stats["net_change"]))}</span>
+                </div>
             </div>
         """
 
-    def _build_bank_sparkline(self, journal, cutoff_date):
+    def _get_bank_period_stats(self, journal, date_start, cutoff_date, ending_balance):
         if not journal or not journal.default_account_id:
-            return '<div class="o_brownie_bank_empty">No bank journal mapping found.</div>'
+            return {
+                "opening_balance": 0.0,
+                "inflow": 0.0,
+                "outflow": 0.0,
+                "net_change": 0.0,
+                "transaction_count": 0,
+            }
+        opening_balance = self._get_journal_balance(journal, date_start - timedelta(days=1)) if date_start else 0.0
         aml_lines = self.env["account.move.line"].search(
             [
                 ("company_id", "=", self.company_id.id),
                 ("parent_state", "=", "posted"),
                 ("account_id", "=", journal.default_account_id.id),
+                ("date", ">=", date_start),
                 ("date", "<=", cutoff_date),
             ],
-            order="date desc, id desc",
-            limit=12,
+            order="date asc, id asc",
         )
-        running = 0.0
-        values = []
-        for line in reversed(aml_lines):
-            running += line.balance
-            values.append(running)
-        if not values:
-            return '<div class="o_brownie_bank_empty">No posted entries available.</div>'
-        width = 320
-        height = 72
-        padding = 6
-        max_value = max(values)
-        min_value = min(values)
-        spread = max(max_value - min_value, 1.0)
-        points = []
-        for index, value in enumerate(values):
-            x = padding + ((width - 2 * padding) * index / max(1, len(values) - 1))
-            y = height - padding - ((value - min_value) / spread * (height - 2 * padding))
-            points.append(f"{x:.2f},{y:.2f}")
-        return f"""
-            <svg viewBox="0 0 {width} {height}" class="o_brownie_bank_svg" role="img" aria-label="Bank balance sparkline">
-                <polyline points="{' '.join(points)}" class="o_bank_line" />
-            </svg>
-        """
+        inflow = sum(line.balance for line in aml_lines if line.balance > 0)
+        outflow = abs(sum(line.balance for line in aml_lines if line.balance < 0))
+        net_change = ending_balance - opening_balance
+        return {
+            "opening_balance": opening_balance,
+            "inflow": inflow,
+            "outflow": outflow,
+            "net_change": net_change,
+            "transaction_count": len(aml_lines),
+        }
 
     def _get_previous_range(self, date_start, date_end):
         span = (date_end - date_start).days + 1

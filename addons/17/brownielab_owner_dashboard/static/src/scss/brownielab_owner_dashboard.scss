@@ -374,6 +374,70 @@
         color: #0f172a;
     }
 
+    .o_brownie_bank_period {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
+        margin-bottom: 14px;
+        border-radius: 14px;
+        background: #f9fafb;
+        border: 1px solid #edf2f7;
+    }
+
+    .o_brownie_bank_period span {
+        color: #6b7280;
+        font-size: 0.82rem;
+    }
+
+    .o_brownie_bank_period strong,
+    .o_brownie_bank_metrics strong {
+        display: block;
+        font-size: 1rem;
+        color: #111827;
+    }
+
+    .o_brownie_bank_period .is-up,
+    .o_brownie_bank_metrics .is-up {
+        color: #0f766e;
+    }
+
+    .o_brownie_bank_period .is-down,
+    .o_brownie_bank_metrics .is-down {
+        color: #b45309;
+    }
+
+    .o_brownie_bank_metrics {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .o_brownie_bank_metrics > div {
+        padding: 12px 14px;
+        border-radius: 14px;
+        background: #fff;
+        border: 1px solid #edf2f7;
+    }
+
+    .o_brownie_bank_metrics span {
+        display: block;
+        margin-bottom: 6px;
+        color: #6b7280;
+        font-size: 0.8rem;
+    }
+
+    .o_brownie_bank_footer {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        margin-top: 14px;
+        color: #6b7280;
+        font-size: 0.82rem;
+        flex-wrap: wrap;
+    }
+
     .o_brownie_bank_empty {
         padding: 18px 0 6px;
         color: #6b7280;
@@ -436,6 +500,10 @@
         .o_brownie_bank_grid,
         .o_brownie_bottom_grid {
             grid-template-columns: minmax(0, 1fr);
+        }
+
+        .o_brownie_bank_metrics {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
         }
     }
 }
