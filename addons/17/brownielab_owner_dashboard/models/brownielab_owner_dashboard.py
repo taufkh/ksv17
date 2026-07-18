@@ -31,6 +31,9 @@ class BrownielabOwnerDashboard(models.Model):
     selected_week = fields.Date(default=lambda self: self._default_selected_week())
     selected_month = fields.Date(default=lambda self: self._default_selected_month())
     selected_year = fields.Integer(default=lambda self: fields.Date.context_today(self).year)
+    selected_week_key = fields.Selection(selection="_selection_weeks", default=lambda self: self._default_selected_week_key())
+    selected_month_key = fields.Selection(selection="_selection_months", default=lambda self: self._default_selected_month_key())
+    selected_year_key = fields.Selection(selection="_selection_years", default=lambda self: self._default_selected_year_key())
 
     effective_date_from = fields.Date(readonly=True)
     effective_date_to = fields.Date(readonly=True)
@@ -76,6 +79,59 @@ class BrownielabOwnerDashboard(models.Model):
     def _default_selected_month(self):
         today = fields.Date.context_today(self)
         return today.replace(day=1)
+
+    @api.model
+    def _default_selected_week_key(self):
+        today = fields.Date.context_today(self)
+        iso_year, iso_week, _iso_weekday = today.isocalendar()
+        return f"{iso_year}-W{iso_week:02d}"
+
+    @api.model
+    def _default_selected_month_key(self):
+        today = fields.Date.context_today(self)
+        return f"{today.year:04d}-{today.month:02d}"
+
+    @api.model
+    def _default_selected_year_key(self):
+        return str(fields.Date.context_today(self).year)
+
+    @api.model
+    def _selection_weeks(self):
+        today = fields.Date.context_today(self)
+        current_monday = today - timedelta(days=today.weekday())
+        options = []
+        for offset in range(-12, 13):
+            week_start = current_monday + timedelta(weeks=offset)
+            iso_year, iso_week, _iso_weekday = week_start.isocalendar()
+            week_end = week_start + timedelta(days=6)
+            key = f"{iso_year}-W{iso_week:02d}"
+            label = _("Week %s, %s (%s - %s)") % (
+                f"{iso_week:02d}",
+                iso_year,
+                format_date(self.env, week_start),
+                format_date(self.env, week_end),
+            )
+            options.append((key, label))
+        return options
+
+    @api.model
+    def _selection_months(self):
+        today = fields.Date.context_today(self)
+        month_anchor = today.replace(day=1)
+        options = []
+        for offset in range(-12, 13):
+            year_value = month_anchor.year + ((month_anchor.month - 1 + offset) // 12)
+            month_value = ((month_anchor.month - 1 + offset) % 12) + 1
+            month_start = date(year_value, month_value, 1)
+            key = f"{year_value:04d}-{month_value:02d}"
+            label = format_date(self.env, month_start, date_format="MMMM yyyy")
+            options.append((key, label))
+        return options
+
+    @api.model
+    def _selection_years(self):
+        current_year = fields.Date.context_today(self).year
+        return [(str(year_value), str(year_value)) for year_value in range(current_year - 5, current_year + 3)]
 
     @api.model
     def action_open_dashboard(self):
@@ -125,6 +181,9 @@ class BrownielabOwnerDashboard(models.Model):
             "selected_week",
             "selected_month",
             "selected_year",
+            "selected_week_key",
+            "selected_month_key",
+            "selected_year_key",
         }
 
     def action_apply_filter(self):
@@ -144,6 +203,9 @@ class BrownielabOwnerDashboard(models.Model):
                 "selected_week": today - timedelta(days=today.weekday()),
                 "selected_month": today.replace(day=1),
                 "selected_year": today.year,
+                "selected_week_key": self._default_selected_week_key(),
+                "selected_month_key": self._default_selected_month_key(),
+                "selected_year_key": self._default_selected_year_key(),
             }
         )
         self._recompute_dashboard()
@@ -161,6 +223,9 @@ class BrownielabOwnerDashboard(models.Model):
                 "effective_date_from": date_start,
                 "effective_date_to": date_end,
                 "filter_note": _("All metrics follow the selected period."),
+                "selected_week_key": record.selected_week_key or record._default_selected_week_key(),
+                "selected_month_key": record.selected_month_key or record._default_selected_month_key(),
+                "selected_year_key": record.selected_year_key or record._default_selected_year_key(),
                 "omzet_daily": record._get_revenue_amount(daily_start, daily_end),
                 "omzet_weekly": record._get_revenue_amount(weekly_start, weekly_end),
                 "omzet_monthly": record._get_revenue_amount(monthly_start, monthly_end),
@@ -202,15 +267,14 @@ class BrownielabOwnerDashboard(models.Model):
             day = self.selected_day or today
             return day, day
         if self.filter_mode == "week":
-            week_start = self.selected_week or (today - timedelta(days=today.weekday()))
+            week_start = self._get_selected_week_start()
             return week_start, week_start + timedelta(days=6)
         if self.filter_mode == "month":
-            month_date = self.selected_month or today.replace(day=1)
-            month_start = month_date.replace(day=1)
+            month_start = self._get_selected_month_start()
             month_end = fields.Date.end_of(month_start, "month")
             return month_start, month_end
         if self.filter_mode == "year":
-            year_value = self.selected_year or today.year
+            year_value = self._get_selected_year_value()
             year_start = date(year_value, 1, 1)
             year_end = date(year_value, 12, 31)
             return year_start, year_end
@@ -225,18 +289,38 @@ class BrownielabOwnerDashboard(models.Model):
         return anchor, anchor
 
     def _get_week_range(self):
-        anchor = self.selected_week or self.effective_date_to or fields.Date.context_today(self)
-        start = anchor - timedelta(days=anchor.weekday())
+        start = self._get_selected_week_start()
         return start, start + timedelta(days=6)
 
     def _get_month_range(self):
-        anchor = self.selected_month or self.effective_date_to or fields.Date.context_today(self)
-        start = anchor.replace(day=1)
+        start = self._get_selected_month_start()
         return start, fields.Date.end_of(start, "month")
 
     def _get_year_range(self):
-        year_value = self.selected_year or (self.effective_date_to or fields.Date.context_today(self)).year
+        year_value = self._get_selected_year_value()
         return date(year_value, 1, 1), date(year_value, 12, 31)
+
+    def _get_selected_week_start(self):
+        self.ensure_one()
+        if self.selected_week_key:
+            year_part, week_part = self.selected_week_key.split("-W")
+            return date.fromisocalendar(int(year_part), int(week_part), 1)
+        anchor = self.selected_week or self.effective_date_to or fields.Date.context_today(self)
+        return anchor - timedelta(days=anchor.weekday())
+
+    def _get_selected_month_start(self):
+        self.ensure_one()
+        if self.selected_month_key:
+            year_part, month_part = self.selected_month_key.split("-")
+            return date(int(year_part), int(month_part), 1)
+        anchor = self.selected_month or self.effective_date_to or fields.Date.context_today(self)
+        return anchor.replace(day=1)
+
+    def _get_selected_year_value(self):
+        self.ensure_one()
+        if self.selected_year_key:
+            return int(self.selected_year_key)
+        return self.selected_year or (self.effective_date_to or fields.Date.context_today(self)).year
 
     def _get_revenue_amount(self, date_start, date_end):
         return self._get_pos_revenue_amount(date_start, date_end) + self._get_invoice_revenue_amount(date_start, date_end)

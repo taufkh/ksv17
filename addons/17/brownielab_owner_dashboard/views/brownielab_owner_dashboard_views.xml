@@ -23,12 +23,15 @@
                     <div class="o_brownie_filter_bar">
                         <group col="6">
                             <field name="filter_mode" widget="radio" options="{'horizontal': true}"/>
-                            <field name="date_from"/>
-                            <field name="date_to"/>
-                            <field name="selected_day"/>
-                            <field name="selected_week"/>
-                            <field name="selected_month"/>
-                            <field name="selected_year"/>
+                            <field name="date_from" invisible="filter_mode != 'custom'"/>
+                            <field name="date_to" invisible="filter_mode != 'custom'"/>
+                            <field name="selected_day" invisible="filter_mode != 'day'"/>
+                            <field name="selected_week_key" invisible="filter_mode != 'week'"/>
+                            <field name="selected_month_key" invisible="filter_mode != 'month'"/>
+                            <field name="selected_year_key" invisible="filter_mode != 'year'"/>
+                            <field name="selected_week" invisible="1"/>
+                            <field name="selected_month" invisible="1"/>
+                            <field name="selected_year" invisible="1"/>
                         </group>
                     </div>
 
