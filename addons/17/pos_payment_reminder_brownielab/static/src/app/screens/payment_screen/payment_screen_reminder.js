@@ -1,42 +1,76 @@
 /** @odoo-module */
 
-import { onMounted } from "@odoo/owl";
 import { BrownielabPaymentReminderPopup } from "../../popups/payment_reminder_popup";
-import { ReceiptScreen } from "@point_of_sale/app/screens/receipt_screen/receipt_screen";
+import { PaymentScreen } from "@point_of_sale/app/screens/payment_screen/payment_screen";
+import { ConfirmPopup } from "@point_of_sale/app/utils/confirm_popup/confirm_popup";
+import { OrderReceipt } from "@point_of_sale/app/screens/receipt_screen/receipt/order_receipt";
+import { _t } from "@web/core/l10n/translation";
 import { patch } from "@web/core/utils/patch";
-import { useService } from "@web/core/utils/hooks";
 
-patch(ReceiptScreen.prototype, {
-    setup() {
-        super.setup(...arguments);
-        this.popup = useService("popup");
+patch(PaymentScreen.prototype, {
+    async afterOrderValidation(suggestToSync = true) {
+        this.pos.db.remove_unpaid_order(this.currentOrder);
 
-        onMounted(async () => {
-            await this._showBrownielabPaymentReminder();
-        });
+        if (suggestToSync && this.pos.db.get_orders().length) {
+            const { confirmed } = await this.popup.add(ConfirmPopup, {
+                title: _t("Remaining unsynced orders"),
+                body: _t("There are unsynced orders. Do you want to sync these orders?"),
+            });
+            if (confirmed) {
+                this.pos.push_orders();
+            }
+        }
+
+        let nextScreen = this.nextScreen;
+
+        if (
+            nextScreen === "ReceiptScreen" &&
+            !this.currentOrder._printed &&
+            this.pos.config.iface_print_auto
+        ) {
+            const invoicedFinalized = this.currentOrder.is_to_invoice()
+                ? this.currentOrder.finalized
+                : true;
+
+            if (invoicedFinalized) {
+                const printResult = await this.printer.print(
+                    OrderReceipt,
+                    {
+                        data: this.pos.get_order().export_for_printing(),
+                        formatCurrency: this.env.utils.formatCurrency,
+                    },
+                    { webPrintFallback: true }
+                );
+
+                if (printResult && this.pos.config.iface_print_skip_screen) {
+                    await this._showBrownielabPaymentReminderFromPaymentScreen();
+                    this.pos.removeOrder(this.currentOrder);
+                    this.pos.add_new_order();
+                    nextScreen = "ProductScreen";
+                }
+            }
+        }
+
+        this.pos.showScreen(nextScreen);
     },
 
-    async _showBrownielabPaymentReminder() {
-        if (!this._shouldShowBrownielabPaymentReminder()) {
+    async _showBrownielabPaymentReminderFromPaymentScreen() {
+        if (!this._shouldShowBrownielabPaymentReminderFromPaymentScreen()) {
             return;
         }
 
         this.currentOrder._brownielabPaymentReminderShown = true;
         const message = this.pos.config.brownielab_payment_reminder_message.trim();
 
-        const { confirmed } = await this.popup.add(BrownielabPaymentReminderPopup, {
+        await this.popup.add(BrownielabPaymentReminderPopup, {
             title: "Reminder",
             confirmText: "OK",
             lines: message.split("\n").map((line) => line.trim()).filter(Boolean),
             styleConfig: this._getBrownielabReminderStyleConfig(),
         });
-
-        if (confirmed) {
-            await this.orderDone();
-        }
     },
 
-    _shouldShowBrownielabPaymentReminder() {
+    _shouldShowBrownielabPaymentReminderFromPaymentScreen() {
         const message = this.pos.config?.brownielab_payment_reminder_message;
         return Boolean(
             this.pos.config?.brownielab_payment_reminder_enabled &&

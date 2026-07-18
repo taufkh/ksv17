@@ -12,6 +12,7 @@
         "point_of_sale._assets_pos": [
             "pos_payment_reminder_brownielab/static/src/app/popups/payment_reminder_popup.js",
             "pos_payment_reminder_brownielab/static/src/app/popups/payment_reminder_popup.xml",
+            "pos_payment_reminder_brownielab/static/src/app/screens/payment_screen/payment_screen_reminder.js",
             "pos_payment_reminder_brownielab/static/src/app/screens/receipt_screen/receipt_screen_reminder.js",
             "pos_payment_reminder_brownielab/static/src/scss/payment_reminder_popup.scss",
         ],
