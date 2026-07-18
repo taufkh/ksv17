@@ -579,11 +579,12 @@ class BrownielabOwnerDashboard(models.Model):
             status = _("Overdue") if is_overdue else _("Open")
             status_class = "overdue" if is_overdue else "open"
             bill_url = self._build_bill_form_url(bill)
+            bill_link = self._build_bill_link_html(bill_url, bill.name or bill.ref or "-")
             rows.append(
                 f"""
                 <tr>
                     <td>{html.escape(bill.partner_id.display_name or '-')}</td>
-                    <td><a href="{html.escape(bill_url)}" class="o_brownie_bill_link">{html.escape(bill.name or bill.ref or '-')}</a></td>
+                    <td>{bill_link}</td>
                     <td>{html.escape(format_date(self.env, bill.invoice_date_due) if bill.invoice_date_due else '-')}</td>
                     <td class="is-amount">{html.escape(self._format_idr(abs(bill.amount_residual)))}</td>
                     <td><span class="o_status {status_class}">{html.escape(status)}</span></td>
@@ -627,11 +628,12 @@ class BrownielabOwnerDashboard(models.Model):
         rows = []
         for bill in bills[:10]:
             bill_url = self._build_bill_form_url(bill)
+            bill_link = self._build_bill_link_html(bill_url, bill.name or bill.ref or "-")
             rows.append(
                 f"""
                 <tr>
                     <td>{html.escape(bill.partner_id.display_name or '-')}</td>
-                    <td><a href="{html.escape(bill_url)}" class="o_brownie_bill_link">{html.escape(bill.name or bill.ref or '-')}</a></td>
+                    <td>{bill_link}</td>
                     <td>{html.escape(format_date(self.env, bill.invoice_date_due) if bill.invoice_date_due else '-')}</td>
                     <td class="is-amount">{html.escape(self._format_idr(abs(bill.amount_total)))}</td>
                     <td><span class="o_status in_payment">{html.escape(_('Belum Rekonsiliasi'))}</span></td>
@@ -788,5 +790,17 @@ class BrownielabOwnerDashboard(models.Model):
         return f"Rp {rounded}"
 
     def _build_bill_form_url(self, bill):
-        self.ensure_one()
-        return f"/web#id={bill.id}&model=account.move&view_type=form"
+        base_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url", "")
+        return f"{base_url}/web#id={bill.id}&model=account.move&view_type=form"
+
+    def _build_bill_link_html(self, bill_url, label):
+        safe_url = html.escape(bill_url, quote=True)
+        safe_label = html.escape(label)
+        return (
+            f'<a href="{safe_url}" '
+            f'class="o_brownie_bill_link" '
+            f'target="_self" '
+            f'onclick="window.location.href=\'{safe_url}\'; return false;">'
+            f"{safe_label}"
+            f"</a>"
+        )
