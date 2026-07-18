@@ -632,7 +632,7 @@ class BrownielabOwnerDashboard(models.Model):
                     <td>{html.escape(bill.name or bill.ref or '-')}</td>
                     <td>{html.escape(format_date(self.env, bill.invoice_date_due) if bill.invoice_date_due else '-')}</td>
                     <td class="is-amount">{html.escape(self._format_idr(abs(bill.amount_total)))}</td>
-                    <td><span class="o_status in_payment">{html.escape(_('In Payment / Belum Rekonsiliasi'))}</span></td>
+                    <td><span class="o_status in_payment">{html.escape(_('Belum Rekonsiliasi'))}</span></td>
                 </tr>
                 """
             )
