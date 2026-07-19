@@ -40,6 +40,7 @@ class BrownielabOwnerDashboard(models.Model):
     filter_note = fields.Char(readonly=True)
 
     omzet_daily = fields.Monetary(readonly=True)
+    omzet_today = fields.Monetary(readonly=True)
     omzet_weekly = fields.Monetary(readonly=True)
     omzet_monthly = fields.Monetary(readonly=True)
     omzet_yearly = fields.Monetary(readonly=True)
@@ -217,6 +218,7 @@ class BrownielabOwnerDashboard(models.Model):
     def _recompute_dashboard(self):
         for record in self:
             date_start, date_end = record._get_effective_range()
+            today_start, today_end = record._get_today_range()
             daily_start, daily_end = record._get_day_range()
             weekly_start, weekly_end = record._get_week_range()
             monthly_start, monthly_end = record._get_month_range()
@@ -230,6 +232,7 @@ class BrownielabOwnerDashboard(models.Model):
                 "selected_month_key": record.selected_month_key or record._default_selected_month_key(),
                 "selected_year_key": record.selected_year_key or record._default_selected_year_key(),
                 "omzet_daily": record._get_revenue_amount(daily_start, daily_end),
+                "omzet_today": record._get_revenue_amount(today_start, today_end),
                 "omzet_weekly": record._get_revenue_amount(weekly_start, weekly_end),
                 "omzet_monthly": record._get_revenue_amount(monthly_start, monthly_end),
                 "omzet_yearly": record._get_revenue_amount(yearly_start, yearly_end),
@@ -295,6 +298,10 @@ class BrownielabOwnerDashboard(models.Model):
     def _get_day_range(self):
         anchor = self.selected_day or self.effective_date_to or fields.Date.context_today(self)
         return anchor, anchor
+
+    def _get_today_range(self):
+        today = fields.Date.context_today(self)
+        return today, today
 
     def _get_week_range(self):
         start = self._get_selected_week_start()

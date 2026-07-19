@@ -36,6 +36,10 @@
                     </div>
 
                     <div class="o_brownie_kpi_grid">
+                        <div class="o_brownie_kpi_card is-omzet is-today">
+                            <span>Omset Today</span>
+                            <field name="omzet_today" widget="monetary" options="{'currency_field': 'currency_id'}" readonly="1"/>
+                        </div>
                         <div class="o_brownie_kpi_card is-omzet">
                             <span>Omset Harian</span>
                             <field name="omzet_daily" widget="monetary" options="{'currency_field': 'currency_id'}" readonly="1"/>

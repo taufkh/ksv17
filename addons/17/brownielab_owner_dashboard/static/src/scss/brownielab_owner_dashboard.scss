@@ -86,7 +86,7 @@
     }
 
     .o_brownie_kpi_grid {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-columns: repeat(5, minmax(0, 1fr));
     }
 
     .o_brownie_chart_split {
@@ -121,6 +121,16 @@
 
     .o_brownie_kpi_card.is-omzet {
         border-top: 4px solid #0f8b8d;
+    }
+
+    .o_brownie_kpi_card.is-omzet.is-today {
+        background: linear-gradient(135deg, #0f8b8d 0%, #127475 100%);
+        border-color: #0f8b8d;
+    }
+
+    .o_brownie_kpi_card.is-omzet.is-today span,
+    .o_brownie_kpi_card.is-omzet.is-today .o_field_widget {
+        color: #fff;
     }
 
     .o_brownie_kpi_card.is-cashout {
@@ -493,7 +503,7 @@
 
     @media (max-width: 1400px) {
         .o_brownie_kpi_grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
+            grid-template-columns: repeat(3, minmax(0, 1fr));
         }
 
         .o_brownie_chart_split,
@@ -503,6 +513,12 @@
         }
 
         .o_brownie_bank_metrics {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 992px) {
+        .o_brownie_kpi_grid {
             grid-template-columns: repeat(2, minmax(0, 1fr));
         }
     }
