@@ -1,8 +1,9 @@
-from datetime import date, timedelta
+from datetime import date, datetime, time, timedelta
 import html
 
 from odoo import _, api, fields, models
 from odoo.tools import format_date
+import pytz
 
 
 class BrownielabOwnerDashboard(models.Model):
@@ -356,17 +357,27 @@ class BrownielabOwnerDashboard(models.Model):
         return 0.0
 
     def _get_pos_revenue_amount(self, date_start, date_end):
+        utc_start, utc_end = self._get_utc_datetime_range(date_start, date_end)
         pos_data = self.env["pos.order"].read_group(
             [
                 ("company_id", "=", self.company_id.id),
                 ("state", "in", ["paid", "done", "invoiced"]),
-                ("date_order", ">=", fields.Datetime.to_string(date_start)),
-                ("date_order", "<", fields.Datetime.to_string(date_end + timedelta(days=1))),
+                ("date_order", ">=", fields.Datetime.to_string(utc_start)),
+                ("date_order", "<", fields.Datetime.to_string(utc_end)),
             ],
             ["amount_total:sum"],
             [],
         )
         return self._read_group_sum(pos_data, ["amount_total", "amount_total_sum"])
+
+    def _get_utc_datetime_range(self, date_start, date_end):
+        self.ensure_one()
+        timezone_name = self.env.user.tz or self.env.context.get("tz") or "UTC"
+        local_tz = pytz.timezone(timezone_name)
+        local_start = local_tz.localize(datetime.combine(date_start, time.min))
+        local_end = local_tz.localize(datetime.combine(date_end + timedelta(days=1), time.min))
+        utc_tz = pytz.UTC
+        return local_start.astimezone(utc_tz).replace(tzinfo=None), local_end.astimezone(utc_tz).replace(tzinfo=None)
 
     def _get_invoice_revenue_amount(self, date_start, date_end):
         move_data = self.env["account.move"].read_group(
