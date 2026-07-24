@@ -82,7 +82,7 @@ class BrownielabOwnerDashboard(models.Model):
     @api.model
     def _get_dashboard_today(self):
         local_tz = pytz.timezone(self._get_dashboard_timezone_name())
-        utc_now = pytz.UTC.localize(fields.Datetime.now())
+        utc_now = datetime.utcnow().replace(tzinfo=pytz.UTC)
         return utc_now.astimezone(local_tz).date()
 
     @api.model
@@ -243,7 +243,7 @@ class BrownielabOwnerDashboard(models.Model):
                 "selected_month_key": record.selected_month_key or record._default_selected_month_key(),
                 "selected_year_key": record.selected_year_key or record._default_selected_year_key(),
                 "omzet_daily": record._get_revenue_amount(daily_start, daily_end),
-                "omzet_today": record._get_pos_revenue_amount(today_start, today_end),
+                "omzet_today": record._get_pos_today_realtime_amount(),
                 "omzet_weekly": record._get_revenue_amount(weekly_start, weekly_end),
                 "omzet_monthly": record._get_revenue_amount(monthly_start, monthly_end),
                 "omzet_yearly": record._get_revenue_amount(yearly_start, yearly_end),
@@ -379,6 +379,32 @@ class BrownielabOwnerDashboard(models.Model):
             [],
         )
         return self._read_group_sum(pos_data, ["amount_total", "amount_total_sum"])
+
+    def _get_pos_today_realtime_amount(self):
+        self.ensure_one()
+        today = self._get_dashboard_today()
+        local_tz = pytz.timezone(self._get_dashboard_timezone_name())
+        search_start, search_end = self._get_utc_datetime_range(today - timedelta(days=1), today)
+        orders = self.env["pos.order"].search(
+            [
+                ("company_id", "=", self.company_id.id),
+                ("state", "in", ["paid", "done", "invoiced"]),
+                ("date_order", ">=", fields.Datetime.to_string(search_start)),
+                ("date_order", "<", fields.Datetime.to_string(search_end)),
+            ]
+        )
+        total_amount = 0.0
+        for order in orders:
+            order_datetime = fields.Datetime.to_datetime(order.date_order)
+            if not order_datetime:
+                continue
+            if order_datetime.tzinfo:
+                order_utc = order_datetime.astimezone(pytz.UTC)
+            else:
+                order_utc = pytz.UTC.localize(order_datetime)
+            if order_utc.astimezone(local_tz).date() == today:
+                total_amount += order.amount_total
+        return total_amount
 
     def _get_utc_datetime_range(self, date_start, date_end):
         self.ensure_one()
