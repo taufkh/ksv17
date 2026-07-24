@@ -186,6 +186,14 @@ class BrownielabOwnerDashboard(models.Model):
             self._recompute_dashboard()
         return result
 
+    def read(self, fields=None, load="_classic_read"):
+        if self and not self.env.context.get("skip_dashboard_read_refresh"):
+            self.with_context(skip_dashboard_read_refresh=True)._recompute_dashboard()
+        return super(
+            BrownielabOwnerDashboard,
+            self.with_context(skip_dashboard_read_refresh=True),
+        ).read(fields=fields, load=load)
+
     @api.model
     def _dashboard_filter_fields(self):
         return {
