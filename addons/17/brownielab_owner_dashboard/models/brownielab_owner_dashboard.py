@@ -76,33 +76,43 @@ class BrownielabOwnerDashboard(models.Model):
     ]
 
     @api.model
+    def _get_dashboard_timezone_name(self):
+        return self.env.user.tz or self.env.context.get("tz") or "Asia/Jakarta"
+
+    @api.model
+    def _get_dashboard_today(self):
+        local_tz = pytz.timezone(self._get_dashboard_timezone_name())
+        utc_now = pytz.UTC.localize(fields.Datetime.now())
+        return utc_now.astimezone(local_tz).date()
+
+    @api.model
     def _default_selected_week(self):
-        today = fields.Date.context_today(self)
+        today = self._get_dashboard_today()
         return today - timedelta(days=today.weekday())
 
     @api.model
     def _default_selected_month(self):
-        today = fields.Date.context_today(self)
+        today = self._get_dashboard_today()
         return today.replace(day=1)
 
     @api.model
     def _default_selected_week_key(self):
-        today = fields.Date.context_today(self)
+        today = self._get_dashboard_today()
         iso_year, iso_week, _iso_weekday = today.isocalendar()
         return f"{iso_year}-W{iso_week:02d}"
 
     @api.model
     def _default_selected_month_key(self):
-        today = fields.Date.context_today(self)
+        today = self._get_dashboard_today()
         return f"{today.year:04d}-{today.month:02d}"
 
     @api.model
     def _default_selected_year_key(self):
-        return str(fields.Date.context_today(self).year)
+        return str(self._get_dashboard_today().year)
 
     @api.model
     def _selection_weeks(self):
-        today = fields.Date.context_today(self)
+        today = self._get_dashboard_today()
         current_monday = today - timedelta(days=today.weekday())
         options = []
         for offset in range(-12, 13):
@@ -121,7 +131,7 @@ class BrownielabOwnerDashboard(models.Model):
 
     @api.model
     def _selection_months(self):
-        today = fields.Date.context_today(self)
+        today = self._get_dashboard_today()
         month_anchor = today.replace(day=1)
         options = []
         for offset in range(-12, 13):
@@ -135,7 +145,7 @@ class BrownielabOwnerDashboard(models.Model):
 
     @api.model
     def _selection_years(self):
-        current_year = fields.Date.context_today(self).year
+        current_year = self._get_dashboard_today().year
         return [(str(year_value), str(year_value)) for year_value in range(current_year - 5, current_year + 3)]
 
     @api.model
@@ -198,7 +208,7 @@ class BrownielabOwnerDashboard(models.Model):
 
     def action_reset_filter(self):
         self.ensure_one()
-        today = fields.Date.context_today(self)
+        today = self._get_dashboard_today()
         self.with_context(skip_dashboard_recompute=True).write(
             {
                 "filter_mode": "custom",
@@ -274,7 +284,7 @@ class BrownielabOwnerDashboard(models.Model):
 
     def _get_effective_range(self):
         self.ensure_one()
-        today = fields.Date.context_today(self)
+        today = self._get_dashboard_today()
         if self.filter_mode == "day":
             day = self.selected_day or today
             return day, day
@@ -297,11 +307,11 @@ class BrownielabOwnerDashboard(models.Model):
         return date_start, date_end
 
     def _get_day_range(self):
-        anchor = self.selected_day or self.effective_date_to or fields.Date.context_today(self)
+        anchor = self.selected_day or self.effective_date_to or self._get_dashboard_today()
         return anchor, anchor
 
     def _get_today_range(self):
-        today = fields.Date.context_today(self)
+        today = self._get_dashboard_today()
         return today, today
 
     def _get_week_range(self):
@@ -321,7 +331,7 @@ class BrownielabOwnerDashboard(models.Model):
         if self.selected_week_key:
             year_part, week_part = self.selected_week_key.split("-W")
             return date.fromisocalendar(int(year_part), int(week_part), 1)
-        anchor = self.selected_week or self.effective_date_to or fields.Date.context_today(self)
+        anchor = self.selected_week or self.effective_date_to or self._get_dashboard_today()
         return anchor - timedelta(days=anchor.weekday())
 
     def _get_selected_month_start(self):
@@ -329,14 +339,14 @@ class BrownielabOwnerDashboard(models.Model):
         if self.selected_month_key:
             year_part, month_part = self.selected_month_key.split("-")
             return date(int(year_part), int(month_part), 1)
-        anchor = self.selected_month or self.effective_date_to or fields.Date.context_today(self)
+        anchor = self.selected_month or self.effective_date_to or self._get_dashboard_today()
         return anchor.replace(day=1)
 
     def _get_selected_year_value(self):
         self.ensure_one()
         if self.selected_year_key:
             return int(self.selected_year_key)
-        return self.selected_year or (self.effective_date_to or fields.Date.context_today(self)).year
+        return self.selected_year or (self.effective_date_to or self._get_dashboard_today()).year
 
     def _get_revenue_amount(self, date_start, date_end):
         return self._get_pos_revenue_amount(date_start, date_end) + self._get_invoice_revenue_amount(date_start, date_end)
@@ -372,7 +382,7 @@ class BrownielabOwnerDashboard(models.Model):
 
     def _get_utc_datetime_range(self, date_start, date_end):
         self.ensure_one()
-        timezone_name = self.env.user.tz or self.env.context.get("tz") or "UTC"
+        timezone_name = self._get_dashboard_timezone_name()
         local_tz = pytz.timezone(timezone_name)
         local_start = local_tz.localize(datetime.combine(date_start, time.min))
         local_end = local_tz.localize(datetime.combine(date_end + timedelta(days=1), time.min))
@@ -593,7 +603,7 @@ class BrownielabOwnerDashboard(models.Model):
     def _build_vendor_bills_html(self, bills):
         rows = []
         for bill in bills[:10]:
-            is_overdue = bool(bill.invoice_date_due and bill.invoice_date_due < fields.Date.context_today(self))
+            is_overdue = bool(bill.invoice_date_due and bill.invoice_date_due < self._get_dashboard_today())
             status = _("Overdue") if is_overdue else _("Open")
             status_class = "overdue" if is_overdue else "open"
             bill_url = self._build_bill_form_url(bill)
