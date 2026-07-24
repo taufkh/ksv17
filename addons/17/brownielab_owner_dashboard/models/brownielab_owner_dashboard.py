@@ -232,7 +232,7 @@ class BrownielabOwnerDashboard(models.Model):
                 "selected_month_key": record.selected_month_key or record._default_selected_month_key(),
                 "selected_year_key": record.selected_year_key or record._default_selected_year_key(),
                 "omzet_daily": record._get_revenue_amount(daily_start, daily_end),
-                "omzet_today": record._get_revenue_amount(today_start, today_end),
+                "omzet_today": record._get_pos_revenue_amount(today_start, today_end),
                 "omzet_weekly": record._get_revenue_amount(weekly_start, weekly_end),
                 "omzet_monthly": record._get_revenue_amount(monthly_start, monthly_end),
                 "omzet_yearly": record._get_revenue_amount(yearly_start, yearly_end),
