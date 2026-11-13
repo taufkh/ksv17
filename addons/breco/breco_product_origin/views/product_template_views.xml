@@ -1,0 +1,21 @@
+<odoo>
+    <record id="product_template_form_origin" model="ir.ui.view">
+        <field name="name">product.template.form.breco.origin</field><field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='general_information']/group" position="after">
+                <group string="Coffee Details"><group><field name="breco_processor_id"/><field name="breco_region_id"/></group></group>
+            </xpath>
+        </field>
+    </record>
+    <record id="product_template_tree_origin" model="ir.ui.view">
+        <field name="name">product.template.tree.breco.origin</field><field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_tree_view"/>
+        <field name="arch" type="xml"><xpath expr="//field[@name='name']" position="after"><field name="breco_processor_id" optional="show"/><field name="breco_region_id" optional="show"/></xpath></field>
+    </record>
+    <record id="product_template_search_origin" model="ir.ui.view">
+        <field name="name">product.template.search.breco.origin</field><field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_search_view"/>
+        <field name="arch" type="xml"><xpath expr="//search" position="inside"><field name="breco_processor_id"/><field name="breco_region_id"/><filter string="Processor" name="group_breco_processor" context="{'group_by': 'breco_processor_id'}"/><filter string="Region" name="group_breco_region" context="{'group_by': 'breco_region_id'}"/></xpath></field>
+    </record>
+</odoo>

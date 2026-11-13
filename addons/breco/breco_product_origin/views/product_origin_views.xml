@@ -1,0 +1,26 @@
+<odoo>
+    <record id="view_breco_processor_tree" model="ir.ui.view">
+        <field name="name">breco.product.processor.tree</field><field name="model">breco.product.processor</field>
+        <field name="arch" type="xml"><tree><field name="name"/><field name="active" optional="hide"/></tree></field>
+    </record>
+    <record id="view_breco_processor_form" model="ir.ui.view">
+        <field name="name">breco.product.processor.form</field><field name="model">breco.product.processor</field>
+        <field name="arch" type="xml"><form><sheet><widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/><group><field name="name"/><field name="active" invisible="1"/></group></sheet></form></field>
+    </record>
+    <record id="action_breco_processor" model="ir.actions.act_window">
+        <field name="name">Processors</field><field name="res_model">breco.product.processor</field><field name="view_mode">tree,form</field>
+    </record>
+    <record id="view_breco_region_tree" model="ir.ui.view">
+        <field name="name">breco.product.region.tree</field><field name="model">breco.product.region</field>
+        <field name="arch" type="xml"><tree><field name="name"/><field name="active" optional="hide"/></tree></field>
+    </record>
+    <record id="view_breco_region_form" model="ir.ui.view">
+        <field name="name">breco.product.region.form</field><field name="model">breco.product.region</field>
+        <field name="arch" type="xml"><form><sheet><widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/><group><field name="name"/><field name="active" invisible="1"/></group></sheet></form></field>
+    </record>
+    <record id="action_breco_region" model="ir.actions.act_window">
+        <field name="name">Regions</field><field name="res_model">breco.product.region</field><field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="menu_breco_processor" name="Processors" parent="stock.menu_stock_config_settings" action="action_breco_processor" groups="stock.group_stock_manager" sequence="80"/>
+    <menuitem id="menu_breco_region" name="Regions" parent="stock.menu_stock_config_settings" action="action_breco_region" groups="stock.group_stock_manager" sequence="81"/>
+</odoo>

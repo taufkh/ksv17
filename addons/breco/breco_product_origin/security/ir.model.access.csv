@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_breco_processor_user,breco.processor.user,model_breco_product_processor,base.group_user,1,0,0,0
+access_breco_processor_manager,breco.processor.manager,model_breco_product_processor,stock.group_stock_manager,1,1,1,1
+access_breco_region_user,breco.region.user,model_breco_product_region,base.group_user,1,0,0,0
+access_breco_region_manager,breco.region.manager,model_breco_product_region,stock.group_stock_manager,1,1,1,1
